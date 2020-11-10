@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/services/send_coin.dart';
 import 'package:Crypto_wallet/shared/CustomTextStyle.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,14 +12,31 @@ class CheckOutScreen extends StatefulWidget {
   final currency;
   final address;
   final user;
-  final amount;
+  final coinAmount;
+  final Function press;
+  final otherCurrencyAmount;
+  final chargeInCoin;
+  final chargeInOtherCurrency;
+  final coinTotalAmountToSend;
+  final otherCurrencyTotalAmountToSend;
+  final String symbol;
+  final String text, text1;
+  
 
-  CheckOutScreen({
-    this.currency,
-    this.address,
-    this.user,
-    this.amount,
-  });
+  CheckOutScreen(
+      {this.currency,
+      this.address,
+      this.user,
+      this.coinAmount,
+      this.press,
+      this.otherCurrencyAmount,
+      this.chargeInCoin,
+      this.chargeInOtherCurrency,
+      this.coinTotalAmountToSend,
+      this.otherCurrencyTotalAmountToSend,
+      this.symbol,
+      this.text,
+      this.text1});
   @override
   _CheckOutScreenState createState() => _CheckOutScreenState();
 }
@@ -45,11 +63,11 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var amount = double.parse(widget.amount);
-    dynamic charged = (amount) / 100;
-    dynamic charge = charged.toStringAsFixed(8);
-    dynamic total = charged + (amount);
-    dynamic totalAmount = total.toStringAsFixed(8);
+    // var amount = double.parse(widget.amount);
+    // dynamic charged = (amount) / 100;
+    // dynamic charge = charged.toStringAsFixed(8);
+    // dynamic total = charged + (amount);
+    // dynamic totalAmount = total.toStringAsFixed(8);
 
     return SingleChildScrollView(
       padding: EdgeInsets.only(
@@ -67,18 +85,9 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 }),
           ),
           Container(
-            height: 70,
+            // height: 50,
             width: double.infinity,
-            // decoration: BoxDecoration(
-            //   borderRadius: BorderRadius.all(
-            //     Radius.circular(5),
-            //   ),
-            //   gradient: LinearGradient(
-            //     begin: Alignment.centerLeft,
-            //     end: Alignment.centerRight,
-            //     colors: [yellowStart, yellowEnd],
-            //   ),
-            // ),
+           
             child: Center(
               child: Text(
                 'Review ',
@@ -88,8 +97,41 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 ),
               ),
             ),
+            
           ),
-          // SizedBox(height: 20),
+          SizedBox(height: 10),
+
+            Container(
+            
+            width: double.infinity,
+           
+            child: Center(
+              child: Text(
+                widget.text,
+                style: TextStyle(
+                  // fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            
+          ),
+          SizedBox(height: 5),
+          Container(
+            
+            width: double.infinity,
+           
+            child: Center(
+              child: Text(
+                widget.text1,
+                style: TextStyle(
+                  // fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+            
+          ),
           Container(
             margin: EdgeInsets.all(15),
             decoration: BoxDecoration(
@@ -130,7 +172,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    createSummaryItem("From :", widget.user, Colors.purple),
+                    createSummaryItem(
+                        "From :",
+                        widget.user['email'],
+                        widget.user['userName'],
+                        '${widget.currency['currency']} Wallet',
+                        Colors.purple),
                     SizedBox(
                       height: 20,
                     ),
@@ -157,8 +204,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       height: 20,
                     ),
                     createSingleItem(
-                        "Amount",
-                        '${widget.amount} ${widget.currency['currency']}',
+                        "Amount ToSend",
+                        '${widget.coinAmount} ${widget.currency['currency']}(${widget.symbol}${formatPrice(widget.otherCurrencyAmount)})',
                         Colors.black),
                     SizedBox(
                       height: 20,
@@ -174,7 +221,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     ),
                     createSingleItem(
                         "Charges",
-                        '${charge.toString()} ${widget.currency['currency']}',
+                        '${widget.chargeInCoin.toString()}${widget.currency['currency']}(${widget.symbol}${formatPrice(widget.chargeInOtherCurrency)})',
                         Colors.black),
                     SizedBox(
                       height: 20,
@@ -190,7 +237,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     ),
                     createSingleItem(
                         "Total",
-                        '${totalAmount.toString()} ${widget.currency['currency']}',
+                        '${widget.coinTotalAmountToSend}${widget.currency['currency']}(${widget.symbol}${formatPrice(widget.otherCurrencyTotalAmountToSend)})',
                         Colors.black),
                     SizedBox(
                       height: 20,
@@ -206,34 +253,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
               text: 'Send',
 
               // icon: Icons.copy,
-              press: () async{
-                print('come');
-                dynamic userId = FirebaseAuth.instance.currentUser.uid;
-                dynamic apiKey = '8293ui423kjsadhas9oujwasd';
-                Map result = await SendCoin().sendCoin(
-                  apiKey,
-                  widget.currency['currency'],
-                  userId,
-                  widget.amount,
-                  widget.address,
-                  charge.toString(),
-                );
-                print(result.toString());
-                if (result['status']) {
-                  print('success');
-                } else {
-                  String msg = (result['message'] != null &&
-                          result['message'].isNotEmpty)
-                      ? result['message']
-                      : 'An unknown error occured; retry';
-                  Fluttertoast.showToast(
-                      msg: msg,
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      backgroundColor: Colors.black,
-                      textColor: Colors.white);
-                }
-              },
+              press: widget.press,
             ),
           )
         ],
@@ -244,7 +264,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   createItem(String key, value, Color color) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      // crossAxisAlignment: CrossAxisAlignment.start,
+      // crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Text(
           key,
@@ -294,10 +314,11 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     );
   }
 
-  createSummaryItem(String key, value, Color color) {
+  createSummaryItem(String key, value, value1, value2, Color color) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 0, vertical: 3),
       child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
@@ -318,7 +339,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: value['email'],
+                        text: value,
                         // '₦ $total',
                         style: CustomTextStyle.textFormFieldMedium.copyWith(
                           // height: 1.5,
@@ -337,7 +358,27 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: value['userName'],
+                        text: value1,
+                        // '₦ $total',
+                        style: CustomTextStyle.textFormFieldMedium.copyWith(
+                          // height: 1.5,
+                          color: color,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              Container(
+                width: 250,
+                padding: EdgeInsets.only(left: 50),
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: value2,
                         // '₦ $total',
                         style: CustomTextStyle.textFormFieldMedium.copyWith(
                           // height: 1.5,

@@ -1,8 +1,10 @@
-
+import 'package:Crypto_wallet/services/price_formatter.dart';
+import 'package:Crypto_wallet/services/send_coin.dart';
 import 'package:Crypto_wallet/widgets/button.dart';
 import 'package:Crypto_wallet/widgets/check_out_screen.dart';
 import 'package:Crypto_wallet/widgets/outlined_number_input_field.dart';
 import 'package:Crypto_wallet/widgets/send_textField.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
@@ -18,8 +20,8 @@ class SendCoinScreen extends StatefulWidget {
 
 final _formKey = GlobalKey<FormState>();
 
-var coinAmount;
-var dollarAmount;
+dynamic coinAmount;
+dynamic dollarAmount;
 final usdAmount = TextEditingController();
 final currencyAmount = TextEditingController();
 final address = TextEditingController();
@@ -131,9 +133,9 @@ class _SendCoinScreenState extends State<SendCoinScreen> {
                           // return 'Please enter value';
                         } else {
                           var price = double.parse(widget.currency['price']);
-                          dollarAmount = double.parse(value);
+                          dynamic usd = double.parse(value);
                           Future.value(Duration(seconds: 1)).whenComplete(() {
-                            dynamic currency = ((dollarAmount * 1) / price);
+                            dynamic currency = ((usd * 1) / price);
                             currencyAmount.text = currency.toStringAsFixed(8);
                           });
                           return null;
@@ -175,7 +177,7 @@ class _SendCoinScreenState extends State<SendCoinScreen> {
                     ),
                   ),
                   validator: (value) {
-                    if (value.isEmpty ) {
+                    if (value.isEmpty) {
                       Future.value(Duration(seconds: 1)).whenComplete(() {
                         usdAmount.text = "0.0";
                       });
@@ -184,9 +186,9 @@ class _SendCoinScreenState extends State<SendCoinScreen> {
                     } else {
                       var price = double.parse(widget.currency['price']);
 
-                      coinAmount = double.parse(value);
+                      dynamic coin = double.parse(value);
                       Future.value(Duration(seconds: 1)).whenComplete(() {
-                        dynamic usd = ((price * coinAmount) / 1);
+                        dynamic usd = ((price * coin) / 1);
                         usdAmount.text = usd.toStringAsFixed(8);
                       });
                       return null;
@@ -218,10 +220,20 @@ class _SendCoinScreenState extends State<SendCoinScreen> {
                   // var toSend = int.parse(currencyAmount.text);
                   var balance = double.parse(widget.balance);
                   var amount = double.parse(currencyAmount.text);
-                  dynamic charge = (amount) / 100;
-                  dynamic totalAmount = charge + (amount);
+                  var dollar = double.parse(usdAmount.text);
+                  coinAmount = amount.toStringAsFixed(5);
+                  dollarAmount = dollar.toStringAsFixed(2);
+                  double chargeInCoin = ((amount) / 100);
+                  double chargeInUsd = dollar / 100;
+                  dynamic coinCharge = chargeInCoin.toStringAsFixed(5);
+                  dynamic usdCharge = chargeInUsd.toStringAsFixed(2);
+                  double totalInUsd = chargeInUsd + dollar;
+                  double totalInCoin = chargeInCoin + (amount);
+                  dynamic totalAmountInUsd = totalInUsd.toStringAsFixed(2);
+                  dynamic totalAmountInCoin = totalInCoin.toStringAsFixed(5);
+
                   if (_formKey.currentState.validate()) {
-                    if (balance < totalAmount) {
+                    if (balance < totalInCoin) {
                       Fluttertoast.showToast(
                           msg: 'Insufficient fund ',
                           toastLength: Toast.LENGTH_SHORT,
@@ -230,10 +242,49 @@ class _SendCoinScreenState extends State<SendCoinScreen> {
                           textColor: Colors.white);
                     } else {
                       _showBottomSheet(CheckOutScreen(
-                          address: address.text,
-                          amount: currencyAmount.text,
-                          currency: widget.currency,
-                          user: widget.user));
+                        address: address.text,
+                        coinAmount: coinAmount.toString(),
+                        currency: widget.currency,
+                        user: widget.user,
+                        otherCurrencyAmount: dollarAmount.toString(),
+                        chargeInCoin: coinCharge.toString(),
+                        chargeInOtherCurrency: usdCharge.toString(),
+                        coinTotalAmountToSend: totalAmountInCoin.toString(),
+                        otherCurrencyTotalAmountToSend: totalAmountInUsd.toString(),
+                        text: 'you are about to send $coinAmount${widget.currency['currency']} for \$${formatPrice(dollarAmount)}',
+                        symbol: '\$',
+                         text1:
+                              'Exchange rate: 1 ${widget.currency['currency']} \=  \$${formatPrice(widget.currency['price'])} ',
+                        press: () async {
+                          print('come');
+                          dynamic userId =
+                              FirebaseAuth.instance.currentUser.uid;
+                          dynamic apiKey = '8293ui423kjsadhas9oujwasd';
+                          Map result = await SendCoin().sendCoin(
+                            apiKey,
+                            widget.currency['currency'],
+                            userId,
+                            currencyAmount.text,
+                            address.text,
+                            chargeInCoin.toString(),
+                          );
+                          print(result.toString());
+                          if (result['status']) {
+                            print('success');
+                          } else {
+                            String msg = (result['message'] != null &&
+                                    result['message'].isNotEmpty)
+                                ? result['message']
+                                : 'An unknown error occured; retry';
+                            Fluttertoast.showToast(
+                                msg: msg,
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: Colors.black,
+                                textColor: Colors.white);
+                          }
+                        },
+                      ));
                     }
                   } else {
                     Fluttertoast.showToast(

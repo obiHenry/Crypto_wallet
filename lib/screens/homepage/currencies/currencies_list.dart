@@ -96,7 +96,7 @@ class _CurrenciesListState extends State<CurrenciesList> {
     transactionList = await AuthService().getTransactionList();
     // print(transactionList);
     Map list = await transactionList[' nairaWalletTransactionList'];
-    print(list);
+    // print(list);
     nairaTransactionList.clear();
 
     list.forEach((key, value) {
@@ -261,6 +261,7 @@ class _CurrenciesListState extends State<CurrenciesList> {
                                       balance: balance,
                                       user: users,
                                       transactions: transactions,
+                                      nairaRate: nairaRate,
                                     ),
                                   ),
                                 );

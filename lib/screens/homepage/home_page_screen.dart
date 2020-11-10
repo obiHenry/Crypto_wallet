@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:Crypto_wallet/screens/wallet/naira_wallet/deposit_naira-screen.dart';
+import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/get_currency.dart';
+import 'package:Crypto_wallet/services/get_naira_rate.dart';
+import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/theme/light_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:intl/intl.dart';
 import '../../shared/shared.dart';
 import 'currencies/currencies_list.dart';
 
@@ -13,6 +18,37 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
+  dynamic nairaBalance;
+  dynamic nairaRate;
+  dynamic usdEqui;
+  @override
+  void didChangeDependencies() async {
+    dynamic user = await AuthService().getUserDataById();
+    dynamic naira1 = await GetNairaRate().getNairaRate();
+
+    nairaRate = (naira1['current-price'].toString());
+    dynamic rate = double.parse(nairaRate);
+
+    dynamic naira = user['naira'];
+    dynamic balance = double.parse(naira);
+    nairaBalance = balance.toStringAsFixed(2);
+    dynamic usd = balance / rate;
+    usdEqui = usd.toStringAsFixed(2);
+    print('anyting$usdEqui');
+
+    print(nairaBalance);
+    //  void currency() {
+
+    Locale locale = Localizations.localeOf(context);
+    
+    // String  f = CurrencyPickerUtils.getCountryByIsoCode('PK').currencyCode.toString();
+    var format = NumberFormat.simpleCurrency(locale: Platform.localeName);
+    print("CURRENCY SYMBOL ${format.currencySymbol}"); // $
+    print("CURRENCY NAME ${format.currencyName}"); // USD
+// }
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     ChangeNotifierProvider.value(value: GetCurrencies());
@@ -26,16 +62,15 @@ class _HomePageScreenState extends State<HomePageScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
-              
-            height: MediaQuery.of(context).size.height * .3,
+              height: MediaQuery.of(context).size.height * .3,
               margin: EdgeInsets.only(top: 0, left: 0, right: 0),
               width: double.infinity,
               decoration: BoxDecoration(
                 // LightColor.navyBlue1
-                color: Colors.green ,
+                color: Colors.green,
                 // LightColor.navyBlue1
                 // blueMain
-                  gradient: LinearGradient(
+                gradient: LinearGradient(
                   // yellowStartWallet, yellowEndWallet
                   colors: [
                     LightColor.navyBlue1,
@@ -47,7 +82,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(40),
                   bottomRight: Radius.circular(40),
-                  
+
                   // Radius.circular(40),
                   // Radius.circular(50),
                 ),
@@ -94,10 +129,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                "\₦32.026",
+                                '#${formatPrice(nairaBalance)}',
                                 style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 35,
+                                    fontSize: 30,
                                     fontWeight: FontWeight.w500),
                               ),
                               // Transform(
@@ -124,21 +159,22 @@ class _HomePageScreenState extends State<HomePageScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                '4.2432232 BTC',
+                                '\$${formatPrice(usdEqui)}',
+                                // '4.2432232 BTC',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,
                                 ),
                               ),
                               InkWell(
-                                onTap: (){
-                                   Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => DepositMoney()));
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              DepositMoney()));
                                 },
-
-                                                              child: Container(
+                                child: Container(
                                   width: 50,
                                   height: 50,
                                   decoration: BoxDecoration(
@@ -188,7 +224,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
               ),
             ),
             Container(
-              padding: EdgeInsets.only(left: 25,top: 8),
+              padding: EdgeInsets.only(left: 25, top: 8),
               child: Text(
                 'Currencies',
                 style: TextStyle(

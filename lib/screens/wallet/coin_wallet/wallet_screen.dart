@@ -1,6 +1,8 @@
 import 'package:Crypto_wallet/screens/wallet/coin_wallet/recieve_coin/recieve_coin_screen.dart';
+import 'package:Crypto_wallet/screens/wallet/coin_wallet/send_coin/sell_coin_screen.dart';
 import 'package:Crypto_wallet/screens/wallet/coin_wallet/send_coin/send_coin_screen.dart';
 import 'package:Crypto_wallet/services/dialog_service.dart';
+import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/services/recieve_coin.dart';
 import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
 import 'package:Crypto_wallet/screens/profile_screen/profile_screen.dart';
@@ -20,9 +22,10 @@ class Wallet extends StatefulWidget {
   final balance;
   final user;
   final transactions;
+  final nairaRate;
 
   Wallet(
-      {this.currency, this.image, this.balance, this.user, this.transactions});
+      {this.currency, this.image, this.balance, this.user, this.transactions, this.nairaRate});
   static const routeName = '/wallet';
   _WalletState createState() => _WalletState();
 }
@@ -140,7 +143,7 @@ class _WalletState extends State<Wallet> {
 
                       container(balance.toStringAsFixed(2), widget.currency),
                       Text(
-                        "\~ \$${usdEqui.toStringAsFixed(2)}",
+                        "\~ \$${formatPrice(usdEqui.toStringAsFixed(2))}",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -158,7 +161,7 @@ class _WalletState extends State<Wallet> {
                         //   ),
                         // ),
                         child: Text(
-                          '  1 ${widget.currency['currency']} \~ \$$convert',
+                          '  1 ${widget.currency['currency']} \~ \$${formatPrice(convert)}',
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
@@ -354,6 +357,14 @@ class _WalletState extends State<Wallet> {
                               width: 30,
                             ),
                             InkWell(
+                              onTap: () {
+                                _showBottomSheet(SellCoinScreen(
+                                   currency: widget.currency,
+                                          balance: widget.balance,
+                                          user: widget.user,
+                                          nairaRate: widget.nairaRate,
+                                ));
+                              },
                               child: Container(
                                 height: 50,
                                 alignment: Alignment.center,
@@ -463,160 +474,6 @@ class _WalletState extends State<Wallet> {
                 ],
               ),
             ),
-            // ListView(
-            //   shrinkWrap: true,
-            //   physics: ScrollPhysics(),
-            //   children: <Widget>[
-            //     Container(
-            //       margin: EdgeInsets.all(20),
-            //       child: Row(
-            //         mainAxisAlignment: MainAxisAlignment.spaceAround,
-            //         children: <Widget>[
-            //           !_loader1
-            //               ? InkWell(
-            //                   onTap: () {
-            //                     setState(() {
-            //                       _loader1 = true;
-            //                     });
-            //                     if (balance <= 0) {
-            //                       _showBottomSheet(AlertSheet());
-            //                       Fluttertoast.showToast(
-            //                           msg: 'You don\'t have any money to send ',
-            //                           toastLength: Toast.LENGTH_SHORT,
-            //                           gravity: ToastGravity.BOTTOM,
-            //                           backgroundColor: Colors.black,
-            //                           textColor: Colors.white);
-            //                       setState(() {
-            //                         _loader1 = false;
-            //                       });
-            //                     } else {
-            //                       _showBottomSheet(SendCoinScreen(
-            //                         currency: widget.currency,
-            //                         balance: widget.balance,
-            //                         user: widget.user,
-            //                       ));
-            //                       setState(() {
-            //                         _loader1 = false;
-            //                       });
-            //                     }
-            //                   },
-            //                   splashColor: yellowEnd,
-            //                   child: Container(
-            //                     width: MediaQuery.of(context).size.width / 2.5,
-            //                     padding: EdgeInsets.symmetric(
-            //                         vertical: 10, horizontal: 20),
-            //                     decoration: BoxDecoration(
-            //                       color: Colors.white,
-            //                       borderRadius: BorderRadius.all(
-            //                         Radius.circular(10),
-            //                       ),
-            //                       boxShadow: [
-            //                         BoxShadow(
-            //                           color: Colors.black12,
-            //                           blurRadius: 5.0,
-            //                           spreadRadius: 1.0,
-            //                           offset: Offset(0, 1),
-            //                         ),
-            //                       ],
-            //                     ),
-            //                     child: Row(
-            //                       mainAxisAlignment:
-            //                           MainAxisAlignment.spaceAround,
-            //                       children: <Widget>[
-            //                         SvgPicture.asset('assets/images/send.svg'),
-            //                         Container(
-            //                           child: Text(
-            //                             'Send',
-            //                             style: TextStyle(
-            //                                 fontSize: 20,
-            //                                 fontWeight: FontWeight.w500),
-            //                           ),
-            //                         ),
-            //                       ],
-            //                     ),
-            //                   ),
-            //                 )
-            //               : CircularProgressIndicator(),
-            //           !_loader
-            //               ? InkWell(
-            //                   splashColor: yellowEnd,
-            //                   onTap: () async {
-            //                     setState(() {
-            //                       _loader = true;
-            //                     });
-
-            //                     dynamic userId =
-            //                         FirebaseAuth.instance.currentUser.uid;
-            //                     print(widget.currency['currency']);
-            //                     dynamic value = await RecieveCoin().recieveCoin(
-            //                       widget.currency['currency'],
-            //                       userId,
-            //                       widget.user['email'],
-            //                     );
-
-            //                     if (value['status']) {
-            //                       _showBottomSheet(RecieveCoinScreen(
-            //                           currency: widget.currency, value: value));
-            //                     } else {
-            //                       String msg = (value['message'] != null &&
-            //                               value['message'].isNotEmpty)
-            //                           ? value['message']
-            //                           : 'An unknown error occured; retry';
-            //                       DialogService().getSnackBar(
-            //                         context,
-            //                         msg,
-            //                         Colors.red,
-            //                       );
-            //                     }
-            //                         setState(() {
-            //                       _loader = false;
-            //                     });
-
-            //                     // print('dkjfkz$value');
-            //                   },
-            //                   child: Container(
-            //                     width: MediaQuery.of(context).size.width / 2.5,
-            //                     padding: EdgeInsets.symmetric(
-            //                         vertical: 10, horizontal: 20),
-            //                     decoration: BoxDecoration(
-            //                       color: Colors.white,
-            //                       borderRadius: BorderRadius.all(
-            //                         Radius.circular(10),
-            //                       ),
-            //                       boxShadow: [
-            //                         BoxShadow(
-            //                           color: Colors.black12,
-            //                           blurRadius: 5.0,
-            //                           spreadRadius: 1.0,
-            //                           offset: Offset(0, 1),
-            //                         ),
-            //                       ],
-            //                     ),
-            //                     child: Row(
-            //                       mainAxisAlignment:
-            //                           MainAxisAlignment.spaceAround,
-            //                       children: <Widget>[
-            //                         SvgPicture.asset(
-            //                             'assets/images/receive.svg'),
-            //                         Container(
-            //                           child: Text(
-            //                             'Receive',
-            //                             style: TextStyle(
-            //                                 fontSize: 20,
-            //                                 fontWeight: FontWeight.w500),
-            //                           ),
-            //                         ),
-            //                       ],
-            //                     ),
-            //                   ),
-            //                 )
-            //               : CircularProgressIndicator(),
-            //         ],
-            //       ),
-            //     ),
-            //     SizedBox(height: 20),
-            //   ],
-            // ),
           ],
         ),
       ),

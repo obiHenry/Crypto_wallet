@@ -1,9 +1,14 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+
+
 String formatPrice(price) {
   List split = price.toString().trim().split('.');
   String priceInt = split[0];
   String priceDec;
   if (priceInt.length < 4) {
-    return "₦ " + price;
+    return  price;
   }
   if (split.length > 1) {
     priceDec = split[1];
@@ -17,6 +22,15 @@ String formatPrice(price) {
   final String getPrice = String.fromCharCodes(value.runes.toList().reversed);
 
   return priceDec != null && priceDec != '00'
-      ? "₦ " + getPrice + '.' + priceDec
-      : "₦ " + getPrice;
+      ?  getPrice + '.' + priceDec
+      :  getPrice;
+
+
 }
+
+// void currency() {
+//     Locale locale = Localizations.localeOf(BuildContext());
+//     var format = NumberFormat.simpleCurrency(locale: locale.toString());
+//     print("CURRENCY SYMBOL ${format.currencySymbol}"); // $
+//     print("CURRENCY NAME ${format.currencyName}"); // USD
+// }

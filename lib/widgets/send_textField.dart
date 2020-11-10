@@ -15,6 +15,7 @@ class SendtextField extends StatelessWidget {
   final TextEditingController controller;
   final bool enable;
   final bool validate;
+  final String hintText;
   SendtextField(
       {this.label,
       this.press,
@@ -25,16 +26,19 @@ class SendtextField extends StatelessWidget {
       this.controller,
       this.validator,
       this.enable,
-      this.validate});
+      this.validate, 
+      this.hintText});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.8,
       child: TextFormField(
+        
         //  autovalidateMode: ,
         controller: controller,
         decoration: InputDecoration(
+          hintText: hintText,
           suffixIcon: text,
           labelText: label,
           enabledBorder: OutlineInputBorder(
@@ -44,6 +48,7 @@ class SendtextField extends StatelessWidget {
             ),
           ),
           focusedBorder: OutlineInputBorder(
+            
             borderSide: BorderSide(
               color: Colors.purple,
               width: 1.5,
@@ -56,11 +61,13 @@ class SendtextField extends StatelessWidget {
         inputFormatters: isNumberType
             ? [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,100}'))]
             : [],
+            
         validator: validator,
         autovalidate: validate,
         enabled: enable,
         onChanged: press,
         initialValue: initialValue,
+
       ),
     );
   }
