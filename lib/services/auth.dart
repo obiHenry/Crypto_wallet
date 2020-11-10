@@ -130,7 +130,36 @@ class AuthService with ChangeNotifier {
     }
   }
 
-  Future updateUserData(
+
+
+  Future updateWalletData(
+    String walletBalance,
+    String nairaBalance,
+    String walletCurrency,
+   
+  
+  ) async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser.uid;
+      try {
+        await _dbRef.child('Users').child(userId).update({
+          '$walletCurrency': walletBalance,
+          'naira': nairaBalance,
+          
+          'updatedAt': DateTime.now().toString(),
+        });
+        dynamic user = await getUserDataById();
+        await setUserData(user: user);
+        return {'status': true, 'message': user};
+      } catch (e) {
+        print(e.toString());
+        return {'status': false, 'message': 'An error occurred; please retry'};
+      }
+    } else {
+      return {'status': false, 'message': 'An error occurred; please retry'};
+    }
+  }
+   Future updateUserData(
     String name,
     String phone,
     String gender,
@@ -157,6 +186,56 @@ class AuthService with ChangeNotifier {
       return {'status': false, 'message': 'An error occurred; please retry'};
     }
   }
+  Future updateTransactionList(
+    String sentOrRecieved,
+    String from,
+    String to,
+    String coinEquivalence,
+    String nairaEquivalence,
+    String walletTransactionList,
+    String currency,
+  ) async {
+    
+      
+      try {
+          await _dbRef.child('TransactionList')
+          .child('$walletTransactionList')
+          .child(DateTime.now().millisecondsSinceEpoch.toString())
+          .update({
+          'TransactionType': sentOrRecieved,
+          'from': from,
+          'to': to,
+          'coinEquivalance': coinEquivalence,
+          'nairaEquivalence':nairaEquivalence,
+          'currency': currency,
+          'time': DateTime.now().toString(),
+         
+        });
+        
+        // return {'status': true, 'message': transactionList};
+      } catch (e) {
+        print(e.toString());
+        // return {'status': false, 'message': 'An error occurred; please retry'};
+      }
+    }
+     Future getTransactionList() async {
+      try {
+        dynamic transactionList = await _dbRef
+            .child('TransactionList')
+            
+            .once()
+            .then((DataSnapshot snapshot) {
+          dynamic transactionList = snapshot.value;
+          return transactionList;
+        });
+        // await setUserData(user: user);
+        return transactionList;
+      } catch (e) {
+        print(e.toString());
+      }
+    
+  }
+  
 
   Future changePassword(String email, String currentPassword,
       String newPassword, String confirmPassword) async {

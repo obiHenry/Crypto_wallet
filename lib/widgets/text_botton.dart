@@ -28,7 +28,7 @@ class ButtonText extends StatelessWidget {
             height: 50,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(
-                Radius.circular(29),
+                Radius.circular(25),
               ),
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
@@ -38,21 +38,26 @@ class ButtonText extends StatelessWidget {
             ),
             child: Center(
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+
+                crossAxisAlignment: CrossAxisAlignment.center,
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    // padding: EdgeInsets.all(10),
-                    child: Icon(
-                      icon,
-                      // color: Colors.blue,
-                    ),
-                  ),
+                  // Container(
+                  //   // padding: EdgeInsets.all(10),
+                  //   child: Icon(
+                  //     icon,
+                  //     // color: Colors.blue,
+                  //   ),
+                  // ),
                   Container(
                     // padding: EdgeInsets.all(10),
                     // child: Center(
+                      width: 250,
+
                       child: SelectableText(
                         text,
-                        style: loginButtonLabel,
+                        style: TextStyle(fontSize: 16,color: Colors.white),
                         cursorColor: Colors.black54,
                         
                       ),

@@ -7,6 +7,7 @@ class Button extends StatelessWidget {
   final String text;
   final Color color;
   final IconData icon;
+
   Button({
     this.press,
     this.text,
@@ -24,6 +25,7 @@ class Button extends StatelessWidget {
       child: InkWell(
         onTap: press,
         child: Container(
+          
             // width: double.infinity,
             height: 50,
             decoration: BoxDecoration(
@@ -37,19 +39,14 @@ class Button extends StatelessWidget {
               ),
             ),
             child: Center(
+              
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
 
                 children: [
+                
                   Container(
-                    padding: EdgeInsets.all(10),
-                    child: Icon(
-                      icon,
-                      // color: Colors.blue,
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.all(12),
                     // child: Center(
                       child: Text(
                         text,

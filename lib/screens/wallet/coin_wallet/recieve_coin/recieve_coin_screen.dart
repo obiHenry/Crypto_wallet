@@ -1,10 +1,10 @@
-import 'package:Crypto_wallet/services/dialog_service.dart';
+
+import 'package:Crypto_wallet/widgets/button.dart';
+import 'package:Crypto_wallet/widgets/text_botton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart'; 
 
-import '../button.dart';
-import '../text_botton.dart';
 
 class RecieveCoinScreen extends StatefulWidget {
   final currency;
@@ -28,7 +28,7 @@ class _RecieveCoinScreenState extends State<RecieveCoinScreen> {
         children: <Widget>[
           SizedBox(height: 20),
           Text(
-            '${widget.currency['name']} Address ',
+            'Receive ${widget.currency['name']}  ',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 20),
@@ -65,9 +65,6 @@ class _RecieveCoinScreenState extends State<RecieveCoinScreen> {
                   msg: 'Copied',
                   toastLength: Toast.LENGTH_LONG,
                   gravity: ToastGravity.BOTTOM,
-                  // timeInSecForIosWeb: 1,
-                  
-                  // timeInSecForIos: 1,
                   backgroundColor: Colors.black,
                   textColor: Colors.white);
               // DialogService().getSnackBar(context, 'Copied', Colors.lightGreen);

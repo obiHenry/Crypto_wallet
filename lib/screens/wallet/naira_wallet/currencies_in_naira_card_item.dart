@@ -1,38 +1,33 @@
 import 'package:Crypto_wallet/shared/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class CurrencyItemCard extends StatefulWidget {
+class CurrencyInNaraCard extends StatefulWidget {
   final currency;
   final Function press;
   final color;
   final Widget widget;
-  CurrencyItemCard({this.currency, this.press, this.color, this.widget});
+  CurrencyInNaraCard({this.currency, this.press, this.color, this.widget});
   @override
-  _CurrencyItemCardState createState() => _CurrencyItemCardState();
+  _CurrencyInNaraCardState createState() => _CurrencyInNaraCardState();
 }
 
-class _CurrencyItemCardState extends State<CurrencyItemCard> {
+class _CurrencyInNaraCardState extends State<CurrencyInNaraCard> {
   @override
   Widget build(BuildContext context) {
     var price = double.parse(widget.currency['price']);
     var convert = price.toStringAsFixed(2);
-    // var percent = int.parse(widget.currency['1d']['price_change_pct']);
+    dynamic percent = double.parse(widget.currency['1d']['price_change_pct']);
 
-    // print('itsme$price');
     return GestureDetector(
       onTap: widget.press,
-
-      // Navigator.pushNamed(context, 'wallet');
-
-      child: Stack(
-        
-              children: [ 
-                Container(
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Stack(children: [
+        Container(
+          height: 85,
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 3),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(
-              Radius.circular(15),
+              Radius.circular(10),
             ),
           ),
           child: Container(
@@ -62,10 +57,10 @@ class _CurrencyItemCardState extends State<CurrencyItemCard> {
                           padding:
                               EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
-                            color: 
-                            // percent < 0
-                            //     ? Colors.red
-                            //     : 
+                            color:
+                                percent < 0
+                                    ? Colors.red
+                                    :
                                 chipColorGreen,
                             borderRadius: BorderRadius.all(
                               Radius.circular(50),
@@ -85,14 +80,14 @@ class _CurrencyItemCardState extends State<CurrencyItemCard> {
                   children: <Widget>[
                     Text(
                       // 'sdsd',
-                      '\$$convert',
+                      '\₦$convert',
                       style: TextStyle(
                           fontSize: 22,
                           color: Colors.black54,
                           fontWeight: FontWeight.w500),
                     ),
                     Text(
-                      ' 1 ${widget.currency['currency']}',
+                      '\~ 1 ${widget.currency['currency']}',
                       style: TextStyle(fontSize: 13, color: Colors.black54),
                     ),
                   ],
@@ -101,35 +96,32 @@ class _CurrencyItemCardState extends State<CurrencyItemCard> {
             ),
           ),
         ),
-
-         Container(
+        Container(
           // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
 
-           child: Positioned(
-             
-                    bottom: 6,
-                    right: 10,
-                    left: 10,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 5,
-                        horizontal: 20,
-                      ),
-                      width: 300,
-                      // color: Colors.black54,
-                      child: widget.widget,
-                      
-                      //  Text(
-                      //   title,
-                      //   style: TextStyle(fontSize: 20, color: Colors.white),
-                      //   softWrap: true,
-                      //   overflow: TextOverflow.fade,
-                      // ),
-                    ),
-                  ),
-         )
-              ]
-      ),
+          child: Positioned(
+            bottom: 6,
+            right: 10,
+            left: 10,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                vertical: 5,
+                horizontal: 20,
+              ),
+              width: 300,
+              // color: Colors.black54,
+              child: widget.widget,
+
+              //  Text(
+              //   title,
+              //   style: TextStyle(fontSize: 20, color: Colors.white),
+              //   softWrap: true,
+              //   overflow: TextOverflow.fade,
+              // ),
+            ),
+          ),
+        )
+      ]),
     );
   }
 }

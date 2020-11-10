@@ -1,10 +1,11 @@
+import 'package:Crypto_wallet/screens/wallet/naira_wallet/deposit_naira-screen.dart';
 import 'package:Crypto_wallet/services/get_currency.dart';
-import 'package:Crypto_wallet/widgets/currencies/currencies_list.dart';
+import 'package:Crypto_wallet/theme/light_color.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../shared/shared.dart';
+import 'currencies/currencies_list.dart';
 
 class HomePageScreen extends StatefulWidget {
   static const routeName = '/homepage';
@@ -25,12 +26,29 @@ class _HomePageScreenState extends State<HomePageScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(top: 0, left: 10, right: 10),
+              
+            height: MediaQuery.of(context).size.height * .3,
+              margin: EdgeInsets.only(top: 0, left: 0, right: 0),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: blueMain,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(40),
+                // LightColor.navyBlue1
+                color: Colors.green ,
+                // LightColor.navyBlue1
+                // blueMain
+                  gradient: LinearGradient(
+                  // yellowStartWallet, yellowEndWallet
+                  colors: [
+                    LightColor.navyBlue1,
+                    LightColor.navyBlue2,
+                  ],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment(0.6, 0.3),
+                ),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(40),
+                  bottomRight: Radius.circular(40),
+                  
+                  // Radius.circular(40),
                   // Radius.circular(50),
                 ),
               ),
@@ -41,7 +59,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     margin: EdgeInsets.only(top: 15, right: 30, left: 30),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(
-                        Radius.circular(30),
+                        Radius.circular(40),
                       ),
                       gradient: LinearGradient(
                         begin: Alignment.centerLeft,
@@ -64,7 +82,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                     color: Colors.white, fontSize: 17),
                               ),
                               Text(
-                                'USD',
+                                'NAIRA',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
@@ -76,32 +94,32 @@ class _HomePageScreenState extends State<HomePageScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                '\$32.026',
+                                "\₦32.026",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 35,
                                     fontWeight: FontWeight.w500),
                               ),
-                              Transform(
-                                transform: Matrix4.identity()..scale(0.9),
-                                alignment: Alignment.bottomRight,
-                                child: Chip(
-                                  backgroundColor: chipColorGreen,
-                                  labelPadding:
-                                      EdgeInsets.symmetric(horizontal: 12),
-                                  label: Text(
-                                    '+ 3.5%',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                              ),
+                              // Transform(
+                              //   transform: Matrix4.identity()..scale(0.9),
+                              //   alignment: Alignment.bottomRight,
+                              //   child: Chip(
+                              //     backgroundColor: chipColorGreen,
+                              //     labelPadding:
+                              //         EdgeInsets.symmetric(horizontal: 12),
+                              //     label: Text(
+                              //       '+ 3.5%',
+                              //       overflow: TextOverflow.ellipsis,
+                              //       style: TextStyle(
+                              //           color: Colors.white,
+                              //           fontSize: 15,
+                              //           fontWeight: FontWeight.w500),
+                              //     ),
+                              //   ),
+                              // ),
                             ],
                           ),
-                          SizedBox(height: 35),
+                          SizedBox(height: 30),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -112,31 +130,40 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   fontSize: 20,
                                 ),
                               ),
-                              Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: walletAddButtomColor,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(50),
-                                  ),
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 4,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black26,
-                                      blurRadius: 7.0,
-                                      spreadRadius: 1.0,
-                                      offset: Offset(0, 1),
+                              InkWell(
+                                onTap: (){
+                                   Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => DepositMoney()));
+                                },
+
+                                                              child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: walletAddButtomColor,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(50),
                                     ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: 30,
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 4,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black26,
+                                        blurRadius: 7.0,
+                                        spreadRadius: 1.0,
+                                        offset: Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
                                 ),
                               ),
                             ],
@@ -174,7 +201,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
             Container(
                 // margin: EdgeInsets.symmetric(horizontal: 20),
 
-                height: MediaQuery.of(context).size.height * 0.45,
+                height: MediaQuery.of(context).size.height * 0.5,
                 child: CurrenciesList()),
             // _transectionList(),
           ],

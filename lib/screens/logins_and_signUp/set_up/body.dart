@@ -1,4 +1,5 @@
 import 'package:Crypto_wallet/services/auth.dart';
+import 'package:Crypto_wallet/shared/app_colors.dart';
 import 'package:Crypto_wallet/widgets/outlined_number_input_field.dart';
 import 'package:flutter/material.dart';
 
@@ -9,11 +10,11 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   final _formKey = GlobalKey<FormState>();
-  String userName, mobile;
+  String userName, mobile, firstName, lastName;
 
   dynamic _auth = AuthService();
   bool _loader = false;
-  Color color = Colors.blue;
+  Color color = yellowStart;
 
   getSnackBar(
     String value,
@@ -59,10 +60,19 @@ class _BodyState extends State<Body> {
                     )),
                 SizedBox(height: 60),
                 OutlinedNumberInputField(
-                  label: 'User name',
+                  label: 'fist name',
                   press: (value) {
-                    userName = value;
-                    
+                    firstName = value;
+                  },
+                  isNumberType: false,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                OutlinedNumberInputField(
+                  label: 'Last name',
+                  press: (value) {
+                    lastName = value;
                   },
                   isNumberType: false,
                 ),
@@ -74,14 +84,6 @@ class _BodyState extends State<Body> {
                   press: (value) {
                     mobile = value;
                   },
-                  isNumberType: true,
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                OutlinedNumberInputField(
-                  label: 'User name',
-                  press: (value) {},
                 ),
                 SizedBox(
                   height: 10,
@@ -111,16 +113,18 @@ class _BodyState extends State<Body> {
                               setState(() {
                                 _loader = true;
                               });
+                              userName = "$firstName $lastName";
                               Map<String, dynamic> usersDetails = {
                                 'userName': userName,
                                 'mobile': mobile,
-                                'btc': '0',
-                                'eth': '0',
-                                'xrp': '0',
-                                'bch': '0',
-                                'ltc': '0',
-                                'trx': '0',
-                                'pax': '0',
+                                'BTC': '0.00',
+                                'ETH': '0.00',
+                                'XRP': '0.00',
+                                'BCH': '0.00',
+                                'LTC': '0.00',
+                                'TRX': '0.00',
+                                'naira': '0.00',
+
                               };
                               Map result =
                                   await _auth.saveDetails(usersDetails);
@@ -130,8 +134,8 @@ class _BodyState extends State<Body> {
                                 });
                               }
                               if (result['status']) {
-                                Navigator.pushNamedAndRemoveUntil(context,
-                                  'tab_screen', (route) => false);
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, 'tab_screen', (route) => false);
                                 getSnackBar('information saved successfully',
                                     Colors.green);
                               } else {

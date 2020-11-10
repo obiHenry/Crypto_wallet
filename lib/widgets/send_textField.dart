@@ -1,22 +1,31 @@
+import 'package:Crypto_wallet/services/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'constants.dart';
 
-class OutlinedNumberInputField extends StatelessWidget {
+class SendtextField extends StatelessWidget {
   final String label;
   final ValueChanged<String> press;
   final String initialValue;
   final bool isNumberType;
   final Widget text;
   final Function iconPress;
+  final FormFieldValidator<String> validator;
   final TextEditingController controller;
-  OutlinedNumberInputField(
+  final bool enable;
+  final bool validate;
+  SendtextField(
       {this.label,
       this.press,
       this.initialValue,
       this.isNumberType = true,
-      this.text, this.iconPress, this.controller});
+      this.text,
+      this.iconPress,
+      this.controller,
+      this.validator,
+      this.enable,
+      this.validate});
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +33,8 @@ class OutlinedNumberInputField extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.8,
       child: TextFormField(
         //  autovalidateMode: ,
-        controller: controller ,
+        controller: controller,
         decoration: InputDecoration(
-          
           suffixIcon: text,
           labelText: label,
           enabledBorder: OutlineInputBorder(
@@ -46,14 +54,11 @@ class OutlinedNumberInputField extends StatelessWidget {
             ? TextInputType.numberWithOptions(decimal: true)
             : TextInputType.text,
         inputFormatters: isNumberType
-            ? [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))]
+            ? [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,100}'))]
             : [],
-        validator: (value) {
-          if (value.isEmpty) {
-            return '$label is required';
-          }
-          return null;
-        },
+        validator: validator,
+        autovalidate: validate,
+        enabled: enable,
         onChanged: press,
         initialValue: initialValue,
       ),

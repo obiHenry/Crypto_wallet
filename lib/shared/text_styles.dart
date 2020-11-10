@@ -6,5 +6,5 @@ const welcomeStyle = TextStyle(fontSize: 45, fontWeight: FontWeight.w600, color:
 const welcomeSubStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.w400, color: greyText);
 
 const textFieldLabel = TextStyle(fontSize: 20, color: Colors.white70);
-const loginButtonLabel = TextStyle(fontSize: 15, color: Colors.white);
+const loginButtonLabel = TextStyle(fontSize: 19, color: Colors.white);
 const forgotPassword = TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: greyTextLighter, decoration: TextDecoration.underline);

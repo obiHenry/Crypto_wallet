@@ -1,4 +1,5 @@
 import 'package:Crypto_wallet/shared/app_colors.dart';
+import 'package:Crypto_wallet/theme/light_color.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -47,7 +48,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       selectedItemColor: bottomNavActive,
       unselectedItemColor: bottomNavInActive,
       type: BottomNavigationBarType.fixed,
-      backgroundColor: blueMain,
+      backgroundColor: LightColor.navyBlue1,
       
       showSelectedLabels: false,
       showUnselectedLabels: false,

@@ -1,4 +1,5 @@
 import 'package:Crypto_wallet/services/get_currency.dart';
+import 'package:Crypto_wallet/services/get_currency_in_naira.dart';
 import 'package:Crypto_wallet/shared/router.dart';
 import 'package:Crypto_wallet/shared/theme.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _MyAppState extends State<MyApp> {
      MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: GetCurrencies()),
+        ChangeNotifierProvider.value(value: GetCurrenciesInNaira()),
       ],
       child:
       
