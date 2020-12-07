@@ -1,9 +1,9 @@
-
 import 'package:flutter/material.dart';
 
 class AlertSheet extends StatefulWidget {
   final String text1, text2, text3;
-  AlertSheet({this.text1, this.text2, this.text3});
+  final Function press;
+  AlertSheet({this.text1, this.text2, this.text3,this.press});
   @override
   _AlertSheetState createState() => _AlertSheetState();
 }
@@ -42,9 +42,7 @@ class _AlertSheetState extends State<AlertSheet> {
             ),
             // SizedBox(height: 20),
             FlatButton(
-                onPressed: () {
-                  // Navigator.pushNamed(context, 'buy_coin');
-                },
+                onPressed: widget.press,
                 child: Text(
                   widget.text3,
                   // 'Buy now',

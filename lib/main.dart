@@ -1,3 +1,4 @@
+import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/get_currency.dart';
 import 'package:Crypto_wallet/services/get_currency_in_naira.dart';
 import 'package:Crypto_wallet/shared/router.dart';
@@ -26,13 +27,14 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider.value(value: GetCurrencies()),
         ChangeNotifierProvider.value(value: GetCurrenciesInNaira()),
+        ChangeNotifierProvider.value(value: AuthService())
       ],
       child:
       
        MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: appTheme,
-      title: 'CryptoWallet',
+      title: 'Veloce',
       initialRoute: MyRouter.initialRoute,
       onGenerateRoute: MyRouter.generateRoute,
     ),);

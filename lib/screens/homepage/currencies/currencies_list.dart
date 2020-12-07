@@ -36,18 +36,7 @@ class _CurrenciesListState extends State<CurrenciesList> {
     // 'assets/images/pax.png',
   ];
 
-  dynamic nairaWallet = {
-    'id': '₦',
-    'price': '410',
-    'symbol': '₦',
-    'name': 'Naira wallet',
-    'logo_url': 'assets/images/pax.png',
-    // 'price': '1',
-    'price_change_pct': '0.00',
-  };
-
-  // final walletName = ['NairaWallet'];
-  dynamic nairaRate;
+  dynamic cbnNairaRate, nairaVeloceSellRate, nairaVeloceBuyRate;
   dynamic naira1;
   dynamic transactionList;
   List nairaTransactionList = [];
@@ -57,6 +46,7 @@ class _CurrenciesListState extends State<CurrenciesList> {
   List bitcoinCashTransactionList = [];
   List litcoinTransactionList = [];
   List tronTransactionList = [];
+  // dynamic createdAt;
 
   // List nairaList = [];
 
@@ -91,17 +81,24 @@ class _CurrenciesListState extends State<CurrenciesList> {
 
     naira1 = await GetNairaRate().getNairaRate();
 
-    nairaRate = (naira1['current-price']).toStringAsFixed(1);
+    cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
+    nairaVeloceSellRate = (naira1['sell_rate']).toStringAsFixed(1);
+    nairaVeloceBuyRate = (naira1['buy_rate']).toStringAsFixed(1);
 
     transactionList = await AuthService().getTransactionList();
     // print(transactionList);
-    Map list = await transactionList[' nairaWalletTransactionList'];
+    Map list = await transactionList['nairaWalletTransactionList'];
     // print(list);
-    nairaTransactionList.clear();
 
-    list.forEach((key, value) {
-      nairaTransactionList.add(value);
-    });
+    if (list != null) {
+      nairaTransactionList.clear();
+      list.forEach((key, value) {
+        nairaTransactionList.add(value);
+      });
+      nairaTransactionList.sort((a, b) {
+        return -a['createdAt'].compareTo(b['createdAt']);
+      });
+    }
 
     Map btcList = await transactionList['BTCWalletTransactionList'];
     Map ethList = await transactionList['ETHWalletTransactionList'];
@@ -109,31 +106,69 @@ class _CurrenciesListState extends State<CurrenciesList> {
     Map bchList = await transactionList['BCHWalletTransactionList'];
     Map ltcList = await transactionList['LTCWalletTransactionList'];
     Map trxList = await transactionList['TRXWalletTransactionList'];
+    if (btcList != null) {
+      bitcoinTransactionList.clear();
+      btcList.forEach((key, value) {
+        // createdAt = value['createdAt'];
+        bitcoinTransactionList.add(value);
+      });
+      bitcoinTransactionList.sort((a, b) {
+        return -a['createdAt'].compareTo(b['createdAt']);
+      });
+      print(bitcoinTransactionList);
+    }
 
-    bitcoinTransactionList.clear();
-    btcList.forEach((key, value) {
-      bitcoinTransactionList.add(value);
-    });
-    ethereumTransactionList.clear();
+    if(ethList != null){
+       ethereumTransactionList.clear();
     ethList.forEach((key, value) {
       ethereumTransactionList.add(value);
     });
-    rippleTransactionList.clear();
+    ethereumTransactionList.sort((a, b) {
+      return -a['createdAt'].compareTo(b['createdAt']);
+    });
+    }
+
+   if(xrpList != null){
+       rippleTransactionList.clear();
     xrpList.forEach((key, value) {
       rippleTransactionList.add(value);
     });
-    bitcoinCashTransactionList.clear();
+    rippleTransactionList.sort((a, b) {
+      return -a['createdAt'].compareTo(b['createdAt']);
+    });
+   }
+
+if(bchList != null){
+  bitcoinCashTransactionList.clear();
     bchList.forEach((key, value) {
       bitcoinCashTransactionList.add(value);
     });
-    litcoinTransactionList.clear();
+    bitcoinCashTransactionList.sort((a, b) {
+      return -a['createdAt'].compareTo(b['createdAt']);
+    });
+}
+  
+  if(ltcList != null){
+  litcoinTransactionList.clear();
     ltcList.forEach((key, value) {
       litcoinTransactionList.add(value);
     });
-    tronTransactionList.clear();
+    litcoinTransactionList.sort((a, b) {
+      return -a['createdAt'].compareTo(b['createdAt']);
+    });
+  }
+
+  if(trxList != null){
+     tronTransactionList.clear();
     trxList.forEach((key, value) {
       tronTransactionList.add(value);
     });
+    tronTransactionList.sort((a, b) {
+      return -a['createdAt'].compareTo(b['createdAt']);
+    });
+  }
+  
+    
 
     super.didChangeDependencies();
   }
@@ -145,168 +180,188 @@ class _CurrenciesListState extends State<CurrenciesList> {
     // print('heeee$currencies');
 
     return RefreshIndicator(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height * 0.118,
-              child: NairaWalletCard(
-                nairaRate: nairaRate,
-                press: () async {
-                  setState(() {
-                    _loader = true;
-                  });
-                  dynamic users = await auth.getUserDataById();
+      // child: SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            // height: MediaQuery.of(context).size.height * 0.118,
+            child: NairaWalletCard(
+              nairaRate: cbnNairaRate,
+              press: () async {
+                setState(() {
+                  _loader = true;
+                });
+                dynamic users = await auth.getUserDataById();
 
-                  if (user != null) {
-                    if (!users.containsKey('userName')) {
-                      Navigator.pushNamed(context, 'set_up');
-                      setState(() {
-                        _loader = false;
-                      });
-                    } else {
-                      // print(users);
-                      dynamic nairaBalance = users['naira'];
-                      print(nairaBalance);
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => NairaWalletScreen(
-                            nairaBalance: nairaBalance,
-                            user: users,
-                            nairaRate: nairaRate,
-                            nairatransactionList: nairaTransactionList,
-
-                            // currency: currencies[index],
-                            // image: image,
-                            // balance: balance,
-                            // user: users,
-                          ),
-                        ),
-                      );
-                      setState(() {
-                        _loader = false;
-                      });
-                    }
-                  } else {
-                    Navigator.pushNamed(context, 'sign_up');
+                if (user != null) {
+                  if (!users.containsKey('userName')) {
+                    Navigator.pushNamed(context, 'set_up');
                     setState(() {
                       _loader = false;
                     });
-                    print('anything');
+                  } else {
+                    dynamic nairaBalance = users['naira'];
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NairaWalletScreen(
+                          nairaBalance: nairaBalance,
+                          user: users,
+                          nairaRate: cbnNairaRate,
+                          nairatransactionList: nairaTransactionList,
+
+                          // currency: currencies[index],
+                          // image: image,
+                          // balance: balance,
+                          // user: users,
+                        ),
+                      ),
+                    );
+                    setState(() {
+                      _loader = false;
+                    });
                   }
-                },
-                widget: Visibility(
-                  child: LinearProgressIndicator(
-                    minHeight: 6,
-                  ),
-                  visible: !_loader ? false : true,
+                } else {
+                  Navigator.pushNamed(context, 'sign_up');
+                  setState(() {
+                    _loader = false;
+                  });
+                  print('anything');
+                }
+              },
+              widget: Visibility(
+                child: LinearProgressIndicator(
+                  minHeight: 6,
                 ),
+                visible: !_loader ? false : true,
               ),
             ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.378,
-              child: !_loading
-                  ? ListView.builder(
-                      itemCount:
-                          currencies.length == null ? 0 : currencies.length,
-                      itemBuilder: (context, index) {
-                        final image = imageList[index % imageList.length];
-                        // final walletname = walletName[index % walletName.length];
-                        return CurrencyItemCard(
-                          currency: currencies[index],
-                          color: image,
-                          press: () async {
-                            setState(() {
-                              _loaders[index.toString()] = true;
-                            });
-                            dynamic users = await auth.getUserDataById();
+          ),
+          SizedBox(
+            height: 0,
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.3181,
+            child: !_loading
+                ? ListView.builder(
+                    itemCount:
+                        currencies.length == null ? 0 : currencies.length,
+                    itemBuilder: (context, index) {
+                      final image = imageList[index % imageList.length];
+                      // final walletname = walletName[index % walletName.length];
+                      return CurrencyItemCard(
+                        currency: currencies[index],
+                        color: image,
+                        press: () async {
+                          setState(() {
+                            _loaders[index.toString()] = true;
+                          });
+                          dynamic users = await auth.getUserDataById();
 
-                            if (user != null) {
-                              if (!users.containsKey('userName')) {
-                                Navigator.pushNamed(context, 'set_up');
-                                setState(() {
-                                  _loaders[index.toString()] = false;
-                                });
-                              } else {
-                                dynamic balanceList = [
-                                  users['BTC'].toString(),
-                                  users['ETH'].toString(),
-                                  users['XRP'].toString(),
-                                  users['BCH'].toString(),
-                                  users['LTC'].toString(),
-                                  users['TRX'].toString(),
-                                ];
-
-                                dynamic currencyTransactionList = [
-                                  bitcoinTransactionList,
-                                  ethereumTransactionList,
-                                  rippleTransactionList,
-                                  bitcoinCashTransactionList,
-                                  litcoinTransactionList,
-                                  tronTransactionList,
-                                ];
-                                final transactions = currencyTransactionList[
-                                    index % currencyTransactionList.length];
-
-                                final balance =
-                                    balanceList[index % balanceList.length];
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Wallet(
-                                      currency: currencies[index],
-                                      image: image,
-                                      balance: balance,
-                                      user: users,
-                                      transactions: transactions,
-                                      nairaRate: nairaRate,
-                                    ),
-                                  ),
-                                );
-                                setState(() {
-                                  _loaders[index.toString()] = false;
-                                });
-                              }
-                            } else {
-                              Navigator.pushNamed(context, 'sign_up');
+                          if (user != null) {
+                            if (!users.containsKey('userName')) {
+                              Navigator.pushNamed(context, 'set_up');
                               setState(() {
                                 _loaders[index.toString()] = false;
                               });
+                            } else {
+                              dynamic balanceList = [
+                                users['BTC'].toString(),
+                                users['ETH'].toString(),
+                                users['XRP'].toString(),
+                                users['BCH'].toString(),
+                                users['LTC'].toString(),
+                                users['TRX'].toString(),
+                              ];
 
-                              print('anything');
+                              dynamic currencyTransactionList = [
+                                bitcoinTransactionList,
+                                ethereumTransactionList,
+                                rippleTransactionList,
+                                bitcoinCashTransactionList,
+                                litcoinTransactionList,
+                                tronTransactionList,
+                              ];
+                              final transactions = currencyTransactionList[
+                                  index % currencyTransactionList.length];
+
+                              final balance =
+                                  balanceList[index % balanceList.length];
+                              print(transactions);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Wallet(
+                                    currency: currencies[index],
+                                    image: image,
+                                    balance: balance,
+                                    user: users,
+                                    transactions: transactions,
+                                    nairaVeloceBuyRate: nairaVeloceBuyRate,
+                                    nairaVeloceSellRate: nairaVeloceSellRate,
+                                  ),
+                                ),
+                              );
+                              setState(() {
+                                _loaders[index.toString()] = false;
+                              });
                             }
-                          },
-                          widget: Visibility(
-                            child: LinearProgressIndicator(
-                              minHeight: 6,
-                            ),
-                            visible: !_loaders[index.toString()] ? false : true,
+                          } else {
+                            Navigator.pushNamed(context, 'sign_up');
+                            setState(() {
+                              _loaders[index.toString()] = false;
+                            });
+
+                            print('anything');
+                          }
+                        },
+                        widget: Visibility(
+                          child: LinearProgressIndicator(
+                            minHeight: 6,
                           ),
-                        );
-                        // : Center(child: LinearProgressIndicator()
-                        // );
-                      })
-                  : SingleChildScrollView(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * .4,
-                        child: _showLoader(),
-                      ),
+                          visible: !_loaders[index.toString()] ? false : true,
+                        ),
+                      );
+                      // : Center(child: LinearProgressIndicator()
+                      // );
+                    })
+                : SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.35,
+                      child: _showLoader(),
                     ),
-            ),
-          ],
-        ),
+                  ),
+          ),
+        ],
       ),
+      // ),
       onRefresh: () async {
         if (await _checkInternet()) {
-          dynamic currency = await getCurrencies.refreshCurrencies();
-          if (mounted) {
-            setState(() {
-              currencies = currency;
-            });
-          }
+          // dynamic currency = await getCurrencies.refreshCurrencies();
+          // if (mounted) {
+
+          getCurrencies.refreshCurrencies().then((value) {
+            if (mounted) {
+              setState(() {
+                // currencies = nairaWallet;
+                currencies = value;
+                _loading = false;
+                _isConnected = true;
+              });
+              for (int i = 0; i < currencies.length; i++) {
+                _loaders[i.toString()] = false;
+              }
+              // print(_loaders.toString());
+            }
+          });
+          // setState(() {
+          //   currencies = currency;
+          //   _loading = false;
+          // });
+          // }
         } else {
           if (mounted) {
             setState(() {

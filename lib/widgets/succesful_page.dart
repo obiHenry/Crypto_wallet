@@ -3,12 +3,14 @@ import 'package:Crypto_wallet/widgets/button.dart';
 import 'package:flutter/material.dart';
 
 class SuccessfulPage extends StatefulWidget {
-  final String text;
+  final String text, text1;
   final Function press, press1;
   SuccessfulPage({
     this.text,
+
     this.press,
-    this.press1
+    this.press1,
+    this.text1,
   });
 
   @override
@@ -45,24 +47,30 @@ class _SuccessfulPageState extends State<SuccessfulPage> {
               child: Stack(
                 children: <Widget>[
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    // crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(height: 55),
-                      SizedBox(height: 60),
+                      // SizedBox(height: 10),
+                      Container(
+                        height: 150,
+                        width: 150,
+                        child: Image.asset('assets/images/done.jpg', fit: BoxFit.cover,)),
+                      // SizedBox(height: 55),
+                      // SizedBox(height: 10),
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.all(6.5),
                               child: Text(
-                                '${widget.text} is',
+                                '${widget.text} ',
                                 style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.w500),
+                                    fontSize: 24,
+                                    // fontWeight: FontWeight.bold
+                                    ),
                               ),
                             ),
                             // SvgPicture.asset('assets/images/back.svg',
@@ -70,28 +78,18 @@ class _SuccessfulPageState extends State<SuccessfulPage> {
                           ],
                         ),
                       ),
+                    
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
                       Container(
                         padding: EdgeInsets.only(left: 20),
                         child: Text(
-                          ' Successful',
-                          // widget.currency['name'],
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(left: 20),
-                        child: Text(
-                          ' We look forward seeing you some other time ',
+                         widget.text1,
                           // widget.currency['name'],
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 20,
+                            fontSize: 18,
                           ),
                         ),
                       ),

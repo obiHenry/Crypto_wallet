@@ -1,4 +1,5 @@
 import 'package:Crypto_wallet/screens/wallet/naira_wallet/transfer_currency_list_in_naira.dart';
+import 'package:Crypto_wallet/screens/wallet/naira_wallet/transfer_to_bank_account.dart';
 import 'package:Crypto_wallet/shared/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,13 +9,11 @@ class TransferNairaScreen extends StatefulWidget {
   final user;
 
   TransferNairaScreen({this.balance, this.user});
- 
+
   _TransferNairaScreenState createState() => _TransferNairaScreenState();
 }
 
 class _TransferNairaScreenState extends State<TransferNairaScreen> {
-
-
   void _showBottomSheet(Widget widget) {
     showModalBottomSheet(
         context: context,
@@ -174,7 +173,9 @@ class _TransferNairaScreenState extends State<TransferNairaScreen> {
             ),
             InkWell(
               onTap: () {
-                _showBottomSheet(TransferCurrencyListinNaira(text: 'Choose wallet to transfer to',));
+                _showBottomSheet(TransferCurrencyListinNaira(
+                  text: 'Choose wallet to transfer to',
+                ));
               },
               child: Container(
                 // decoration: ,
@@ -194,17 +195,22 @@ class _TransferNairaScreenState extends State<TransferNairaScreen> {
             SizedBox(
               height: 10,
             ),
-            Container(
-              // decoration: ,
-              margin: EdgeInsets.symmetric(horizontal: 15),
-              height: 85,
-              color: Colors.white,
-              child: Center(
-                child: ListTile(
-                  leading: Image.asset(
-                    'assets/images/Wallet_Flat_Icon.svg.png',
+            InkWell(
+              onTap: () {
+                _showBottomSheet(TransferToBankAccount(user: widget.user, nairaBalance: widget.balance));
+              },
+              child: Container(
+                // decoration: ,
+                margin: EdgeInsets.symmetric(horizontal: 15),
+                height: 85,
+                color: Colors.white,
+                child: Center(
+                  child: ListTile(
+                    leading: Image.asset(
+                      'assets/images/Wallet_Flat_Icon.svg.png',
+                    ),
+                    title: Text('Withdraw to bank Account'),
                   ),
-                  title: Text('Withdraw to bank Account'),
                 ),
               ),
             ),

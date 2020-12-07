@@ -1,9 +1,13 @@
+import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
+import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/widgets/button.dart';
 import 'package:Crypto_wallet/widgets/check_out_screen.dart';
 import 'package:Crypto_wallet/widgets/send_textField.dart';
+import 'package:Crypto_wallet/widgets/succesful_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class SellCoinScreen extends StatefulWidget {
   final currency;
@@ -44,9 +48,32 @@ class _SellCoinScreenState extends State<SellCoinScreen> {
   final address = TextEditingController();
   bool isNaira = false;
   bool isCurrency = false;
+  ProgressDialog _progressDialog;
 
   @override
   Widget build(BuildContext context) {
+    _progressDialog = ProgressDialog(
+      context,
+      type: ProgressDialogType.Normal,
+      textDirection: TextDirection.rtl,
+      isDismissible: true,
+    );
+
+    _progressDialog.style(
+      message: 'wait while we process your transaction',
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 10.0,
+      insetAnimCurve: Curves.easeInOut,
+      progress: 0.0,
+      progressWidgetAlignment: Alignment.center,
+      maxProgress: 100,
+      progressTextStyle: TextStyle(
+          color: Colors.purple, fontSize: 13.0, fontWeight: FontWeight.w400),
+      messageTextStyle: TextStyle(
+          color: Colors.purple, fontSize: 19.0, fontWeight: FontWeight.w600),
+    );
+
     return SingleChildScrollView(
       padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom + 20),
@@ -202,7 +229,7 @@ class _SellCoinScreenState extends State<SellCoinScreen> {
                   margin: EdgeInsets.only(right: 19, top: 10),
                   alignment: Alignment.bottomRight,
                   width: MediaQuery.of(context).size.width * 0.2,
-                  child: Text('${widget.nairaRate} #/\$'),
+                  child: Text('${widget.nairaRate} ₦/\$'),
                 ),
               ),
 
@@ -217,46 +244,144 @@ class _SellCoinScreenState extends State<SellCoinScreen> {
                   var balance = double.parse(widget.balance);
                   var amount = double.parse(currencyAmount.text);
                   var naira = double.parse(nairaAmount.text);
-                  coinAmount = amount.toStringAsFixed(5);
+                  coinAmount = amount.toStringAsFixed(8);
                   nairaMoney = naira.toStringAsFixed(2);
-                  double chargeInCoin = ((amount) / 100);
-                  double chargeInNaira = naira / 100;
-                  dynamic coinCharge = chargeInCoin.toStringAsFixed(5);
+                  double chargeInCoin = ((amount * 2.5) / 100);
+                  double chargeInNaira = (naira * 2.5) / 100;
+                  dynamic coinCharge = chargeInCoin.toStringAsFixed(8);
                   dynamic usdCharge = chargeInNaira.toStringAsFixed(2);
                   double totalInNaira = chargeInNaira + naira;
                   double totalInCoin = chargeInCoin + (amount);
                   dynamic totalAmountInNaira = totalInNaira.toStringAsFixed(2);
-                  dynamic totalAmountInCoin = totalInCoin.toStringAsFixed(5);
+                  dynamic totalAmountInCoin = totalInCoin.toStringAsFixed(8);
 
                   if (_formKey.currentState.validate()) {
-                    if (balance < totalInCoin) {
-                      Fluttertoast.showToast(
-                          msg: 'Insufficient fund ',
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.black,
-                          textColor: Colors.white);
-                    } else {
-                      _showBottomSheet(
-                        CheckOutScreen(
-                          address: 'veloce',
-                          coinAmount: coinAmount.toString(),
-                          currency: widget.currency,
-                          user: widget.user,
-                          otherCurrencyAmount: nairaMoney.toString(),
-                          chargeInCoin: coinCharge.toString(),
-                          chargeInOtherCurrency: usdCharge.toString(),
-                          coinTotalAmountToSend: totalAmountInCoin.toString(),
-                          otherCurrencyTotalAmountToSend:
-                              totalAmountInNaira.toString(),
-                          text:
-                              'You are about to sell  $coinAmount${widget.currency['currency']}  for  \#${formatPrice(nairaMoney)}',
-                          symbol: '\#',
-                          text1:
-                              'Exchange rate: 1 ${widget.currency['currency']} \=  \#${formatPrice(nairaPrice)} ',
-                        ),
-                      );
-                    }
+                    _showBottomSheet(
+                      CheckOutScreen(
+                        address: 'Veloce',
+                        coinAmount: coinAmount.toString(),
+                        currency: widget.currency,
+                        user: widget.user,
+                        otherCurrencyAmount: nairaMoney.toString(),
+                        chargeInCoin: coinCharge.toString(),
+                        chargeInOtherCurrency: usdCharge.toString(),
+                        coinTotalAmountToSend: totalAmountInCoin.toString(),
+                        otherCurrencyTotalAmountToSend:
+                            totalAmountInNaira.toString(),
+                            bankName: widget.user['bankName'].toString()  ,
+                            accountName:widget.user['bankAccountName'].toString() ,
+                            accountNumber: widget.user['bankAccountNumber'].toString() ,
+
+                        text:
+                            'You are about to sell  $coinAmount${widget.currency['currency']}  for  \₦${formatPrice(nairaMoney)}',
+                        symbol: '\₦',
+                        text1:
+                            'Exchange rate: 1 ${widget.currency['currency']} \=  \₦${formatPrice(nairaPrice.toString())} ',
+                        press: () async {
+                          if (balance < totalInCoin) {
+                            Fluttertoast.showToast(
+                                msg: 'Insufficient fund, Note that our charges is included',
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: Colors.black,
+                                textColor: Colors.white);
+                          } else {
+                            _progressDialog.show();
+                            dynamic remainedCoinBalance = balance - totalInCoin;
+                            dynamic result = await AuthService().updateOrder(
+                              '${widget.currency['currency']}',
+                              coinAmount.toString(),
+                              nairaMoney.toString(),
+                              widget.user['userName'].toString(),
+                              widget.user['email'].toString(),
+                              'sellOrder',
+                              widget.user['mobile'].toString(),
+                              false,
+                              widget.user['bankAccountName'],
+                              widget.user['bankName'],
+                              widget.user['bankAccountNumber'].toString(),
+                            );
+                            if (result['status']) {
+                              dynamic result1 = await AuthService()
+                                  .updateTransactionList(
+                                      'Sold',
+                                      '${widget.currency['currency']} Wallet',
+                                      'Veloce',
+                                      coinAmount.toString(),
+                                      nairaMoney.toString(),
+                                      '${widget.currency['currency']}WalletTransactionList',
+                                      '${widget.currency['currency']}',
+                                      false);
+                              if (result1['status']) {
+                                dynamic result2 = await AuthService()
+                                    .updateWallet(
+                                        remainedCoinBalance.toString(),
+                                        widget.currency['currency']);
+                                if (result2['status']) {
+                                  print('success');
+                                  _progressDialog.hide();
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => SuccessfulPage(
+                                          text:
+                                              'Coin is sent successfully, you will receive your money in the next 24 hours',
+                                          text1:
+                                              'You\'ve successfully sent ${currencyAmount.text} ${widget.currency['currency']} for  \₦${formatPrice(nairaMoney)}',
+                                          press: () {
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        TabScreen()),
+                                                (route) => false);
+                                          },
+                                        ),
+                                      ),
+                                      (route) => false);
+                                } else {
+                                  _progressDialog.hide();
+                                  String msg = (result['message'] != null &&
+                                          result['message'].isNotEmpty)
+                                      ? result['message']
+                                      : 'An unknown error occured; retry';
+                                  Fluttertoast.showToast(
+                                      msg: msg,
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.white);
+                                }
+                              } else {
+                                _progressDialog.hide();
+                                String msg = (result['message'] != null &&
+                                        result['message'].isNotEmpty)
+                                    ? result['message']
+                                    : 'An unknown error occured; retry';
+                                Fluttertoast.showToast(
+                                    msg: msg,
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor: Colors.black,
+                                    textColor: Colors.white);
+                              }
+                            } else {
+                              _progressDialog.hide();
+                              String msg = (result['message'] != null &&
+                                      result['message'].isNotEmpty)
+                                  ? result['message']
+                                  : 'An unknown error occured; retry';
+                              Fluttertoast.showToast(
+                                  msg: msg,
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Colors.black,
+                                  textColor: Colors.white);
+                            }
+                          }
+                        },
+                      ),
+                    );
                   } else {
                     Fluttertoast.showToast(
                         msg: 'some fields are empty ',

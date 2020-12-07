@@ -1,3 +1,4 @@
+import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/shared/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -80,7 +81,7 @@ class _CurrencyInNaraCardState extends State<CurrencyInNaraCard> {
                   children: <Widget>[
                     Text(
                       // 'sdsd',
-                      '\₦$convert',
+                      '\₦${formatPrice(convert)}',
                       style: TextStyle(
                           fontSize: 22,
                           color: Colors.black54,

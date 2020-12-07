@@ -2,8 +2,11 @@ import 'package:Crypto_wallet/screens/logins_and_signUp/set_up/set_up_screen.dar
 import 'package:Crypto_wallet/screens/logins_and_signUp/sign_in/login.dart';
 import 'package:Crypto_wallet/screens/logins_and_signUp/sign_up/sign_up_screen.dart';
 import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
+import 'package:Crypto_wallet/screens/vtu_services/mobile_top_up_screen/mobile_top_up_screen.dart';
+import 'package:Crypto_wallet/screens/wallet/coin_wallet/recieve_coin/buy_coin_screen.dart';
 import 'package:Crypto_wallet/screens/wallet/coin_wallet/wallet_screen.dart';
-import 'package:Crypto_wallet/widgets/buy_coin.dart/buy_coin_screen.dart';
+import 'package:Crypto_wallet/screens/wallet/naira_wallet/deposit_naira-screen.dart';
+import 'package:Crypto_wallet/screens/wallet/naira_wallet/transfer_naira_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -25,6 +28,12 @@ class MyRouter {
         return MaterialPageRoute(builder: (_) => SetUpScreen());
         case 'buy_coin':
         return MaterialPageRoute(builder: (_) => BuyCoinScreen());
+        case 'mobile_top_up':
+        return MaterialPageRoute(builder: (_) => MobileTopUpScreen());
+         case 'naira_deposit':
+        return MaterialPageRoute(builder: (_) => DepositMoney());
+         case 'naira_transfer':
+        return MaterialPageRoute(builder: (_) => TransferNairaScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

@@ -18,7 +18,7 @@ class _CurrencyItemCardState extends State<CurrencyItemCard> {
     var price = double.parse(widget.currency['price']);
     var convert = price.toStringAsFixed(2);
     dynamic percent = double.parse(widget.currency['1d']['price_change_pct']);
-
+    
     return GestureDetector(
       onTap: widget.press,
       child: Stack(children: [

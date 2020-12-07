@@ -21,7 +21,9 @@ class CheckOutScreen extends StatefulWidget {
   final otherCurrencyTotalAmountToSend;
   final String symbol;
   final String text, text1;
-  
+  final bankName;
+  final accountName;
+  final accountNumber;
 
   CheckOutScreen(
       {this.currency,
@@ -36,7 +38,10 @@ class CheckOutScreen extends StatefulWidget {
       this.otherCurrencyTotalAmountToSend,
       this.symbol,
       this.text,
-      this.text1});
+      this.text1,
+      this.bankName,
+      this.accountName,
+      this.accountNumber});
   @override
   _CheckOutScreenState createState() => _CheckOutScreenState();
 }
@@ -87,40 +92,39 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           Container(
             // height: 50,
             width: double.infinity,
-           
+
             child: Center(
               child: Text(
-                'Review ',
+                'Confirm ',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 25,
                 ),
               ),
             ),
-            
           ),
           SizedBox(height: 10),
-
-            Container(
-            
-            width: double.infinity,
-           
-            child: Center(
-              child: Text(
-                widget.text,
-                style: TextStyle(
-                  // fontWeight: FontWeight.bold,
-                  fontSize: 18,
+          Container(
+            alignment: Alignment.centerRight,
+            width: MediaQuery.of(context).size.width * 0.95,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Center(
+                child: FittedBox(
+                  child: Text(
+                    widget.text,
+                    style: TextStyle(
+                      // fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                    ),
+                  ),
                 ),
               ),
             ),
-            
           ),
           SizedBox(height: 5),
           Container(
-            
             width: double.infinity,
-           
             child: Center(
               child: Text(
                 widget.text1,
@@ -130,7 +134,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 ),
               ),
             ),
-            
           ),
           Container(
             margin: EdgeInsets.all(15),
@@ -247,6 +250,79 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
               ),
             ),
           ),
+          // SizedBox(
+          //   height: 20,
+          // ),
+          Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 23, right: 7),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Account Details',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        )),
+                    FlatButton(
+                        onPressed: () {},
+                        child: Text(
+                          'Edit/change',
+                          style: TextStyle(color: Colors.purple, fontSize: 17),
+                        ))
+                  ],
+                ),
+              ),
+              widget.accountName != null
+                  ? Container(
+                      // decoration: BoxDecoration(
+                      //   border:
+                      // ),
+                      height: 110,
+                      width: MediaQuery.of(context).size.width * 7,
+                      margin: EdgeInsets.only(
+                          top: 0, bottom: 10, left: 15, right: 15),
+
+                      child: Card(
+
+                          // elevation: 0,
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                              padding: EdgeInsets.only(left: 15),
+                              child: Text(widget.accountName,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                  ))),
+                          Container(
+                              padding: EdgeInsets.only(left: 15),
+                              child: Text(
+                                widget.bankName,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                ),
+                              )),
+                          Container(
+                              padding: EdgeInsets.only(left: 15),
+                              child: Text(
+                                widget.accountNumber,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                ),
+                              )),
+                        ],
+                      )),
+                    )
+                  : Container(),
+            ],
+          ),
+
           Container(
             padding: EdgeInsets.all(15),
             child: Button(
@@ -273,20 +349,23 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         ),
         Container(
           width: 250,
-          padding: EdgeInsets.only(left: 50),
-          child: RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: value,
-                  // '₦ $total',
-                  style: CustomTextStyle.textFormFieldMedium.copyWith(
-                    // height: 1.5,
-                    color: color,
-                    fontSize: 15,
+          // padding: EdgeInsets.only(left: 50),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: value,
+                    // '₦ $total',
+                    style: CustomTextStyle.textFormFieldMedium.copyWith(
+                      // height: 1.5,
+                      color: color,
+                      fontSize: 15,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -297,7 +376,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   createSingleItem(String key, value, Color color) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      // crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
           key,
@@ -318,7 +397,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 0, vertical: 3),
       child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
@@ -329,64 +408,73 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
             ),
           ),
           Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
+            // mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 width: 250,
-                padding: EdgeInsets.only(left: 50),
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: value,
-                        // '₦ $total',
-                        style: CustomTextStyle.textFormFieldMedium.copyWith(
-                          // height: 1.5,
-                          color: color,
-                          fontSize: 15,
+                // padding: EdgeInsets.only(left: 50),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: value,
+                          // '₦ $total',
+                          style: CustomTextStyle.textFormFieldMedium.copyWith(
+                            // height: 1.5,
+                            color: color,
+                            fontSize: 15,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
               Container(
                 width: 250,
-                padding: EdgeInsets.only(left: 50),
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: value1,
-                        // '₦ $total',
-                        style: CustomTextStyle.textFormFieldMedium.copyWith(
-                          // height: 1.5,
-                          color: color,
-                          fontSize: 15,
+                // padding: EdgeInsets.only(left: 50),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: value1,
+                          // '₦ $total',
+                          style: CustomTextStyle.textFormFieldMedium.copyWith(
+                            // height: 1.5,
+                            color: color,
+                            fontSize: 15,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
 
               Container(
                 width: 250,
-                padding: EdgeInsets.only(left: 50),
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: value2,
-                        // '₦ $total',
-                        style: CustomTextStyle.textFormFieldMedium.copyWith(
-                          // height: 1.5,
-                          color: color,
-                          fontSize: 15,
+                // padding: EdgeInsets.only(left: 50),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: value2,
+                          // '₦ $total',
+                          style: CustomTextStyle.textFormFieldMedium.copyWith(
+                            // height: 1.5,
+                            color: color,
+                            fontSize: 15,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

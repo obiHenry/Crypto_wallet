@@ -55,8 +55,8 @@ class _NairaWalletCardState extends State<NairaWalletCard> {
       onTap: widget.press,
       child: Stack(children: [
         Container(
-          height: 90,
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 3),
+          height: 85,
+          margin: EdgeInsets.symmetric(horizontal: 20, ),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(
@@ -98,7 +98,7 @@ class _NairaWalletCardState extends State<NairaWalletCard> {
                   children: <Widget>[
                     widget.nairaRate != null
                         ? Text(
-                            'NGN${widget.nairaRate}',
+                            '₦${widget.nairaRate}',
                             // 'NGN${naira1['nairaRate']}',
                             // ' NGN 410',
                             style: TextStyle(
@@ -119,12 +119,12 @@ class _NairaWalletCardState extends State<NairaWalletCard> {
         ),
         Container(
           child: Positioned(
-            bottom: 6,
+            // bottom: 6,
             right: 10,
             left: 10,
             child: Container(
               padding: EdgeInsets.symmetric(
-                vertical: 5,
+                // vertical: 5,
                 horizontal: 20,
               ),
               width: 300,

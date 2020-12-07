@@ -45,10 +45,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
       ],
       currentIndex: widget.pageIndex,
       
-      selectedItemColor: bottomNavActive,
-      unselectedItemColor: bottomNavInActive,
+      selectedItemColor:LightColor.navyBlue2,
+      //  bottomNavActive,
+      unselectedItemColor: Colors.grey,
+      //  bottomNavInActive,
       type: BottomNavigationBarType.fixed,
-      backgroundColor: LightColor.navyBlue1,
+      backgroundColor: Colors.white,
+      // LightColor.navyBlue2,
       
       showSelectedLabels: false,
       showUnselectedLabels: false,

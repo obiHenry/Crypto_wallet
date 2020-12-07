@@ -1,5 +1,6 @@
 import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
 import 'package:Crypto_wallet/services/auth.dart';
+import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/theme/light_color.dart';
 import 'package:Crypto_wallet/widgets/alert_sheet.dart';
 import 'package:Crypto_wallet/widgets/button.dart';
@@ -479,8 +480,9 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
                         var coinInWallet = double.parse(widget.coinBalance);
                         var coin = double.parse(currencyAmount.text);
                         var naira = double.parse(nairaAmount.text);
+                        dynamic nairaMoney = naira.toStringAsFixed(2);
                         dynamic chargeInCoin = (coin * 1) / 100;
-                         dynamic chargeInNaira = (naira * 1) / 100;
+                        dynamic chargeInNaira = (naira * 1) / 100;
                         dynamic totalAmount = coin + chargeInCoin;
                         if (_formKey.currentState.validate()) {
                           if (coinInWallet < totalAmount) {
@@ -512,6 +514,10 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
                                 nairaAmount: nairaAmount.text,
                                 chargeInCoin: chargeInCoin.toString(),
                                 chargeInNaira: chargeInNaira.toString(),
+                                text:
+                                    'You are about to deposit  ${currencyAmount.text}${widget.currency['currency']}  for  \₦${formatPrice(nairaMoney)}',
+                                text1:
+                                    'Exchange rate: 1 ${widget.currency['currency']} \=  \₦${formatPrice(widget.currency['price'])} ',
                                 press: () async {
                                   _progressDialog.show();
                                   print('come');
@@ -536,58 +542,85 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
                                   dynamic totalNairaAmount =
                                       nairaBalance + nairaToSend;
                                   print(totalNairaAmount);
+
                                   dynamic result = await AuthService()
                                       .updateWalletData(
                                           remainedCoinWalletBalance.toString(),
                                           totalNairaAmount.toString(),
                                           widget.currency['currency']);
-                                  dynamic result1 =
-                                      await AuthService().updateTransactionList(
-                                    'Sent',
-                                    '${widget.currency['currency']} Wallet',
-                                    'Naira wallet',
-                                    coinToSend.toString(),
-                                    nairaToSend.toString(),
-                                    '${widget.currency['currency']}WalletTransactionList',
-                                    '${widget.currency['currency']}',
-                                  );
-                                  dynamic result2 = await AuthService()
-                                      .updateTransactionList(
-                                          'Recieved',
-                                          '${widget.currency['currency']} Wallet',
-                                          'Naira wallet',
-                                          coinToSend.toString(),
-                                          nairaToSend.toString(),
-                                          'nairaWalletTransactionList',
-                                          '${widget.currency['currency']}',);
-                                          
 
                                   if (result['status']) {
-                                    _progressDialog.hide();
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => SuccessfulPage(
-                                            text: 'Deposit',
-                                            press: () {
-                                              Navigator.pushAndRemoveUntil(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          TabScreen()),
-                                                  (route) => false);
-                                            },
-                                            //      press1: (){
-                                            //        Navigator.pushAndRemoveUntil(
-                                            // context,
-                                            // MaterialPageRoute(
-                                            //   builder: (context) => DepositMoney()
-                                            // ),
-                                            // (route) => false);
-                                            //     },
-                                          ),
-                                        ),
-                                        (route) => false);
+                                    dynamic result1 = await AuthService()
+                                        .updateTransactionList(
+                                      'Sent',
+                                      '${widget.currency['currency']} Wallet',
+                                      'Naira wallet',
+                                      coinToSend.toString(),
+                                      nairaToSend.toString(),
+                                      '${widget.currency['currency']}WalletTransactionList',
+                                      '${widget.currency['currency']}',
+                                      true,
+                                    );
+                                    if (result1['status']) {
+                                      dynamic result2 = await AuthService()
+                                          .updateTransactionList(
+                                              'Recieved',
+                                              '${widget.currency['currency']} Wallet',
+                                              'Naira wallet',
+                                              coinToSend.toString(),
+                                              nairaToSend.toString(),
+                                              'nairaWalletTransactionList',
+                                              '${widget.currency['currency']}',
+                                              true);
+                                      if (result2['status']) {
+                                        _progressDialog.hide();
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SuccessfulPage(
+                                                text: 'Your Deposit was successful',
+                                                text1:
+                                                    'You\'ve successfully Deposited ${currencyAmount.text} ${widget.currency['currency']} for  \₦${formatPrice(nairaMoney)}',
+                                                press: () {
+                                                  Navigator.pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              TabScreen()),
+                                                      (route) => false);
+                                                },
+                                              ),
+                                            ),
+                                            (route) => false);
+                                      } else {
+                                        _progressDialog.hide();
+
+                                        String msg = (result['message'] !=
+                                                    null &&
+                                                result['message'].isNotEmpty)
+                                            ? result['message']
+                                            : 'An unknown error occured; retry';
+                                        Fluttertoast.showToast(
+                                            msg: msg,
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.BOTTOM,
+                                            backgroundColor: Colors.black,
+                                            textColor: Colors.white);
+                                      }
+                                    } else {
+                                      _progressDialog.hide();
+                                      String msg = (result['message'] != null &&
+                                              result['message'].isNotEmpty)
+                                          ? result['message']
+                                          : 'An unknown error occured; retry';
+                                      Fluttertoast.showToast(
+                                          msg: msg,
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          backgroundColor: Colors.black,
+                                          textColor: Colors.white);
+                                    }
                                   } else {
                                     _progressDialog.hide();
 
@@ -602,6 +635,8 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
                                         backgroundColor: Colors.black,
                                         textColor: Colors.white);
                                   }
+
+                                  
                                 },
                               ),
                             );

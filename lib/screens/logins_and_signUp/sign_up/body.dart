@@ -301,7 +301,7 @@ class _BodyState extends State<Body> {
                       });
                     } else if(confirmPassword != password) {
                       getSnackBar(
-                        'confirm password must match passwordd',
+                        'confirm password must match password',
                         Colors.red,
                       );
                     }else{

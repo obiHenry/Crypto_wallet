@@ -10,13 +10,15 @@ class OutlinedNumberInputField extends StatelessWidget {
   final bool isNumberType;
   final Widget text;
   final Function iconPress;
+  final bool enabled;
   final TextEditingController controller;
   OutlinedNumberInputField(
       {this.label,
       this.press,
       this.initialValue,
       this.isNumberType = true,
-      this.text, this.iconPress, this.controller});
+      this.text, this.iconPress, this.controller,
+      this.enabled});
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,12 @@ class OutlinedNumberInputField extends StatelessWidget {
           
           suffixIcon: text,
           labelText: label,
+          disabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.purple,
+              width: 1.0,
+            ),
+          ), 
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: Colors.purple,
@@ -41,6 +49,7 @@ class OutlinedNumberInputField extends StatelessWidget {
               width: 1.5,
             ),
           ),
+          focusColor: Colors.purple,
         ),
         keyboardType: isNumberType
             ? TextInputType.numberWithOptions(decimal: true)
@@ -48,13 +57,14 @@ class OutlinedNumberInputField extends StatelessWidget {
         inputFormatters: isNumberType
             ? [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))]
             : [],
-        validator: (value) {
-          if (value.isEmpty) {
-            return '$label is required';
-          }
-          return null;
-        },
+        // validator: (value) {
+        //   if (value.isEmpty) {
+        //     return '$label is required';
+        //   }
+        //   return null;
+        // },
         onChanged: press,
+        enabled: enabled,
         initialValue: initialValue,
       ),
     );

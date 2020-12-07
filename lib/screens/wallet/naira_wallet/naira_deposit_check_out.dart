@@ -13,6 +13,8 @@ class NairaDepositeCheckoutScreen extends StatefulWidget {
   final Function press;
   final chargeInNaira;
   final chargeInCoin;
+  final text;
+  final text1;
 
   NairaDepositeCheckoutScreen({
     this.currency,
@@ -24,6 +26,8 @@ class NairaDepositeCheckoutScreen extends StatefulWidget {
     this.press,
     this.chargeInNaira,
     this.chargeInCoin,
+    this.text,
+    this.text1,
   });
   @override
   _NairaDepositeCheckoutScreenState createState() =>
@@ -62,7 +66,6 @@ class _NairaDepositeCheckoutScreenState
     dynamic totalAmountInNaira = naira + nairaCharge;
     dynamic totalAmountInCoin = coin + coinCharge;
 
-
     return SingleChildScrollView(
       padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom + 20),
@@ -93,7 +96,7 @@ class _NairaDepositeCheckoutScreenState
             // ),
             child: Center(
               child: Text(
-                'Review ',
+                'Confirm ',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 25,
@@ -101,7 +104,32 @@ class _NairaDepositeCheckoutScreenState
               ),
             ),
           ),
-          // SizedBox(height: 20),
+          SizedBox(height: 10),
+          Container(
+            width: double.infinity,
+            child: Center(
+              child: Text(
+                widget.text,
+                style: TextStyle(
+                  // fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 5),
+          Container(
+            width: double.infinity,
+            child: Center(
+              child: Text(
+                widget.text1,
+                style: TextStyle(
+                  // fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          ),
           Container(
             margin: EdgeInsets.all(15),
             decoration: BoxDecoration(

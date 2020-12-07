@@ -1,3 +1,4 @@
+import 'package:Crypto_wallet/screens/wallet/naira_wallet/deposite-from_bank.dart';
 import 'package:Crypto_wallet/shared/app_colors.dart';
 import 'package:Crypto_wallet/screens/wallet/naira_wallet/currency_list_in_naira.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ class DepositMoney extends StatefulWidget {
   final user;
 
   DepositMoney({this.balance, this.user});
-  
+
   _DepositMoneyState createState() => _DepositMoneyState();
 }
 
@@ -175,7 +176,9 @@ class _DepositMoneyState extends State<DepositMoney> {
             ),
             InkWell(
               onTap: () {
-                _showBottomSheet(CurrenciesListInNaira(text: 'Choose wallet to deposit from',));
+                _showBottomSheet(CurrenciesListInNaira(
+                  text: 'Choose wallet to deposit from',
+                ));
               },
               child: Container(
                 // decoration: ,
@@ -195,17 +198,25 @@ class _DepositMoneyState extends State<DepositMoney> {
             SizedBox(
               height: 10,
             ),
-            Container(
-              // decoration: ,
-              margin: EdgeInsets.symmetric(horizontal: 15),
-              height: 85,
-              color: Colors.white,
-              child: Center(
-                child: ListTile(
-                  leading: Image.asset(
-                    'assets/images/Wallet_Flat_Icon.svg.png',
+            InkWell(
+              onTap: () {
+                _showBottomSheet(DepositFromBankAccount(
+                  nairaBalance: widget.balance,
+                  user: widget.user,
+                ));
+              },
+              child: Container(
+                // decoration: ,
+                margin: EdgeInsets.symmetric(horizontal: 15),
+                height: 85,
+                color: Colors.white,
+                child: Center(
+                  child: ListTile(
+                    leading: Image.asset(
+                      'assets/images/Wallet_Flat_Icon.svg.png',
+                    ),
+                    title: Text('Deposit from bank Account'),
                   ),
-                  title: Text('Deposit from bank Account'),
                 ),
               ),
             ),

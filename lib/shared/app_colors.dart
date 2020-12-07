@@ -34,3 +34,7 @@ const Color yellowEndWallet = Color.fromRGBO(242, 198, 19, 1);
 
 const Color purpleStartEthereum = Color.fromRGBO(78, 5, 120, 1);
 const Color purpleEndEthereum = Color.fromRGBO(156, 10, 239, 1);
+const lightYellow = const Color(0xfff5eda8);
+const lightBlue = const Color(0xffd6ecd1);
+const lightBlue1 = const Color(0xffcee7c9);
+const lightgreen = const Color(0xffc9f6cd);

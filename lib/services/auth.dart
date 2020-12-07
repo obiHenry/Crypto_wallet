@@ -113,39 +113,59 @@ class AuthService with ChangeNotifier {
     }
   }
 
-  Future saveMeasurement(Map<String, dynamic> data) async {
-    if (FirebaseAuth.instance.currentUser != null) {
-      userId = FirebaseAuth.instance.currentUser.uid;
-      data['updatedAt'] = DateTime.now().toString();
-      try {
-        await _dbRef.child('Users').child(userId).update(data);
-        await setUserData();
-        return {'status': true, 'message': 'Measurement details saved'};
-      } catch (e) {
-        print(e.toString());
-        return {'status': false, 'message': 'An error occurred; please retry'};
-      }
-    } else {
+  Future updateOrder(
+      String coinCurrency,
+      String coinAmount,
+      String nairaAmount,
+      String user,
+      String email,
+      String orderType,
+      String phoneNumber,
+      bool status,
+      String bankName,
+      String accountName,
+      String accountNumber) async {
+    dynamic date = DateTime.now().millisecondsSinceEpoch;
+    String oid = date.toString();
+    userId = FirebaseAuth.instance.currentUser.uid;
+    try {
+      await _dbRef
+          .child('order')
+          .child(userId)
+          .child('$orderType')
+          .child(oid)
+          .update({
+        'currency': coinCurrency,
+        'coinAmount': coinAmount,
+        'nairaAmountTosend': nairaAmount,
+        'orderId': oid,
+        'userName': user,
+        'email': email,
+        'phoneNumber': phoneNumber,
+        'completed': status,
+        'uid': userId,
+        'bankName': bankName,
+        'accountName': accountName,
+        'accountNumber': accountNumber,
+        'createdAt': DateTime.now().toString(),
+      });
+
+      return {'status': true, 'message': 'order updated'};
+    } catch (e) {
+      print(e.toString());
       return {'status': false, 'message': 'An error occurred; please retry'};
     }
   }
 
-
-
-  Future updateWalletData(
+  Future updateWallet(
     String walletBalance,
-    String nairaBalance,
     String walletCurrency,
-   
-  
   ) async {
     if (FirebaseAuth.instance.currentUser != null) {
       userId = FirebaseAuth.instance.currentUser.uid;
       try {
         await _dbRef.child('Users').child(userId).update({
           '$walletCurrency': walletBalance,
-          'naira': nairaBalance,
-          
           'updatedAt': DateTime.now().toString(),
         });
         dynamic user = await getUserDataById();
@@ -159,7 +179,33 @@ class AuthService with ChangeNotifier {
       return {'status': false, 'message': 'An error occurred; please retry'};
     }
   }
-   Future updateUserData(
+
+  Future updateWalletData(
+    String walletBalance,
+    String nairaBalance,
+    String walletCurrency,
+  ) async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser.uid;
+      try {
+        await _dbRef.child('Users').child(userId).update({
+          '$walletCurrency': walletBalance,
+          'naira': nairaBalance,
+          'updatedAt': DateTime.now().toString(),
+        });
+        dynamic user = await getUserDataById();
+        await setUserData(user: user);
+        return {'status': true, 'message': user};
+      } catch (e) {
+        print(e.toString());
+        return {'status': false, 'message': 'An error occurred; please retry'};
+      }
+    } else {
+      return {'status': false, 'message': 'An error occurred; please retry'};
+    }
+  }
+
+  Future updateUserData(
     String name,
     String phone,
     String gender,
@@ -186,6 +232,7 @@ class AuthService with ChangeNotifier {
       return {'status': false, 'message': 'An error occurred; please retry'};
     }
   }
+
   Future updateTransactionList(
     String sentOrRecieved,
     String from,
@@ -194,48 +241,52 @@ class AuthService with ChangeNotifier {
     String nairaEquivalence,
     String walletTransactionList,
     String currency,
+    bool status,
   ) async {
-    
-      
-      try {
-          await _dbRef.child('TransactionList')
+    userId = FirebaseAuth.instance.currentUser.uid;
+    try {
+      await _dbRef
+          .child('TransactionList')
+          .child(userId)
           .child('$walletTransactionList')
           .child(DateTime.now().millisecondsSinceEpoch.toString())
           .update({
-          'TransactionType': sentOrRecieved,
-          'from': from,
-          'to': to,
-          'coinEquivalance': coinEquivalence,
-          'nairaEquivalence':nairaEquivalence,
-          'currency': currency,
-          'time': DateTime.now().toString(),
-         
-        });
-        
-        // return {'status': true, 'message': transactionList};
-      } catch (e) {
-        print(e.toString());
-        // return {'status': false, 'message': 'An error occurred; please retry'};
-      }
+        'TransactionType': sentOrRecieved,
+        'from': from,
+        'to': to,
+        'coinEquivalance': coinEquivalence,
+        'nairaEquivalence': nairaEquivalence,
+        'currency': currency,
+        'createdAt': DateTime.now().toString(),
+        'completed': status,
+        'uid': userId
+      });
+      return {'status': true, 'message': 'transaction updated'};
+
+      // return {'status': true, 'message': transactionList};
+    } catch (e) {
+      print(e.toString());
+      return {'status': false, 'message': 'An error occurred; please retry'};
     }
-     Future getTransactionList() async {
-      try {
-        dynamic transactionList = await _dbRef
-            .child('TransactionList')
-            
-            .once()
-            .then((DataSnapshot snapshot) {
-          dynamic transactionList = snapshot.value;
-          return transactionList;
-        });
-        // await setUserData(user: user);
-        return transactionList;
-      } catch (e) {
-        print(e.toString());
-      }
-    
   }
-  
+
+  Future getTransactionList() async {
+    userId = FirebaseAuth.instance.currentUser.uid;
+    try {
+      dynamic transactionList = await _dbRef
+          .child('TransactionList')
+          .child(userId)
+          .once()
+          .then((DataSnapshot snapshot) {
+        dynamic transactionList = snapshot.value;
+        return transactionList;
+      });
+      // await setUserData(user: user);
+      return transactionList;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   Future changePassword(String email, String currentPassword,
       String newPassword, String confirmPassword) async {

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:Crypto_wallet/screens/wallet/naira_wallet/deposit_naira-screen.dart';
 import 'package:Crypto_wallet/screens/wallet/naira_wallet/transfer_naira_screen.dart';
+import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/shared/app_colors.dart';
 import 'package:Crypto_wallet/widgets/bottom_navigation_view.dart';
 import 'package:Crypto_wallet/widgets/transaction_item_card.dart';
@@ -163,8 +164,8 @@ class _NairaWalletScreenState extends State<NairaWalletScreen> {
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500),
                             ),
-                            SvgPicture.asset('assets/images/back.svg',
-                                color: Colors.transparent),
+                            // SvgPicture.asset('assets/images/back.svg',
+                            //     color: Colors.transparent),
                           ],
                         ),
                       ),
@@ -175,7 +176,7 @@ class _NairaWalletScreenState extends State<NairaWalletScreen> {
                       ),
                       SizedBox(height: 20),
                       Text(
-                        "NGN ${nairabalance.toStringAsFixed(1)}",
+                        "₦${formatPrice(nairabalance.toStringAsFixed(1))}",
                         // '\$32.026,23',
                         style: TextStyle(
                             color: Colors.white,
@@ -183,7 +184,7 @@ class _NairaWalletScreenState extends State<NairaWalletScreen> {
                             fontWeight: FontWeight.w500),
                       ),
                       Text(
-                        "\~ \$${usdEqui.toStringAsFixed(2)}",
+                        "\~ \$${formatPrice(usdEqui.toStringAsFixed(2))}",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -194,7 +195,7 @@ class _NairaWalletScreenState extends State<NairaWalletScreen> {
                         height: 40,
                         alignment: Alignment.center,
                         child: Text(
-                          "NGN ${widget.nairaRate}  ~ \$1",
+                          "₦${widget.nairaRate}  ~ \$1",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
@@ -211,7 +212,7 @@ class _NairaWalletScreenState extends State<NairaWalletScreen> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => DepositMoney()));
+                                        builder: (context) => DepositMoney(balance: nairabalance.toString() , user: widget.user,)));
                               },
                               child: Container(
                                 width: MediaQuery.of(context).size.width * 0.3,
@@ -241,7 +242,7 @@ class _NairaWalletScreenState extends State<NairaWalletScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            TransferNairaScreen()));
+                                            TransferNairaScreen(balance: nairabalance.toString() , user: widget.user,)));
                               },
                               child: Container(
                                 width: MediaQuery.of(context).size.width * 0.3,
@@ -361,6 +362,7 @@ class _NairaWalletScreenState extends State<NairaWalletScreen> {
                         itemBuilder: (context, index) {
                           return TransactionItemCard(
                             transaction: transactionList[index],
+                            walletLogo: Image.asset('assets/images/index.png')
                           );
                         })
                     : SingleChildScrollView(

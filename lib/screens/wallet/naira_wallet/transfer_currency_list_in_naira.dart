@@ -74,7 +74,7 @@ class _TransferCurrencyListinNairaState
  
     naira1 = await GetNairaRate().getNairaRate();
 
-    nairaRate = (naira1['current-price']).toStringAsFixed(1);
+    nairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
     print(nairaRate);
 
     super.didChangeDependencies();

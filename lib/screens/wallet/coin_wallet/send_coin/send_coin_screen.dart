@@ -221,16 +221,16 @@ class _SendCoinScreenState extends State<SendCoinScreen> {
                   var balance = double.parse(widget.balance);
                   var amount = double.parse(currencyAmount.text);
                   var dollar = double.parse(usdAmount.text);
-                  coinAmount = amount.toStringAsFixed(5);
+                  coinAmount = amount.toStringAsFixed(7);
                   dollarAmount = dollar.toStringAsFixed(2);
                   double chargeInCoin = ((amount) / 100);
                   double chargeInUsd = dollar / 100;
-                  dynamic coinCharge = chargeInCoin.toStringAsFixed(5);
+                  dynamic coinCharge = chargeInCoin.toStringAsFixed(7);
                   dynamic usdCharge = chargeInUsd.toStringAsFixed(2);
                   double totalInUsd = chargeInUsd + dollar;
                   double totalInCoin = chargeInCoin + (amount);
                   dynamic totalAmountInUsd = totalInUsd.toStringAsFixed(2);
-                  dynamic totalAmountInCoin = totalInCoin.toStringAsFixed(5);
+                  dynamic totalAmountInCoin = totalInCoin.toStringAsFixed(7);
 
                   if (_formKey.currentState.validate()) {
                     if (balance < totalInCoin) {
@@ -268,7 +268,8 @@ class _SendCoinScreenState extends State<SendCoinScreen> {
                             address.text,
                             chargeInCoin.toString(),
                           );
-                          print(result.toString());
+                          // print(result.toString());
+
                           if (result['status']) {
                             print('success');
                           } else {
