@@ -6,17 +6,19 @@ import 'package:http/http.dart' as http;
 class SendCableSub with ChangeNotifier {
   // List bundles = [];
 
-  Future sendCableSub(cableTvCode, packageCode, smartCardNumber) async {
+  Future sendCableSub(biller, packageId, smartCardNumber) async {
     final auth =
         '935CG7F36VW9A99T73I0HYXUJA10OCKNNP8S602GU31174RSJYG535MK469K78J1';
     final userId = 'CK100240605';
-    print('this is the account number$cableTvCode');
-    print('this is the bank$packageCode');
+    print('this is the account number$biller');
+    print('this is the bank$packageId');
+    print('this is th smart no $smartCardNumber');
+    print('this is cable');
     dynamic txRef = DateTime.now().millisecondsSinceEpoch;
     print(txRef);
     try {
       var apiUrl =
-          'https://cryptoapi.skyinvest.io/cable/cablesubscription.php?apiKey=8293ui423kjsadhas9oujwasd&auth=$auth&userId=$userId&cabletv_code=$cableTvCode&pacakge_code=$packageCode&reference=$txRef&recipient_smartcardno=$smartCardNumber';
+          'https://cryptoapi.skyinvest.io/cable/cablesubscription?apiKey=8293ui423kjsadhas9oujwasd&cabletv=$biller&package=$packageId&smartno=$smartCardNumber';
 
       http.Response response = await http.get(apiUrl);
 

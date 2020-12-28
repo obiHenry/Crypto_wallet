@@ -1,5 +1,5 @@
 import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
-import 'package:Crypto_wallet/screens/profile_screen/profile_screen.dart';
+import 'package:Crypto_wallet/screens/settings/users_settings_screen.dart';
 import 'package:Crypto_wallet/screens/transactions/transaction_list_screen.dart';
 import 'package:Crypto_wallet/screens/vtu_services/vtu_services_screen.dart';
 import 'package:Crypto_wallet/services/auth.dart';
@@ -27,7 +27,7 @@ class _LogoutButtonState extends State<LogoutButton> {
       'title': 'News',
     },
     {
-      'page': ProfileScreen(),
+      'page': UsersSettingsScreen(),
       'title': 'Profile',
     },
   ];

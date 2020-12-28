@@ -21,25 +21,25 @@ class _BottomNavigationState extends State<BottomNavigation> {
           
           title: Text(''),
           icon: ImageIcon(
-            AssetImage('assets/images/wallet.png'),
+            AssetImage('assets/images/wallets.png'),
           ),
         ),
         BottomNavigationBarItem(
           title: Text(''),
           icon: ImageIcon(
-            AssetImage('assets/images/search.png'),
+            AssetImage('assets/images/bill.png'),
           ),
         ),
+        // BottomNavigationBarItem(
+        //   title: Text(''),
+        //   icon: ImageIcon(
+        //     AssetImage('assets/images/label.png'),
+        //   ),
+        // ),
         BottomNavigationBarItem(
           title: Text(''),
           icon: ImageIcon(
-            AssetImage('assets/images/label.png'),
-          ),
-        ),
-        BottomNavigationBarItem(
-          title: Text(''),
-          icon: ImageIcon(
-            AssetImage('assets/images/account.png'),
+            AssetImage('assets/images/profile.png'),
           ),
         ),
       ],

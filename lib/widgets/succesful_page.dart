@@ -3,11 +3,11 @@ import 'package:Crypto_wallet/widgets/button.dart';
 import 'package:flutter/material.dart';
 
 class SuccessfulPage extends StatefulWidget {
-  final String text, text1;
+  final String text, text1, text2;
   final Function press, press1;
   SuccessfulPage({
     this.text,
-
+    this.text2,
     this.press,
     this.press1,
     this.text1,
@@ -41,58 +41,75 @@ class _SuccessfulPageState extends State<SuccessfulPage> {
                 ),
                 borderRadius: BorderRadius.only(
                   // bottomLeft: Radius.circular(40),
-                  bottomRight: Radius.circular(190),
+                  bottomRight: Radius.circular(160),
                 ),
               ),
               child: Stack(
                 children: <Widget>[
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     // crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      // SizedBox(height: 10),
-                      Container(
-                        height: 150,
-                        width: 150,
-                        child: Image.asset('assets/images/done.jpg', fit: BoxFit.cover,)),
-                      // SizedBox(height: 55),
-                      // SizedBox(height: 10),
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(6.5),
-                              child: Text(
-                                '${widget.text} ',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                    // fontWeight: FontWeight.bold
-                                    ),
-                              ),
+
+                       Container(
+                        padding: EdgeInsets.only(left: 10, right: 10, top: 50),
+                        child: FittedBox(
+                          child: Text(
+                            widget.text1,
+                            // widget.currency['name'],
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
                             ),
-                            // SvgPicture.asset('assets/images/back.svg',
-                            //     color: Colors.transparent),
-                          ],
-                        ),
-                      ),
-                    
-                      // SizedBox(
-                      //   height: 10,
-                      // ),
-                      Container(
-                        padding: EdgeInsets.only(left: 20),
-                        child: Text(
-                         widget.text1,
-                          // widget.currency['name'],
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
                           ),
                         ),
                       ),
+                      SizedBox(height: 50),
+                      Container(
+                          height: 100,
+                          width: 100,
+                          child: Image.asset(
+                            'assets/images/done.jpg',
+                            fit: BoxFit.cover,
+                          )),
+                      // SizedBox(height: 55),
+                      // SizedBox(height: 10),
+                      Container(
+                        padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                        child: FittedBox(
+                          child: Text(
+                            '${widget.text} ',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              // fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
+                     
+
+                      widget.text2 != null
+                          ? Container(
+                              padding:
+                                  EdgeInsets.only(left: 5, right: 5, top: 10),
+                              // child: FittedBox(
+                              child: Text(
+                                widget.text2,
+                                // widget.currency['name'],
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
+                              ),
+                              // ),
+                            )
+                          : Container(),
                     ],
                   ),
                   Positioned(

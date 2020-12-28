@@ -8,7 +8,7 @@ class CableList with ChangeNotifier {
   Future getCableList() async {
     try {
       var apiUrl =
-          'https://cryptoapi.skyinvest.io/cable/cablelist.php?apiKey=8293ui423kjsadhas9oujwasd';
+          'https://cryptoapi.skyinvest.io/cable/cablelist?apiKey=8293ui423kjsadhas9oujwasd';
 
       http.Response response = await http.get(apiUrl);
 

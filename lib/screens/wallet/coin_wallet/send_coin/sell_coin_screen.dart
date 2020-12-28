@@ -198,7 +198,7 @@ class _SellCoinScreenState extends State<SellCoinScreen> {
                             return 'Please enter value';
                           });
                           // return null;
-                          // return 'Please enter value';
+                          return 'Please enter value';
                         } else {
                           var price = double.parse(widget.currency['price']);
                           dynamic nairaRate = double.parse(widget.nairaRate);

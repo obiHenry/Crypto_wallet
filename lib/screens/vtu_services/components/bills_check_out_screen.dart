@@ -20,6 +20,7 @@ class BillsCheckOutScreen extends StatefulWidget {
   final otherCurrencyTotalAmountToSend;
   final String symbol;
   final String text, text1;
+  final userId;
 
   BillsCheckOutScreen(
       {this.currency,
@@ -38,7 +39,7 @@ class BillsCheckOutScreen extends StatefulWidget {
       this.otherCurrencyTotalAmountToSend,
       this.symbol,
       this.text,
-      this.text1});
+      this.text1,this.userId,});
   @override
   _BankDepositCheckoutScreenState createState() =>
       _BankDepositCheckoutScreenState();
@@ -79,6 +80,7 @@ class _BankDepositCheckoutScreenState extends State<BillsCheckOutScreen> {
           SizedBox(height: 10),
           Container(
             width: double.infinity,
+            padding: EdgeInsets.all(5),
             child: Center(
               child: FittedBox(
                 child: Text(
@@ -202,6 +204,28 @@ class _BankDepositCheckoutScreenState extends State<BillsCheckOutScreen> {
                       margin: EdgeInsets.symmetric(vertical: 4),
                       color: Colors.grey.shade400,
                     ),
+                    widget.userId != null
+                        ? SizedBox(
+                            height: 20,
+                          )
+                        : Container(),
+                    widget.userId != null
+                        ? createSingleItem(
+                            "Bet userId", '${widget.userId}', Colors.black)
+                        : Container(),
+                    widget.userId != null
+                        ? SizedBox(
+                            height: 20,
+                          )
+                        : Container(),
+                    widget.userId != null
+                        ? Container(
+                            width: double.infinity,
+                            height: 0.5,
+                            margin: EdgeInsets.symmetric(vertical: 4),
+                            color: Colors.grey.shade400,
+                          )
+                        : Container(),
                     SizedBox(
                       height: 20,
                     ),
@@ -301,17 +325,17 @@ class _BankDepositCheckoutScreenState extends State<BillsCheckOutScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       // crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
+        value != null?Text(
           key,
           style: CustomTextStyle.textFormFieldSemiBold
               .copyWith(color: Colors.black, fontSize: 12),
-        ),
-        Text(
+        ): Container(),
+        value != null? Text(
           value,
           // '₦ $total',
           style: CustomTextStyle.textFormFieldMedium
               .copyWith(color: color, fontSize: 15),
-        ),
+        ): Container(),
       ],
     );
   }

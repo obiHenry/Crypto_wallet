@@ -2,7 +2,7 @@ import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/widgets/constants.dart';
 import 'package:flutter/material.dart';
 
-class BillersOrProductsDropDown extends StatelessWidget {
+class BillersOrProductsDropDown extends StatefulWidget {
   final String label;
   final ValueChanged<String> press;
   final String initialValue;
@@ -38,9 +38,15 @@ class BillersOrProductsDropDown extends StatelessWidget {
     this.bankName,
   });
 
-  // dynamic name;
+  @override
+  _BillersOrProductsDropDownState createState() => _BillersOrProductsDropDownState();
+}
+
+class _BillersOrProductsDropDownState extends State<BillersOrProductsDropDown> {
   dynamic amount;
-  dynamic cableAmount;
+
+  dynamic cableAmount, minAmount, maxAmount;
+
   String value;
 
   @override
@@ -57,10 +63,10 @@ class BillersOrProductsDropDown extends StatelessWidget {
       // padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
 
       child: DropdownButtonFormField(
-        //  isDense: false,
+        isDense: false,
 
         // itemHeight: 50,
-        onChanged: onChanged,
+        onChanged: widget.onChanged,
         //  autovalidate: validate,
 
         // disabledHint: Text(disabledHint),
@@ -86,22 +92,25 @@ class BillersOrProductsDropDown extends StatelessWidget {
               width: 1.5,
             ),
           ),
-          hintText: hintText,
+          hintText: widget.hintText,
           border: InputBorder.none,
         ),
-        items: options == null
+        items: widget.options == null
             ? null
-            : options.map((option) {
+            : widget.options.map((option) {
                 if (option['PRODUCT_AMOUNT'] != null) {
                   dynamic charge =
-                      double.parse(option['PRODUCT_AMOUNT']) * 0.07;
+                      double.parse(option['PRODUCT_AMOUNT']) * 0.066;
                   amount = double.parse(option['PRODUCT_AMOUNT']) + charge;
                 }
 
                 if (option['PACKAGE_AMOUNT'] != null) {
-                  dynamic charge =
-                      double.parse(option['PACKAGE_AMOUNT']) * 0.07;
-                  cableAmount = double.parse(option['PACKAGE_AMOUNT']) + charge;
+                  cableAmount = double.parse(option['PACKAGE_AMOUNT']);
+                }
+
+                if (option['MINIMUN_AMOUNT'] != null) {
+                  minAmount = double.parse(option['MINIMUN_AMOUNT']);
+                  maxAmount = double.parse(option['MAXIMUM_AMOUNT']);
                 }
 
                 if (option['network'] != null) {
@@ -110,6 +119,8 @@ class BillersOrProductsDropDown extends StatelessWidget {
                   value = option['PRODUCT_NAME'].toString();
                 } else if (option['PACKAGE_NAME'] != null) {
                   value = option['PACKAGE_NAME'].toString();
+                } else if (option['PRODUCT_TYPE'] != null) {
+                  value = option['PRODUCT_TYPE'].toString();
                 }
 
                 return DropdownMenuItem(
@@ -129,6 +140,10 @@ class BillersOrProductsDropDown extends StatelessWidget {
                             ? Text(
                                 '${option['PACKAGE_NAME']} (\₦${formatPrice(cableAmount.toStringAsFixed(0))})')
                             : Container(),
+                        option['PRODUCT_TYPE'] != null
+                            ? Text(
+                                '${option['PRODUCT_TYPE']} (min \₦${formatPrice(minAmount.toStringAsFixed(0))} - max \₦${formatPrice(maxAmount.toStringAsFixed(0))})')
+                            : Container(),
                       ],
                     ),
 
@@ -141,8 +156,8 @@ class BillersOrProductsDropDown extends StatelessWidget {
                   //     : option['PRODUCT_NAME'].toString(),
                 );
               }).toList(),
-        validator: validator,
-        value: valueText,
+        validator: widget.validator,
+        value: widget.valueText,
       ),
     );
   }

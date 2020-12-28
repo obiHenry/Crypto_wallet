@@ -1,14 +1,12 @@
-import 'package:Crypto_wallet/screens/tab_Screen/body.dart';
+
 import 'package:Crypto_wallet/screens/transactions/transaction_list_screen.dart';
 import 'package:Crypto_wallet/screens/vtu_services/vtu_services_screen.dart';
-import 'package:Crypto_wallet/shared/app_colors.dart';
-import 'package:Crypto_wallet/theme/light_color.dart';
 import 'package:Crypto_wallet/widgets/bottom_navigation_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../homepage/home_page_screen.dart';
-import '../profile_screen/profile_screen.dart';
+import '../settings/users_settings_screen.dart';
 
 enum TabItem { bitcoin, wallets, news, profile }
 
@@ -25,14 +23,14 @@ class _TabScreenState extends State<TabScreen> {
     },
     {
       'page': VtuServicesScreen(),
-      'title': 'wallets',
+      'title': 'Vtu services',
     },
+    // {
+    //   'page': TransactionListScreen(),
+    //   'title': 'News',
+    // },
     {
-      'page': TransactionListScreen(),
-      'title': 'News',
-    },
-    {
-      'page': ProfileScreen(),
+      'page': UsersSettingsScreen(),
       'title': 'Profile',
     },
   ];

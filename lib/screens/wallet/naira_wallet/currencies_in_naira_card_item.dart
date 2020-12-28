@@ -7,7 +7,14 @@ class CurrencyInNaraCard extends StatefulWidget {
   final Function press;
   final color;
   final Widget widget;
-  CurrencyInNaraCard({this.currency, this.press, this.color, this.widget});
+  final nairaRate;
+  CurrencyInNaraCard({
+    this.currency,
+    this.press,
+    this.color,
+    this.widget,
+    this.nairaRate,
+  });
   @override
   _CurrencyInNaraCardState createState() => _CurrencyInNaraCardState();
 }
@@ -15,8 +22,10 @@ class CurrencyInNaraCard extends StatefulWidget {
 class _CurrencyInNaraCardState extends State<CurrencyInNaraCard> {
   @override
   Widget build(BuildContext context) {
-    var price = double.parse(widget.currency['price']);
-    var convert = price.toStringAsFixed(2);
+    dynamic usdPrice = double.parse(widget.currency['price']);
+    dynamic nairaRate = double.parse(widget.nairaRate);
+    dynamic nairaPrice = usdPrice * nairaRate;
+    var convert = nairaPrice.toStringAsFixed(2);
     dynamic percent = double.parse(widget.currency['1d']['price_change_pct']);
 
     return GestureDetector(
@@ -58,11 +67,7 @@ class _CurrencyInNaraCardState extends State<CurrencyInNaraCard> {
                           padding:
                               EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
-                            color:
-                                percent < 0
-                                    ? Colors.red
-                                    :
-                                chipColorGreen,
+                            color: percent < 0 ? Colors.red : chipColorGreen,
                             borderRadius: BorderRadius.all(
                               Radius.circular(50),
                             ),

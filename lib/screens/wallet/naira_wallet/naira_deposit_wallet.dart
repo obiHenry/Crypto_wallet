@@ -18,8 +18,15 @@ class CoinDepositWallet extends StatefulWidget {
   final image;
   final coinBalance;
   final user;
+  final nairaRate;
 
-  CoinDepositWallet({this.currency, this.image, this.coinBalance, this.user});
+  CoinDepositWallet({
+    this.currency,
+    this.image,
+    this.coinBalance,
+    this.user,
+    this.nairaRate,
+  });
   static const routeName = '/CoinDepositWallet';
   _CoinDepositWalletState createState() => _CoinDepositWalletState();
 }
@@ -113,9 +120,10 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
           color: Colors.purple, fontSize: 19.0, fontWeight: FontWeight.w600),
     );
     dynamic coinBalance = double.parse(widget.coinBalance);
-    var price = double.parse(widget.currency['price']);
-    var convert = price.toStringAsFixed(2);
-    dynamic naira = coinBalance * price;
+    dynamic nairaPrice =
+        double.parse(widget.currency['price']) * double.parse(widget.nairaRate);
+    var convert = nairaPrice.toStringAsFixed(2);
+    dynamic naira = coinBalance * nairaPrice;
     var nairaEqui = naira.toStringAsFixed(2);
 
     print(nairaEqui);
@@ -388,12 +396,13 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
                                 // return null;
                                 // return 'Please enter value';
                               } else {
-                                var price =
-                                    double.parse(widget.currency['price']);
+                                dynamic nairaPrice =
+                                    double.parse(widget.currency['price']) *
+                                        double.parse(widget.nairaRate);
                                 naira = double.parse(value);
                                 Future.value(Duration(seconds: 1))
                                     .whenComplete(() {
-                                  dynamic currency = ((naira * 1) / price);
+                                  dynamic currency = ((naira * 1) / nairaPrice);
                                   currencyAmount.text =
                                       currency.toStringAsFixed(7);
                                 });
@@ -443,11 +452,13 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
                             // return null;
                             return 'Please enter value';
                           } else {
-                            var price = double.parse(widget.currency['price']);
+                           dynamic nairaPrice =
+                                    double.parse(widget.currency['price']) *
+                                        double.parse(widget.nairaRate);
 
                             coinAmount = double.parse(value);
                             Future.value(Duration(seconds: 1)).whenComplete(() {
-                              dynamic usd = ((price * coinAmount) / 1);
+                              dynamic usd = ((nairaPrice * coinAmount) / 1);
                               nairaAmount.text = usd.toStringAsFixed(7);
                             });
                             return null;
@@ -579,7 +590,8 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   SuccessfulPage(
-                                                text: 'Your Deposit was successful',
+                                                text:
+                                                    'Your Deposit was successful',
                                                 text1:
                                                     'You\'ve successfully Deposited ${currencyAmount.text} ${widget.currency['currency']} for  \₦${formatPrice(nairaMoney)}',
                                                 press: () {
@@ -635,8 +647,6 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
                                         backgroundColor: Colors.black,
                                         textColor: Colors.white);
                                   }
-
-                                  
                                 },
                               ),
                             );

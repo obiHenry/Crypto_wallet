@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class OutLinedBox extends StatelessWidget {
- final String label;
+  final String label;
   final ValueChanged<String> press;
   final String initialValue;
   final bool isNumberType;
@@ -11,6 +11,7 @@ class OutLinedBox extends StatelessWidget {
   final FormFieldValidator<String> validator;
   final TextEditingController controller;
   final bool enable;
+  final bool readOnly;
   final bool validate;
   final String hintText;
   OutLinedBox(
@@ -23,7 +24,8 @@ class OutLinedBox extends StatelessWidget {
       this.controller,
       this.validator,
       this.enable,
-      this.validate, 
+      this.readOnly,
+      this.validate,
       this.hintText});
 
   @override
@@ -32,9 +34,9 @@ class OutLinedBox extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.9,
       child: TextFormField(
         //  autovalidateMode: ,
-        controller: controller ,
+        controller: controller,
+        readOnly: readOnly,
         decoration: InputDecoration(
-          
           suffixIcon: text,
           labelText: label,
           disabledBorder: OutlineInputBorder(
@@ -42,7 +44,7 @@ class OutLinedBox extends StatelessWidget {
               color: Colors.purple,
               width: 1.0,
             ),
-          ), 
+          ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: Colors.purple,

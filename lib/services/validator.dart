@@ -91,7 +91,7 @@ return null;
     }
     if (value.length > 11) {
       return 'account number must not  be more than 11';
-    }
+    }  
    
     return null;
   }
@@ -126,7 +126,7 @@ return null;
   }
 
    static String referenceNumber(String value) {
-    if (value.isEmpty) {
+    if (value == null) {
       return 'please enter reference number';
     }
    
@@ -137,9 +137,9 @@ return null;
     if (value == null) {
       return 'please enter mobile number';
     }
-      if (value.length < 11) {
-      return 'account number must be up to 11';
-    }
+    //   if (value.length < 11) {
+    //   return 'account number must be up to 11';
+    // }
     if (value.length > 11) {
       return 'account number must not  be more than 11';
     }
@@ -154,5 +154,43 @@ return null;
    
     return 'valid';
   }
+
+
+ static String alnum(String value, String type) {
+    if (value.isEmpty) {
+      return '$type is required';
+    }
+    if (value.length < 3) {
+      return 'Enter a valid ${type.toLowerCase()}';
+    }
+    return null;
+  }
+
+  static String valInt(String value, String type) {
+    if (value.isEmpty) {
+      return '$type is required';
+    }
+    if (num.tryParse(value) == null) {
+      return '$type cannot contain alphabets or special characters';
+    }
+    return null;
+  }
+
+  static String phone(String value) {
+    if (value.isEmpty) {
+      return 'Phone number is required';
+    }
+    if (value.length < 10) {
+      return 'Please enter a valid phone number';
+    }
+    if (num.tryParse(value) == null) {
+      return 'Phone number cannot contain alphabets or special characters';
+    }
+    return null;
+  }
+
+
+
+
  
 }

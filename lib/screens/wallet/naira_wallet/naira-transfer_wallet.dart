@@ -367,12 +367,13 @@ class _NairaTransferWalletState extends State<NairaTransferWallet> {
                                 // return null;
                                 // return 'Please enter value';
                               } else {
-                                var price =
-                                    double.parse(widget.currency['price']);
+                                dynamic nairaPrice =
+                                    double.parse(widget.currency['price']) *
+                                        double.parse(widget.nairaRate);
                                 naira = double.parse(value);
                                 Future.value(Duration(seconds: 1))
                                     .whenComplete(() {
-                                  dynamic currency = ((naira * 1) / price);
+                                  dynamic currency = ((naira * 1) / nairaPrice);
                                   currencyAmount.text =
                                       currency.toStringAsFixed(7);
                                 });
@@ -422,11 +423,13 @@ class _NairaTransferWalletState extends State<NairaTransferWallet> {
                             // return null;
                             return 'Please enter value';
                           } else {
-                            var price = double.parse(widget.currency['price']);
+                            dynamic nairaPrice =
+                                    double.parse(widget.currency['price']) *
+                                        double.parse(widget.nairaRate);
 
                             coinAmount = double.parse(value);
                             Future.value(Duration(seconds: 1)).whenComplete(() {
-                              dynamic naira = ((price * coinAmount) / 1);
+                              dynamic naira = ((nairaPrice * coinAmount) / 1);
                               nairaAmount.text = naira.toStringAsFixed(7);
                             });
                             return null;
@@ -547,7 +550,8 @@ class _NairaTransferWalletState extends State<NairaTransferWallet> {
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   SuccessfulPage(
-                                                text: 'Your Transfer was successful',
+                                                text:
+                                                    'Your Transfer was successful',
                                                 text1:
                                                     'You\'ve successfully transferred ${currencyAmount.text} ${widget.currency['currency']} for  \₦${formatPrice(nairaMoney)}',
                                                 press: () {

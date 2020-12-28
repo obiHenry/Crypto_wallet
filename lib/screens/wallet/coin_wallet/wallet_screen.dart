@@ -9,7 +9,7 @@ import 'package:Crypto_wallet/services/dialog_service.dart';
 import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/services/recieve_coin.dart';
 import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
-import 'package:Crypto_wallet/screens/profile_screen/profile_screen.dart';
+import 'package:Crypto_wallet/screens/settings/users_settings_screen.dart';
 import 'package:Crypto_wallet/screens/transactions/transaction_list_screen.dart';
 import 'package:Crypto_wallet/screens/vtu_services/vtu_services_screen.dart';
 import 'package:Crypto_wallet/widgets/alert_sheet.dart';
@@ -64,7 +64,7 @@ class _WalletState extends State<Wallet> {
       'title': 'News',
     },
     {
-      'page': ProfileScreen(),
+      'page': UsersSettingsScreen(),
       'title': 'Profile',
     },
   ];
@@ -188,8 +188,8 @@ class _WalletState extends State<Wallet> {
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500),
                             ),
-                            // SvgPicture.asset('assets/images/back.svg',
-                            //     color: Colors.transparent),
+                            SvgPicture.asset('assets/images/back.svg',
+                                color: Colors.transparent),
                           ],
                         ),
                       ),

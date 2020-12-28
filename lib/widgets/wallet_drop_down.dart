@@ -165,7 +165,7 @@ class WalletDropDown extends StatelessWidget {
               );
             }).toList(),
             validator: validator,
-            value: 'Naira Wallet',
+            value: valueText,
           ),
         ],
       ),

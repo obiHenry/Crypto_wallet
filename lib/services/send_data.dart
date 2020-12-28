@@ -12,11 +12,14 @@ class SendData with ChangeNotifier {
     final userId = 'CK100240605';
     print('this is the account number$mobileNumber');
     print('this is the bank$dataPlan');
+    print('this is the code$code');
+    print('me is here');
     dynamic txRef = DateTime.now().millisecondsSinceEpoch;
     print(txRef);
     try {
       var apiUrl =
-          'https://cryptoapi.skyinvest.io/databundle/buydata.php?apiKey=8293ui423kjsadhas9oujwasd&auth=$auth&userId=$userId&mobilenetwork_code=$code&customer=$mobileNumber&reference=$txRef&dataplan=$dataPlan';
+          'https://cryptoapi.skyinvest.io/databundle/buydata?apiKey=8293ui423kjsadhas9oujwasd&network_id=$code&dataplan=$dataPlan&phone=$mobileNumber';
+      // 'https://cryptoapi.skyinvest.io/databundle/buydata.php?apiKey=8293ui423kjsadhas9oujwasd&auth=$auth&userId=$userId&mobilenetwork_code=$code&customer=$mobileNumber&reference=$txRef&dataplan=$dataPlan';
 
       http.Response response = await http.get(apiUrl);
 

@@ -35,7 +35,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
       user = value;
       GetNairaRate().getNairaRate().then((value) {
         naira1 = value;
-        nairaRate = (naira1['cbn_rate'].toString());
+        nairaRate = (naira1['buy_rate'].toString());
         naira = user['naira'];
         rate = double.parse(nairaRate);
         balance = double.parse(naira);
@@ -340,7 +340,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => DepositMoney()));
+                                        builder: (context) => DepositMoney(balance: nairaBalance)));
                               },
                               child: Container(
                                 width: 50,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/get_currency_in_naira.dart';
 import 'package:Crypto_wallet/screens/wallet/naira_wallet/currencies_in_naira_card_item.dart';
+import 'package:Crypto_wallet/services/get_naira_rate.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,7 @@ class _CurrenciesListInNairaState extends State<CurrenciesListInNaira> {
   bool _isConnected = true;
   GetCurrenciesInNaira getCurrencies;
   Map<String, bool> loaders = {};
-  
+  dynamic naira1, nairaRate;
 
   final imageList = [
     'assets/images/btc.png',
@@ -44,8 +45,12 @@ class _CurrenciesListInNairaState extends State<CurrenciesListInNaira> {
 
     _checkInternet().then((value) {
       if (value) {
-        getCurrencies.refreshCurrencies().then((value) {
+        getCurrencies.refreshCurrencies().then((value) async {
           if (mounted) {
+            naira1 = await GetNairaRate().getNairaRate();
+
+            nairaRate = (naira1['buy_rate']).toStringAsFixed(1);
+            print(nairaRate);
             setState(() {
               // currencies = nairaWallet;
               currencies = value;
@@ -108,6 +113,7 @@ class _CurrenciesListInNairaState extends State<CurrenciesListInNaira> {
                       final image = imageList[index % imageList.length];
                       // final walletname = walletName[index % walletName.length];
                       return CurrencyInNaraCard(
+                        nairaRate: nairaRate,
                         currency: currencies[index],
                         color: image,
                         press: () async {
@@ -155,6 +161,7 @@ class _CurrenciesListInNairaState extends State<CurrenciesListInNaira> {
                                     image: image,
                                     coinBalance: balance,
                                     user: users,
+                                    nairaRate: nairaRate,
                                   ),
                                 ),
                               );
@@ -190,19 +197,35 @@ class _CurrenciesListInNairaState extends State<CurrenciesListInNaira> {
                   ),
             onRefresh: () async {
               if (await _checkInternet()) {
-                List currency = await getCurrencies.refreshCurrencies();
-                if (mounted) {
-                  setState(() {
-                    currencies = currency;
-                  });
-                }
-              } else {
-                if (mounted) {
-                  setState(() {
-                    _isConnected = false;
-                  });
-                }
+          // dynamic currency = await getCurrencies.refreshCurrencies();
+          // if (mounted) {
+
+          getCurrencies.refreshCurrencies().then((value) {
+            if (mounted) {
+              setState(() {
+                // currencies = nairaWallet;
+                currencies = value;
+                _loading = false;
+                _isConnected = true;
+              });
+              for (int i = 0; i < currencies.length; i++) {
+                loaders[i.toString()] = false;
               }
+              // print(_loaders.toString());
+            }
+          });
+          // setState(() {
+          //   currencies = currency;
+          //   _loading = false;
+          // });
+          // }
+        } else {
+          if (mounted) {
+            setState(() {
+              _isConnected = false;
+            });
+          }
+        }
             },
           ),
         ),

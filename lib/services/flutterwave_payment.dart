@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutterwave/flutterwave.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
+// import 'package:flutterwave/flutterwave.dart';
+// import 'package:flutterwave/models/responses/charge_response.dart';
+
+import 'flutterwave/core/flutterwave.dart';
+import 'flutterwave/models/responses/charge_response.dart';
+import 'flutterwave/utils/flutterwave_constants.dart';
 
 class PaymentService {
   String selectedCurrency = "NGN";
   // String publicKey = 'FLWPUBK_TEST-SANDBOXDEMOKEY-X';
   // String encryptionKey = 'FLWSECK_TEST74e0b6c7db0e';
 
-  final String publicKey = 'FLWPUBK-4ab13dc3cc43187792d94cdcb1ba7d8e-X';
-  final String encryptionKey = 'dd78218a4fe9f20af0f8347a';
+   String publicKey = 'FLWPUBK-4ab13dc3cc43187792d94cdcb1ba7d8e-X';
+   String encryptionKey = 'dd78218a4fe9f20af0f8347a ';
 
   Future handlePaymentInitialization(
       BuildContext context, String amount, Map user) async {
@@ -26,7 +30,7 @@ class PaymentService {
       phoneNumber: user['mobile'],
       
       acceptAccountPayment: true,
-      acceptCardPayment: true,
+      // acceptCardPayment: true,
       acceptUSSDPayment: true,
       isDebugMode: false,
       encryptionKey: encryptionKey,

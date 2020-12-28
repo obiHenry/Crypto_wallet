@@ -1,7 +1,5 @@
 import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
-import 'package:Crypto_wallet/screens/wallet/coin_wallet/send_coin/send_coin_screen.dart';
 import 'package:Crypto_wallet/services/dialog_service.dart';
-import 'package:Crypto_wallet/services/send_airtime.dart';
 import 'package:Crypto_wallet/services/validator.dart';
 import 'package:Crypto_wallet/widgets/alert_sheet.dart';
 import 'package:Crypto_wallet/widgets/bills-payment_form.dart';
@@ -9,10 +7,11 @@ import 'package:Crypto_wallet/widgets/succesful_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Crypto_wallet/services/auth.dart';
-import 'package:Crypto_wallet/services/get_internet_bundles.dart';
+import 'package:Crypto_wallet/services/electricity_bill_list.dart';
+
+import 'package:Crypto_wallet/services/pay_electricity_bill.dart';
 import 'package:Crypto_wallet/screens/vtu_services/components/outLined_box.dart';
 import 'package:Crypto_wallet/screens/vtu_services/components/bills_check_out_screen.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'dart:convert';
 
 import 'package:progress_dialog/progress_dialog.dart';
@@ -27,12 +26,9 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   String balance;
   String biller;
-  String product;
-  String amount;
   String equivalence;
-  String phoneNumber;
   String account;
-  final TextEditingController mobileNumber = TextEditingController();
+  // final TextEditingController mobileNumber = TextEditingController();
   final nairaAmount = TextEditingController();
   final currencyAmount = TextEditingController();
   // PhoneNumber number = PhoneNumber(isoCode: 'NG');
@@ -46,8 +42,13 @@ class _BodyState extends State<Body> {
   dynamic nairaRate;
   dynamic symbol;
   dynamic symbol1;
+  dynamic meterToken;
+  dynamic shortName, electricityCode, productType, meterType, meterNumber;
+  // dynamic packageName, packageId;
+  //  String smartCardNumber;
   bool accountSelected = false;
-  @override
+
+  // @override
   // void initState() {
   //   setState(() {
   //     isNairaWallet = true;
@@ -76,10 +77,9 @@ class _BodyState extends State<Body> {
   }
 
   void enableSubmitButton() {
-    // final enteredName = accountName.text;
     String bill = Validators.biller(biller);
-    String prod = Validators.product(product);
-    String mobile = Validators.mobileNumber(phoneNumber);
+    String prod = Validators.product(productType);
+    String mobile = Validators.referenceNumber(meterNumber);
     String acct = Validators.account(account);
     String amt = Validators.amount(nairaAmount.text);
     String equi = Validators.equivalence(currencyAmount.text);
@@ -127,22 +127,23 @@ class _BodyState extends State<Body> {
   }
 
   ProgressDialog _progressDialog;
-  dynamic dataBundles ;
-  dynamic bundles ;
-  bool _loading = false;
+  dynamic electricityList;
+  List product;
+  // bool _loading = false;
   @override
   void didChangeDependencies() {
-    _loading = true;
-    InternetService().getDataBundles().then((value) {
+    // _loading = true;
+    ElectricityBillList().getUtilityBillList().then((value) {
       if (mounted) {
         setState(() {
           // currencies = nairaWallet;
           dynamic data = json.decode(value['message']);
-          dataBundles = data['response'];
+          print(data.toString());
+          electricityList = data['ELECTRIC_COMPANY'];
           print('anytime am ready');
-          print(dataBundles.toString());
+          print(electricityList.toString());
 
-          _loading = false;
+          // _loading = false;
         });
 
         // print(_loaders.toString());
@@ -157,18 +158,43 @@ class _BodyState extends State<Body> {
     //  isNairaWallet = true;
 
     final List billers = [
-      {'name': 'MTN', 'code': '044'},
-      {'name': 'GLO', 'code': '023'},
-      {'name': 'AIRTEL', 'code': '559'},
-      {'name': '9 MOBILE', 'code': '050'},
+      {
+        'network': 'Eko Electric - EKEDC (PHCN)',
+        'code': 'EKEDC (PHCN)',
+        'companyCode': '01'
+      },
+      {
+        'network': 'Ikeja Electric - IKEDC (PHCN)',
+        'code': 'IKEDC (PHCN)',
+        'companyCode': '02'
+      },
+      {'network': 'Abuja Electric - AEDC', 'code': 'AEDC', 'companyCode': '03'},
+      {'network': 'Kano Electric - KEDC', 'code': 'KEDC', 'companyCode': '04'},
+      {
+        'network': 'Portharcourt Electric - PHEDC',
+        'code': 'PHEDC',
+        'companyCode': '05'
+      },
+      {'network': 'Jos Electric - JEDC', 'code': 'JEDC', 'companyCode': '06'},
+      {
+        'network': 'Ibadan Electric - IBEDC',
+        'code': 'IBEDC',
+        'companyCode': '07'
+      },
+      {
+        'network': 'Kaduna Electric - KAEDC',
+        'code': 'KAEDC',
+        'companyCode': '08'
+      },
+      {'network': 'ENUGU Electric - EEDC', 'code': 'EEDC', 'companyCode': '09'},
     ];
 
-    final List products = [
-      {'name': 'MTN VTU', 'code': '044'},
-      {'name': 'GLO VTU', 'code': '023'},
-      {'name': 'AIRTEL VTU', 'code': '559'},
-      {'name': '9 MOBILE VTU', 'code': '050'},
-    ];
+    // final List products = [
+    //   {'name': 'MTN VTU', 'code': '044'},
+    //   {'name': 'GLO VTU', 'code': '023'},
+    //   {'name': 'AIRTEL VTU', 'code': '559'},
+    //   {'name': '9 MOBILE VTU', 'code': '050'},
+    // ];
     _progressDialog = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
@@ -205,8 +231,10 @@ class _BodyState extends State<Body> {
             // child: Container(
 
             child: BillsPaymentForm(
+              isSpectranet: false,
+              isInBetScreen: false,
               billerList: billers,
-              productList: bundles,
+              productList: product,
               // numberOrReferenceText: 'Mobile',
               chooseAccountOnChanged: (value) async {
                 account = value;
@@ -270,13 +298,16 @@ class _BodyState extends State<Body> {
                   }
                 },
                 child: OutLinedBox(
+                  // enable: false,
+                  readOnly: false,
+
                   // hintText: '2000',
                   label: 'Amount',
                   controller: nairaAmount,
                   validate: accountSelected,
                   // isNaira,
                   press: (value) {
-                    amount = value;
+                    // amount = value;
                     setState(() {
                       enableButton = false;
                       if (value.isEmpty) {
@@ -315,7 +346,7 @@ class _BodyState extends State<Body> {
                     });
                   },
                   validator: (value) {
-                    amount = value;
+                    // amount = value;
                     // setState(() {
                     // enableButton = false;
                     // });
@@ -380,6 +411,7 @@ class _BodyState extends State<Body> {
                 },
                 child: OutLinedBox(
                   // hintText: '0.02344',
+                  readOnly: false,
 
                   label: 'Equivalence',
                   controller: currencyAmount,
@@ -441,6 +473,7 @@ class _BodyState extends State<Body> {
 
               billerOnChanged: (value) {
                 biller = value.toLowerCase();
+                print(electricityList.toString());
 
                 String isValid = Validators.biller(value);
                 setState(() {
@@ -453,29 +486,123 @@ class _BodyState extends State<Body> {
                     enableSubmitButton();
                   });
                   billers.forEach((element) async {
-                    if (value == element['name'].toString()) {
-                      if (element['name'] == 'MTN') {
-                        // bundles.clear();
-                        // dynamic data = json.decode(dataBundles['MTN']);
-                        bundles = dataBundles['MTN'];
+                    if (value == element['network'].toString()) {
+                      shortName = element['code'];
+                      electricityCode = element['companyCode'];
+                      print(electricityCode);
+                      if (electricityList != null) {
+                        if (element['network'] ==
+                            'Eko Electric - EKEDC (PHCN)') {
+                          //  if (packages != null) {
+                          //   packages.clear();
+                          // }
+                          List data = electricityList['EKO_ELECTRIC'];
+                          print(data.toString());
 
-                        print(bundles);
-                      } else if (element['name'] == 'GLO') {
-                        // bundles.clear();
-                        bundles = dataBundles['GLO'];
+                          data.forEach((element) {
+                            product = element['PRODUCT'];
+                          });
+                          // code = '01';
+                          // bundles = data['PRODUCT'];
+                          print('anything');
 
-                        print(bundles);
-                      } else if (element['name'] == 'AIRTEL') {
-                        // bundles.clear();
-                        bundles = dataBundles['AIRTEL'];
-                        print(bundles);
-                      } else if (element['name'] == ' 9 MOBILE') {
-                        // bundles.clear();
-                        bundles = dataBundles['9MOBILE'];
-                        print(bundles);
+                          print(product);
+                        } else if (element['network'] ==
+                            'Ikeja Electric - IKEDC (PHCN)') {
+                          //  if (packages != null) {
+                          //   packages.clear();
+                          // }
+                          List data = electricityList['IKEJA_ELECTRIC'];
+                          print(data.toString());
+
+                          data.forEach((element) {
+                            product = element['PRODUCT'];
+                          });
+                          // code = '02';
+                          print('anything');
+
+                          print(product);
+                        } else if (element['network'] ==
+                            'Abuja Electric - AEDC') {
+                          // packages.clear();
+                          List data = electricityList['ABUJA_ELECTRIC'];
+                          print(data.toString());
+                          data.forEach((element) {
+                            product = element['PRODUCT'];
+                          });
+                          // code = '04';
+
+                          print(product);
+                        } else if (element['network'] ==
+                            'Kano Electric - KEDC') {
+                          // packages.clear();
+                          List data = electricityList['KANO_ELECTRIC'];
+                          print(data.toString());
+                          data.forEach((element) {
+                            product = element['PRODUCT'];
+                          });
+                          // code = '04';
+
+                          print(product);
+                        } else if (element['network'] ==
+                            'Portharcourt Electric - PHEDC') {
+                          // packages.clear();
+                          List data = electricityList['PORTHARCOURT_ELECTRIC'];
+                          print(data.toString());
+                          data.forEach((element) {
+                            product = element['PRODUCT'];
+                          });
+                          // code = '04';
+
+                          print(product);
+                        } else if (element['network'] ==
+                            'Jos Electric - JEDC') {
+                          // packages.clear();
+                          List data = electricityList['JOS_ELECTRIC'];
+                          print(data.toString());
+                          data.forEach((element) {
+                            product = element['PRODUCT'];
+                          });
+                          // code = '04';
+
+                          print(product);
+                        } else if (element['network'] ==
+                            'Ibadan Electric - IBEDC') {
+                          // packages.clear();
+                          List data = electricityList['IBADAN_ELECTRIC'];
+                          print(data.toString());
+                          data.forEach((element) {
+                            product = element['PRODUCT'];
+                          });
+                          // code = '04';
+
+                          print(product);
+                        } else if (element['network'] ==
+                            'Kaduna Electric - KAEDC') {
+                          // packages.clear();
+                          List data = electricityList['Kaduna_ELECTRIC'];
+                          print(data.toString());
+                          data.forEach((element) {
+                            product = element['PRODUCT'];
+                          });
+                          // code = '04';
+
+                          print(product);
+                        } else if (element['network'] ==
+                            'ENUGU Electric - EEDC') {
+                          // packages.clear();
+                          List data = electricityList['ENUGU_ELECTRIC'];
+                          print(data.toString());
+                          data.forEach((element) {
+                            product = element['PRODUCT'];
+                          });
+                          // code = '04';
+
+                          print(product);
+                        }
                       }
 
-                      print(value);
+                      // print(value);
                     }
                   });
                 } else {
@@ -487,7 +614,7 @@ class _BodyState extends State<Body> {
                 }
               },
               productOnChanged: (value) {
-                product = value.toLowerCase();
+                productType = value.toLowerCase();
                 String isValid = Validators.product(value);
                 setState(() {
                   enableButton = false;
@@ -498,6 +625,17 @@ class _BodyState extends State<Body> {
                         .getSnackBar(context, ' valid ', Colors.lightGreen);
                     enableSubmitButton();
                   });
+
+                  product.forEach((element) {
+                    if (value == element['PRODUCT_TYPE']) {
+                      meterType = element['PRODUCT_ID'];
+                      // productType = element['PRODUCT_TYPE'];
+
+                      // print(product);
+                    }
+                  });
+                  print(productType);
+                  print(meterType);
                 } else {
                   DialogService().getSnackBar(
                     context,
@@ -508,89 +646,48 @@ class _BodyState extends State<Body> {
               },
 
               walletList: widget.walletList,
-              numberOrReferenceText: 'Mobile',
+              numberOrReferenceText: 'Meter Number',
               refrenceOrNumberOnChanged: (value) {
-                phoneNumber = value.toLowerCase();
-                String isValid = Validators.mobileNumber(value);
+                meterNumber = value.toString();
+                // String isValid = Validators.referenceNumber(value);
                 setState(() {
                   enableButton = false;
                 });
-                if (isValid == 'valid') {
+                if (value.isNotEmpty) {
                   setState(() {
                     DialogService()
                         .getSnackBar(context, ' valid ', Colors.lightGreen);
                     enableSubmitButton();
                   });
                 } else {
+                  setState(() {
+                    enableButton = false;
+                  });
                   DialogService().getSnackBar(
                     context,
-                    isValid,
+                    'please enter reference number',
                     Colors.red,
                   );
                 }
               },
 
-              // widget: Container(
-              //   width: MediaQuery.of(context).size.width * 0.9,
-              //   child:
-
-              //    InternationalPhoneNumberInput(
-              //     // CustomDecoration()
-
-              //     onInputChanged: (PhoneNumber number) {
-              //       print(number.phoneNumber);
-              //       mobile = number.phoneNumber;
-              //       print(number);
-              //     },
-              //     onInputValidated: (bool value) {
-              //       phoneValue = value;
-              //       String isValid = Validators.mobileNumber(value);
-              //       setState(() {
-              //         enableButton = false;
-              //       });
-              //       if (isValid == 'valid') {
-              //         setState(() {
-              //           DialogService()
-              //               .getSnackBar(context, ' valid ', Colors.lightGreen);
-              //           enableSubmitButton();
-              //         });
-              //       } else {
-              //         DialogService().getSnackBar(
-              //           context,
-              //           isValid,
-              //           Colors.red,
-              //         );
-              //       }
-              //       print(value);
-              //     },
-              //     selectorConfig: SelectorConfig(
-              //       selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-              //       backgroundColor: Colors.white,
-              //     ),
-
-              //     ignoreBlank: false,
-              //     autoValidateMode: AutovalidateMode.disabled,
-              //     selectorTextStyle: TextStyle(color: Colors.black),
-              //     initialValue: number,
-              //     textFieldController: mobileNumber,
-              //     inputBorder: OutlineInputBorder(),
-              //   ),
-              // ),
               continuePressed: !enableButton
                   ? null
                   : () async {
-                      dynamic nairaCharge =
-                          double.parse(nairaAmount.text) / 100;
-                      dynamic nairaTotalAmount =
-                          nairaCharge + double.parse(nairaAmount.text);
-                      dynamic coinCharge =
-                          double.parse(currencyAmount.text) / 100;
-                      dynamic coinTotalAmount =
-                          coinCharge + double.parse(currencyAmount.text);
+                      // dynamic nairaCharge =
+                      //     double.parse(nairaAmount.text) / 100;
+                      // dynamic nairaTotalAmount =
+                      //     nairaCharge + double.parse(nairaAmount.text);
+                      // dynamic coinCharge =
+                      //     double.parse(currencyAmount.text) / 100;
+                      // dynamic coinTotalAmount =
+                      //     coinCharge + double.parse(currencyAmount.text);
+                      dynamic coin = double.parse(currencyAmount.text);
+                      dynamic naira = double.parse(nairaAmount.text);
                       dynamic user = await AuthService().getUserDataById();
                       _showBottomSheet(BillsCheckOutScreen(
                         text:
-                            'You are about to buy airtime worth of ${nairaAmount.text}',
+                            'You are about to pay for your $shortName electricity bill with  ${nairaAmount.text}',
                         text1: !isNairaWallet
                             ? 'Exchange rate \$1 \~ $nairaRate1'
                             : 'Exchange rate \$1 \~ $nairaRate',
@@ -598,58 +695,61 @@ class _BodyState extends State<Body> {
                         userItem1: user['userName'],
                         userItem2: user['email'],
                         biller: biller,
-                        product: product,
-                        reference: phoneNumber,
-                        chargeInCoin: coinCharge.toStringAsFixed(8),
+                        product: '$shortName $productType',
+                        reference: meterNumber,
+                        chargeInCoin: 0.0,
                         symbol: !isNairaWallet ? symbol1 : symbol,
-                        chargeInOtherCurrency: nairaCharge.toStringAsFixed(2),
+                        chargeInOtherCurrency: 0.0,
                         coinAmount: currencyAmount.text,
                         otherCurrencyAmount: nairaAmount.text,
-                        coinTotalAmountToSend:
-                            coinTotalAmount.toStringAsFixed(8),
+                        coinTotalAmountToSend: coin.toStringAsFixed(8),
                         otherCurrencyTotalAmountToSend:
-                            nairaTotalAmount.toStringAsFixed(2),
+                            naira.toStringAsFixed(2),
                         press: () async {
                           dynamic currentBalance = double.parse(balance);
 
-                          _progressDialog.show();
-                          dynamic result = await SendAirtime()
-                              .sendAirtime(phoneNumber, nairaAmount.text, 'dff');
-                          if (result['status'] = true) {
-                            dynamic rep = result['message'].toString();
-                            dynamic name = json.decode(rep);
-                            if (name['status'] == 'success') {
-                              print(name['message'].toString());
-                              if (isNairaWallet) {
-                                if (currentBalance < nairaTotalAmount) {
-                                  Fluttertoast.showToast(
-                                      msg: 'Insufficient fund ',
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.BOTTOM,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.white);
-                                  _showBottomSheet(AlertSheet(
-                                    text1: 'you do not have sufficient funds ',
-                                    text2: 'you can deposit to ur account ',
-                                    text3: 'deposit Now',
-                                    press: () {
-                                      Navigator.pushNamed(
-                                          context, 'naira_deposit');
-                                    },
-                                  ));
-                                  _progressDialog.hide();
-                                } else {
+                          if (isNairaWallet) {
+                            if (currentBalance < naira) {
+                              _progressDialog.hide();
+                              Fluttertoast.showToast(
+                                  msg: 'Insufficient fund ',
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Colors.black,
+                                  textColor: Colors.white);
+                              _showBottomSheet(AlertSheet(
+                                text1: 'you do not have sufficient funds ',
+                                text2: 'you can deposit to ur account ',
+                                text3: 'deposit Now',
+                                press: () {
+                                  Navigator.pushNamed(context, 'naira_deposit');
+                                },
+                              ));
+                            } else {
+                              _progressDialog.show();
+                              dynamic result = await PayElectricityBill()
+                                  .payElectricityBill(electricityCode,
+                                      meterType, meterNumber, nairaAmount.text);
+
+                              if (result['status'] = true) {
+                                dynamic rep = result['message'].toString();
+                                dynamic name = json.decode(rep);
+
+                                if (name['status'] == 'ORDER_RECEIVED') {
+                                  print(name['status'].toString());
+                                  meterToken = name['metertoken'];
+
                                   dynamic nairaBalance =
-                                      double.parse(balance) - nairaTotalAmount;
+                                      double.parse(balance) - naira;
                                   dynamic result1 = await AuthService()
                                       .updateWallet(
                                           nairaBalance.toString(), 'naira');
                                   if (result1['status']) {
                                     dynamic result2 = await AuthService()
                                         .updateTransactionList(
-                                            "Recharged",
+                                            "Utility payment",
                                             'Naira Wallet',
-                                            phoneNumber,
+                                            'Meter number: $meterNumber Type: $shortName $productType',
                                             currencyAmount.text,
                                             nairaAmount.text,
                                             'nairaWalletTransactionList',
@@ -663,9 +763,11 @@ class _BodyState extends State<Body> {
                                             builder: (context) =>
                                                 SuccessfulPage(
                                               text:
-                                                  'Airtime purchse was successful',
+                                                  'Utility  payment was successful',
                                               text1:
-                                                  'You\'ve successfully recharged $phoneNumber  with  \₦${nairaAmount.text}',
+                                                  'You\'ve successfully payed for your $biller  with  \₦${nairaAmount.text}',
+                                              text2:
+                                                  '(Your MeterToken: $meterToken)',
                                               press: () {
                                                 Navigator.pushAndRemoveUntil(
                                                     context,
@@ -695,36 +797,70 @@ class _BodyState extends State<Body> {
                                         backgroundColor: Colors.black,
                                         textColor: Colors.white);
                                   }
-                                }
-                              } else {
-                                if (currentBalance < coinTotalAmount) {
+                                } else {
+                                  _progressDialog.hide();
+                                  print(name['status'].toString());
                                   Fluttertoast.showToast(
-                                      msg: 'Insufficient fund ',
-                                      toastLength: Toast.LENGTH_SHORT,
+                                      msg: 'error occurred try again',
+                                      toastLength: Toast.LENGTH_LONG,
                                       gravity: ToastGravity.BOTTOM,
                                       backgroundColor: Colors.black,
                                       textColor: Colors.white);
-                                  // _showBottomSheet(AlertSheet(
-                                  //   text1: 'you do not have sufficient funds ',
-                                  //   text2: 'you can buy  form us ',
-                                  //   text3: 'buu Now',
-                                  //   press: () {
-                                  //     Navigator.pushNamed(context, 'buy_coin');
-                                  //   },
-                                  // ));
-                                  _progressDialog.hide();
-                                } else {
+                                }
+                              } else {
+                                _progressDialog.hide();
+                                print(result['message'].toString());
+                                Fluttertoast.showToast(
+                                    msg: result['message'].toString(),
+                                    toastLength: Toast.LENGTH_LONG,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor: Colors.black,
+                                    textColor: Colors.white);
+                              }
+                            }
+                          } else {
+                            if (currentBalance < coin) {
+                              _progressDialog.hide();
+                              Fluttertoast.showToast(
+                                  msg: 'Insufficient fund ',
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Colors.black,
+                                  textColor: Colors.white);
+                              _showBottomSheet(AlertSheet(
+                                text1: 'you do not have sufficient funds ',
+                                text2: 'you can deposit to ur account ',
+                                text3: 'deposit Now',
+                                press: () {
+                                  Navigator.pushNamed(
+                                      context, 'naira_transfer');
+                                },
+                              ));
+                            } else {
+                              _progressDialog.show();
+                              dynamic result = await PayElectricityBill()
+                                  .payElectricityBill(electricityCode,
+                                      meterType, meterNumber, nairaAmount.text);
+
+                              if (result['status'] = true) {
+                                dynamic rep = result['message'].toString();
+                                dynamic name = json.decode(rep);
+
+                                if (name['status'] == 'ORDER_RECEIVED') {
+                                  print(name.toString());
+                                  meterToken = name['metertoken'];
+                                  print(name['status'].toString());
                                   dynamic coinBalance =
-                                      double.parse(balance) - coinTotalAmount;
+                                      double.parse(balance) - coin;
                                   dynamic response = await AuthService()
                                       .updateWallet(
                                           coinBalance.toString(), symbol1);
                                   if (response['status']) {
                                     dynamic response1 = await AuthService()
                                         .updateTransactionList(
-                                            'Recharged',
+                                            "Utility payment",
                                             '$symbol1 Wallet',
-                                            phoneNumber,
+                                            '$meterNumber Type: $shortName $productType',
                                             currencyAmount.text,
                                             nairaAmount.text,
                                             "${symbol1}WalletTransactionList",
@@ -738,9 +874,9 @@ class _BodyState extends State<Body> {
                                             builder: (context) =>
                                                 SuccessfulPage(
                                               text:
-                                                  'Airtime purchse was successful',
+                                                  'Utility payment was successful',
                                               text1:
-                                                  'You\'ve successfully recharged $phoneNumber  with  \₦${nairaAmount.text}',
+                                                  'You\'ve successfully payed for your $biller  with  \₦${nairaAmount.text}',
                                               press: () {
                                                 Navigator.pushAndRemoveUntil(
                                                     context,
@@ -770,27 +906,27 @@ class _BodyState extends State<Body> {
                                         backgroundColor: Colors.black,
                                         textColor: Colors.white);
                                   }
+                                } else {
+                                  _progressDialog.hide();
+                                  print(name['status'].toString());
+                                  Fluttertoast.showToast(
+                                      msg: 'error occurred try again',
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.BOTTOM,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.white);
                                 }
+                              } else {
+                                _progressDialog.hide();
+                                print(result['message'].toString());
+                                Fluttertoast.showToast(
+                                    msg: result['message'].toString(),
+                                    toastLength: Toast.LENGTH_LONG,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor: Colors.black,
+                                    textColor: Colors.white);
                               }
-                            } else {
-                              _progressDialog.hide();
-                              print(name['message'].toString());
-                              Fluttertoast.showToast(
-                                  msg: name['message'].toString(),
-                                  toastLength: Toast.LENGTH_LONG,
-                                  gravity: ToastGravity.BOTTOM,
-                                  backgroundColor: Colors.black,
-                                  textColor: Colors.white);
                             }
-                          } else {
-                            _progressDialog.hide();
-                            print(result['message'].toString());
-                            Fluttertoast.showToast(
-                                msg: result['message'].toString(),
-                                toastLength: Toast.LENGTH_LONG,
-                                gravity: ToastGravity.BOTTOM,
-                                backgroundColor: Colors.black,
-                                textColor: Colors.white);
                           }
                         },
                       ));

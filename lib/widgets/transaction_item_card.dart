@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 class TransactionItemCard extends StatefulWidget {
   final transaction;
   final walletLogo;
-  TransactionItemCard({this.transaction,this.walletLogo});
+  TransactionItemCard({this.transaction, this.walletLogo});
   @override
   _TransactionItemCardState createState() => _TransactionItemCardState();
 }
@@ -48,7 +48,6 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
         // color: Colors.white,
         // child: Center(
         child: Row(
-          
           children: [
             Container(
               height: 50,
@@ -58,8 +57,7 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
               //   borderRadius: BorderRadius.all(Radius.circular(10)),
               // ),
               child: Center(
-                  child:widget.walletLogo,
-                
+                child: widget.walletLogo,
               ),
             ),
 
@@ -75,12 +73,15 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
               // mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                createRow(
-                    widget.transaction['TransactionType'],
-                    coinEqui,
-                    widget.transaction['currency'],
-                    '(₦$nairaEqui)',
-                    Colors.black),
+                FittedBox(
+                  child: createRow(
+                      widget.transaction['TransactionType'],
+                      coinEqui,
+                      widget.transaction['currency'],
+                      '(₦$nairaEqui)',
+                      Colors.black),
+                ),
+
                 //  Text(
                 //   '${widget.transaction['TransactionType']} $coinEqui(NGN$nairaEqui)'),
                 SizedBox(
@@ -88,7 +89,10 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
                 ),
                 createItem('From:', widget.transaction['from'], Colors.black),
                 // SizedBox(height: 5,),
-                createItem('To:  ', widget.transaction['to'], Colors.black),
+                FittedBox(
+                  child: createItem(
+                      'To:  ', widget.transaction['to'], Colors.black),
+                ),
                 Container(
                   margin: EdgeInsets.only(top: 5),
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -112,22 +116,21 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
                           style: TextStyle(color: Colors.white, fontSize: 10),
                         ),
                 ),
-                  Align(
-              alignment: Alignment.centerRight,
-              child: Container(
-                alignment: Alignment.centerRight,
-                width: MediaQuery.of(context).size.width * 0.72,
-                child:
-                //  FittedBox(
-                  // fit: ,
-                   Text(
-                      format.format(DateTime.parse(widget.transaction['createdAt']))),
-                // ),
-              ),
-            ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    width: MediaQuery.of(context).size.width * 0.72,
+                    child:
+                        //  FittedBox(
+                        // fit: ,
+                        Text(format.format(
+                            DateTime.parse(widget.transaction['createdAt']))),
+                    // ),
+                  ),
+                ),
               ],
             ),
-          
           ],
         ));
   }
@@ -142,6 +145,9 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
           style: TextStyle(color: color, fontSize: 15),
         ),
         Container(
+          // width: 230,
+          // child: Align(
+          //   alignment: Alignment.centerRight,
           child: Text(
             value,
             // // '₦ $total',
@@ -149,6 +155,7 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
             //   // height: 1.5,
             //   // color: Colors.grey,
             //   // fontSize: 16,
+            // ),
             // ),
           ),
         ),
@@ -161,10 +168,12 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
       mainAxisAlignment: MainAxisAlignment.start,
       // crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          key,
-          style: CustomTextStyle.textFormFieldMedium
-              .copyWith(color: color, fontSize: 17),
+        FittedBox(
+          child: Text(
+            key,
+            style: CustomTextStyle.textFormFieldMedium
+                .copyWith(color: color, fontSize: 17),
+          ),
         ),
         SizedBox(
           width: 2,

@@ -53,86 +53,100 @@ class _NairaWalletCardState extends State<NairaWalletCard> {
 
     return GestureDetector(
       onTap: widget.press,
-      child: Stack(children: [
-        Container(
-          height: 85,
-          margin: EdgeInsets.symmetric(horizontal: 20, ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(
-              Radius.circular(10),
-            ),
-          ),
-          child: Container(
-            padding: EdgeInsets.all(15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    CircleAvatar(
-                      child: Image.asset('assets/images/index.png'),
-                      //  Image.network(widget.currency['logo_url']),
-                    ),
-                    SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Naira wallet',
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.black54,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    widget.nairaRate != null
-                        ? Text(
-                            '₦${widget.nairaRate}',
-                            // 'NGN${naira1['nairaRate']}',
-                            // ' NGN 410',
-                            style: TextStyle(
-                                fontSize: 22,
-                                color: Colors.black54,
-                                fontWeight: FontWeight.w500),
-                          )
-                        : Text('Loading...'),
-                    Text(
-                      '\~ \$1 ',
-                      style: TextStyle(fontSize: 13, color: Colors.black54),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        Container(
-          child: Positioned(
-            // bottom: 6,
-            right: 10,
-            left: 10,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                // vertical: 5,
-                horizontal: 20,
+      child: Card(
+        margin: EdgeInsets.symmetric(horizontal: 20),
+        elevation: 6,
+              child: Stack(children: [
+          Container(
+            // height: 80,
+            margin: EdgeInsets.symmetric(horizontal: 20, ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
               ),
-              width: 300,
-              child: widget.widget,
+            ),
+            child: Container(
+              padding: EdgeInsets.all(15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      CircleAvatar(
+                        child: Image.asset('assets/images/index.png'),
+                        //  Image.network(widget.currency['logo_url']),
+                      ),
+                      SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Naira wallet',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      widget.nairaRate != null
+                          ? Text(
+                              '₦${widget.nairaRate}',
+                              // 'NGN${naira1['nairaRate']}',
+                              // ' NGN 410',
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500),
+                            )
+                          : Text('Loading...'),
+                      Text(
+                        '\~ \$1 ',
+                        style: TextStyle(fontSize: 13, color: Colors.black54),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        )
-      ]),
+          Container(
+            // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+
+            child: Positioned(
+              bottom: 6,
+              right: 10,
+              left: 10,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  vertical: 5,
+                  horizontal: 20,
+                ),
+                width: 300,
+                // color: Colors.black54,
+                child: widget.widget,
+
+                //  Text(
+                //   title,
+                //   style: TextStyle(fontSize: 20, color: Colors.white),
+                //   softWrap: true,
+                //   overflow: TextOverflow.fade,
+                // ),
+              ),
+            ),
+          )
+        ]),
+      ),
     );
   }
 }

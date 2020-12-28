@@ -39,17 +39,21 @@ class _TransferCurrencyListinNairaState
   ];
 
   // final walletName = ['NairaWallet'];
-     dynamic nairaRate;
+  dynamic nairaRate;
   dynamic naira1;
 
   @override
-  void didChangeDependencies()async {
+  void didChangeDependencies() async {
     getCurrencies = Provider.of<GetCurrenciesInNaira>(context);
 
     _checkInternet().then((value) {
       if (value) {
-        getCurrencies.refreshCurrencies().then((value) {
+        getCurrencies.refreshCurrencies().then((value) async {
           if (mounted) {
+            naira1 = await GetNairaRate().getNairaRate();
+
+            nairaRate = (naira1['buy_rate']).toStringAsFixed(1);
+            print(nairaRate);
             setState(() {
               // currencies = nairaWallet;
               currencies = value;
@@ -70,12 +74,6 @@ class _TransferCurrencyListinNairaState
         }
       }
     });
-  
- 
-    naira1 = await GetNairaRate().getNairaRate();
-
-    nairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
-    print(nairaRate);
 
     super.didChangeDependencies();
   }
@@ -116,6 +114,7 @@ class _TransferCurrencyListinNairaState
                       final image = imageList[index % imageList.length];
                       // final walletname = walletName[index % walletName.length];
                       return CurrencyInNaraCard(
+                        nairaRate: nairaRate,
                         currency: currencies[index],
                         color: image,
                         press: () async {
@@ -199,19 +198,35 @@ class _TransferCurrencyListinNairaState
                   ),
             onRefresh: () async {
               if (await _checkInternet()) {
-                List currency = await getCurrencies.refreshCurrencies();
-                if (mounted) {
-                  setState(() {
-                    currencies = currency;
-                  });
-                }
-              } else {
-                if (mounted) {
-                  setState(() {
-                    _isConnected = false;
-                  });
-                }
+          // dynamic currency = await getCurrencies.refreshCurrencies();
+          // if (mounted) {
+
+          getCurrencies.refreshCurrencies().then((value) {
+            if (mounted) {
+              setState(() {
+                // currencies = nairaWallet;
+                currencies = value;
+                _loading = false;
+                _isConnected = true;
+              });
+              for (int i = 0; i < currencies.length; i++) {
+                loaders[i.toString()] = false;
               }
+              // print(_loaders.toString());
+            }
+          });
+          // setState(() {
+          //   currencies = currency;
+          //   _loading = false;
+          // });
+          // }
+        } else {
+          if (mounted) {
+            setState(() {
+              _isConnected = false;
+            });
+          }
+        }
             },
           ),
         ),

@@ -150,7 +150,7 @@ class _NairaWalletScreenState extends State<NairaWalletScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            GestureDetector(
+                             GestureDetector(
                               onTap: () {
                                 Navigator.pop(context);
                               },
@@ -164,8 +164,9 @@ class _NairaWalletScreenState extends State<NairaWalletScreen> {
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500),
                             ),
-                            // SvgPicture.asset('assets/images/back.svg',
-                            //     color: Colors.transparent),
+                           
+                            SvgPicture.asset('assets/images/back.svg',
+                                color: Colors.transparent),
                           ],
                         ),
                       ),

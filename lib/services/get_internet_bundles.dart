@@ -8,7 +8,7 @@ class InternetService with ChangeNotifier {
   Future getDataBundles() async {
     try {
       var apiUrl =
-          'https://cryptoapi.skyinvest.io/databundle/bundlelist.php?apiKey=8293ui423kjsadhas9oujwasd';
+          'https://cryptoapi.skyinvest.io/databundle/bundlelist?apiKey=8293ui423kjsadhas9oujwasd';
 
       http.Response response = await http.get(apiUrl);
 

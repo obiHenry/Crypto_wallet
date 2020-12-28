@@ -33,8 +33,10 @@ dependencies:
   fluttertoast: ^7.1.1
   qrscan: ^0.2.17
   progress_dialog: ^1.2.4
-  flutterwave: ^0.0.2
+  # flutterwave: ^0.0.2
   intl_phone_number_input: ^0.5.2+2
+  webview_flutter: ^1.0.7
+  tripledes: ^2.1.0
  
 
 

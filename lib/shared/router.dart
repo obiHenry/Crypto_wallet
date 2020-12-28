@@ -9,6 +9,7 @@ import 'package:Crypto_wallet/screens/wallet/naira_wallet/deposit_naira-screen.d
 import 'package:Crypto_wallet/screens/wallet/naira_wallet/transfer_naira_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:Crypto_wallet/screens/settings/user_profile_screen.dart';
 
 
 class MyRouter {
@@ -34,6 +35,8 @@ class MyRouter {
         return MaterialPageRoute(builder: (_) => DepositMoney());
          case 'naira_transfer':
         return MaterialPageRoute(builder: (_) => TransferNairaScreen());
+         case 'user_profile':
+        return MaterialPageRoute(builder: (_) => UserProfileScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

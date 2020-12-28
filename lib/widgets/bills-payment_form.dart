@@ -20,21 +20,32 @@ class BillsPaymentForm extends StatefulWidget {
   final ValueChanged<String> amountOnChanged;
   final ValueChanged<String> refrenceOrNumberOnChanged;
   final walletList;
-  final String numberOrReferenceText;
+  final String numberOrReferenceText, valueText;
   final Function continuePressed;
-  final Widget widget,widget1,widget2;
-  BillsPaymentForm(
-      {this.billerList,
-      this.productList,
-      this.chooseAccountOnChanged,
-      this.billerOnChanged,
-      this.productOnChanged,
-      this.amountOnChanged,
-      this.refrenceOrNumberOnChanged,
-      this.numberOrReferenceText,
-      this.walletList,
-      this.continuePressed,
-      this.widget,this.widget1, this.widget2});
+  final Widget widget, widget1, widget2;
+  final bool isInBetScreen,isSpectranet;
+  final userId;
+  final userIdOnChanged;
+  BillsPaymentForm({
+    this.billerList,
+    this.productList,
+    this.chooseAccountOnChanged,
+    this.billerOnChanged,
+    this.productOnChanged,
+    this.amountOnChanged,
+    this.refrenceOrNumberOnChanged,
+    this.numberOrReferenceText,
+    this.walletList,
+    this.continuePressed,
+    this.widget,
+    this.widget1,
+    this.widget2,
+    this.valueText,
+    this.isInBetScreen,
+    this.userId,
+    this.userIdOnChanged,
+    this.isSpectranet,
+  });
   @override
   _BillsPaymentFormState createState() => _BillsPaymentFormState();
 }
@@ -155,8 +166,7 @@ class _BillsPaymentFormState extends State<BillsPaymentForm> {
     //     'otherCurrency': trxNairaPrice.toStringAsFixed(2),
     //   },
     // ];
-    return
-     SingleChildScrollView(
+    return SingleChildScrollView(
       // child: Container(
 
       padding: EdgeInsets.only(
@@ -221,16 +231,19 @@ class _BillsPaymentFormState extends State<BillsPaymentForm> {
           SizedBox(
             height: 20,
           ),
-          Container(
-            margin: EdgeInsets.only(left: 18),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Product*',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20,
+          Visibility(
+            visible: widget.isInBetScreen? false:true,
+                      child: Container(
+              margin: EdgeInsets.only(left: 18),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Product*',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
+                  ),
                 ),
               ),
             ),
@@ -238,15 +251,19 @@ class _BillsPaymentFormState extends State<BillsPaymentForm> {
           SizedBox(
             height: 4,
           ),
-          BillersOrProductsDropDown(
-            hintText: 'Select Product',
-            options: widget.productList,
-            onChanged: widget.productOnChanged,
+          Visibility(
+            visible: widget.isInBetScreen ? false : true,
+            child: BillersOrProductsDropDown(
+              valueText: widget.valueText,
+              hintText: 'Select Product',
+              options: widget.productList,
+              onChanged: widget.productOnChanged,
+            ),
           ),
           SizedBox(height: 30),
           Container(
             // padding: EdgeInsets.only(
-                // bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+            // bottom: MediaQuery.of(context).viewInsets.bottom + 20),
             margin: EdgeInsets.only(left: 18),
             child: Align(
               alignment: Alignment.centerLeft,
@@ -264,10 +281,10 @@ class _BillsPaymentFormState extends State<BillsPaymentForm> {
             height: 4,
           ),
           widget.widget1,
-            SizedBox(height: 30),
+          SizedBox(height: 30),
           Container(
             // padding: EdgeInsets.only(
-                // bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+            // bottom: MediaQuery.of(context).viewInsets.bottom + 20),
             margin: EdgeInsets.only(left: 18),
             child: Align(
               alignment: Alignment.centerLeft,
@@ -289,21 +306,24 @@ class _BillsPaymentFormState extends State<BillsPaymentForm> {
           SizedBox(
             height: 30,
           ),
-          
+
           //  Container(child: widget.widget,),
 
-          Container(
-            // padding: EdgeInsets.only(
-            //     bottom: MediaQuery.of(context).viewInsets.bottom + 20),
-            margin: EdgeInsets.only(left: 18),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                widget.numberOrReferenceText,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20,
+          Visibility(
+            visible: widget.isSpectranet? false: true,
+                      child: Container(
+              // padding: EdgeInsets.only(
+              //     bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+              margin: EdgeInsets.only(left: 18),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  widget.numberOrReferenceText,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
+                  ),
                 ),
               ),
             ),
@@ -311,26 +331,70 @@ class _BillsPaymentFormState extends State<BillsPaymentForm> {
           SizedBox(
             height: 4,
           ),
-          Container(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom + 10),
-            child: OutLinedBox(
-              validate: false,
-              isNumberType: true,
-              label: widget.numberOrReferenceText,
-              press: widget.refrenceOrNumberOnChanged,
+          Visibility(
+            visible: widget.isSpectranet? false: true,
+                      child: Container(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 10),
+              child: OutLinedBox(
+                readOnly: false,
+                validate: false,
+                isNumberType: widget.isInBetScreen?false: true,
+                label: widget.numberOrReferenceText,
+                press: widget.refrenceOrNumberOnChanged,
+              ),
             ),
           ),
 
+          SizedBox(
+            height: 30,
+          ),
+          Visibility(
+            visible: widget.isInBetScreen ? true : false,
+            child: Container(
+              // padding: EdgeInsets.only(
+              //     bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+              margin: EdgeInsets.only(left: 18),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: widget.isInBetScreen ?Text(
+                  widget.userId,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
+                  ),
+                ):Container(),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 4,
+          ),
+          Visibility(
+            visible: widget.isInBetScreen ? true : false,
+            child: Container(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 10),
+              child: OutLinedBox(
+                readOnly: false,
+                validate: false,
+                isNumberType: widget.isInBetScreen?false: true,
+                label: widget.userId,
+                press: widget.userIdOnChanged,
+              ),
+            ),
+          ),
 
-         
           BillsButton(
             press: widget.continuePressed,
             text: 'Continue',
             // color: color,
             // disa
           ),
-          SizedBox(height: 30,),
+          SizedBox(
+            height: 30,
+          ),
         ],
       ),
       // ),

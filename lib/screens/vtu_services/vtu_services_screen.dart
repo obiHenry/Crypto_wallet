@@ -9,6 +9,7 @@ import 'package:Crypto_wallet/theme/light_color.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'bet_sub/bet_sub_screen.dart';
 import 'cable_tv/cable_tv_sreen.dart';
 import 'internet_services/internet_service_screen.dart';
 import 'mobile_top_up_screen/mobile_top_up_screen.dart';
@@ -43,6 +44,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
   bool _loader1 = false;
   bool _loader2 = false;
   bool _loader3 = false;
+  bool _loader4 = false;
   dynamic users;
   var currentUser = FirebaseAuth.instance.currentUser;
 
@@ -344,44 +346,50 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                   });
                 }
               },
-              child: Container(
-                // decoration: ,
+              child: Card(
+                elevation: 4,
                 margin: EdgeInsets.symmetric(horizontal: 15),
-                height: 90,
-                color: lightgreen,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: ListTile(
-                          leading: Image.asset(
-                            'assets/images/air-min.png',
-                             height: 30,
-                            width: 30,
+                 color: lightgreen,
+                              // child: Container(
+                  // // decoration: ,
+                  // margin: EdgeInsets.symmetric(horizontal: 15),
+                  // // height: 90,
+                  // color: lightgreen,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: ListTile(
+                            leading: Image.asset(
+                              'assets/images/air-min.png',
+                              height: 30,
+                              width: 30,
+                            ),
+                            title: Text('Mobile Topup'),
+                             subtitle: Text('Top up your airtime'),
                           ),
-                          title: Text('Mobile Topup'),
                         ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Visibility(
-                        child: LinearProgressIndicator(
-                          minHeight: 6,
+                        SizedBox(
+                          height: 8,
                         ),
-                        visible: _loader ? true : false,
-                      ),
-                    ],
+                        Visibility(
+                          child: LinearProgressIndicator(
+                            minHeight: 6,
+                          ),
+                          visible: _loader ? true : false,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+            // ),
             SizedBox(
               height: 10,
             ),
@@ -541,11 +549,10 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                   });
                 }
               },
-              child: Container(
-                // decoration: ,
+               child: Card(
+                elevation: 4,
                 margin: EdgeInsets.symmetric(horizontal: 15),
-                height: 90,
-                color: lightgreen,
+                 color: lightgreen,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -558,13 +565,13 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                         alignment: Alignment.centerLeft,
                         child: ListTile(
                           leading: Image.asset(
-                            
                             'assets/images/data.png',
                             height: 30,
                             width: 30,
                             fit: BoxFit.cover,
                           ),
                           title: Text('Internet Services'),
+                           subtitle: Text('Buy your data bundles '),
                         ),
                       ),
                       SizedBox(
@@ -741,11 +748,10 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                   });
                 }
               },
-              child: Container(
-                // decoration: ,
+              child: Card(
+                elevation: 4,
                 margin: EdgeInsets.symmetric(horizontal: 15),
-                height: 90,
-                color: lightgreen,
+                 color: lightgreen,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -759,10 +765,11 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                         child: ListTile(
                           leading: Image.asset(
                             'assets/images/cable_tv.png',
-                             height: 30,
+                            height: 30,
                             width: 30,
                           ),
                           title: Text('Cable Tv'),
+                           subtitle: Text('Subscribe your cable tv '),
                         ),
                       ),
                       SizedBox(
@@ -940,11 +947,10 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                   });
                 }
               },
-              child: Container(
-                // decoration: ,
+             child: Card(
+                elevation: 4,
                 margin: EdgeInsets.symmetric(horizontal: 15),
-                height: 90,
-                color: lightgreen,
+                 color: lightgreen,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -958,10 +964,11 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                         child: ListTile(
                           leading: Image.asset(
                             'assets/images/utility-min.png',
-                            height:30,
+                            height: 30,
                             width: 30,
                           ),
                           title: Text('Utility Bill'),
+                           subtitle: Text('Pay for your electricity bills'),
                         ),
                       ),
                       SizedBox(
@@ -982,23 +989,197 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
             SizedBox(
               height: 10,
             ),
+
             InkWell(
-              onTap: () {
-                //   _showBottomSheet(TransferToBankAccount(user: widget.user, nairaBalance: widget.balance));
+              onTap: () async {
+                setState(() {
+                  _loader4 = true;
+                });
+                dynamic user = await AuthService().getUserDataById();
+
+                if (currentUser != null) {
+                  if (!user.containsKey('userName')) {
+                    Navigator.pushNamed(context, 'set_up');
+                    setState(() {
+                      _loader4 = false;
+                    });
+                  } else {
+                    users = await AuthService().getUserDataById();
+                    dynamic naira1 = await GetNairaRate().getNairaRate();
+                    nairaRate = (naira1['buy_rate']).toStringAsFixed(1);
+
+                    cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
+
+                    nairaBalance = users['naira'].toString();
+                    btcBalance = users['BTC'].toString();
+                    ethBalance = users['ETH'].toString();
+                    xrpBalance = users['XRP'].toString();
+                    bchBalance = users['BCH'].toString();
+                    ltcBalance = users['LTC'].toString();
+                    trxBalance = users['TRX'].toString();
+
+                    getCurrencies =
+                        Provider.of<GetCurrencies>(context, listen: false);
+                    getCurrencies.refreshCurrencies().then((value) {
+                      currencies = value;
+                      price.clear();
+                      currencies.forEach((element) {
+                        dynamic pri = json.decode(element['price']);
+                        price.add(pri);
+                      });
+
+                      btcUsdPrice = price[0];
+                      ethUsdPrice = price[1];
+                      xrpUsdPrice = price[2];
+                      ltcUsdPrice = price[3];
+                      bchUsdPrice = price[4];
+                      trxUsdPrice = price[5];
+
+                      nairaUsdEquivalance =
+                          double.parse(nairaBalance) / double.parse(nairaRate);
+
+                      btcNairaPrice = (double.parse(btcBalance) * btcUsdPrice) *
+                          double.parse(nairaRate);
+
+                      ethNairaPrice = (double.parse(ethBalance) * ethUsdPrice) *
+                          double.parse(nairaRate);
+                      xrpNairaPrice = (double.parse(xrpBalance) * xrpUsdPrice) *
+                          double.parse(nairaRate);
+                      ltcNairaPrice = (double.parse(ltcBalance) * ltcUsdPrice) *
+                          double.parse(nairaRate);
+                      bchNairaPrice = (double.parse(bchBalance) * bchUsdPrice) *
+                          double.parse(nairaRate);
+                      trxNairaPrice = (double.parse(trxBalance) * trxUsdPrice) *
+                          double.parse(nairaRate);
+
+                      print('mine$btcNairaPrice');
+                      print(nairaUsdEquivalance);
+                      setState(() {
+                        listIsEmpty = false;
+                      });
+                      dynamic naira = double.parse(nairaBalance);
+
+                      walletList = [
+                        {
+                          'walletName': 'Naira Wallet',
+                          'logo': 'assets/images/index.png',
+                          'balance': naira.toStringAsFixed(2),
+                          'otherCurrency':
+                              nairaUsdEquivalance.toStringAsFixed(2),
+                          'symbol': 'USD',
+                          'price': nairaRate,
+                          'nairaRate': nairaRate,
+                        },
+                        {
+                          'walletName': 'BTC Wallet',
+                          'logo': 'assets/images/btc.png',
+                          'balance': btcBalance.toString(),
+                          'otherCurrency': btcNairaPrice.toStringAsFixed(2),
+                          'symbol': 'BTC',
+                          'price': btcUsdPrice,
+                          'nairaRate': nairaRate,
+                        },
+                        {
+                          'walletName': 'ETH Wallet',
+                          'logo': 'assets/images/etherium.jpg',
+                          'balance': ethBalance.toString(),
+                          'otherCurrency': ethNairaPrice.toStringAsFixed(2),
+                          'symbol': 'ETH',
+                          'price': ethUsdPrice,
+                          'nairaRate': nairaRate,
+                        },
+                        {
+                          'walletName': 'XRP Wallet',
+                          'logo': 'assets/images/ripple.png',
+                          'balance': xrpBalance.toString(),
+                          'otherCurrency': xrpNairaPrice.toStringAsFixed(2),
+                          'symbol': 'XRP',
+                          'price': xrpUsdPrice,
+                          'nairaRate': nairaRate,
+                        },
+                        {
+                          'walletName': 'BCH Wallet',
+                          'logo': 'assets/images/bitcoin_cash.png',
+                          'balance': bchBalance.toString(),
+                          'otherCurrency': bchNairaPrice.toStringAsFixed(2),
+                          'symbol': 'BCH',
+                          'price': bchUsdPrice,
+                          'nairaRate': nairaRate,
+                        },
+                        {
+                          'walletName': 'LTC Wallet',
+                          'logo': 'assets/images/litcoin.jpg',
+                          'balance': ltcBalance.toString(),
+                          'otherCurrency': ltcNairaPrice.toStringAsFixed(2),
+                          'symbol': 'LTC',
+                          'price': ltcUsdPrice,
+                          'nairaRate': nairaRate,
+                        },
+                        {
+                          'walletName': 'TRX Wallet',
+                          'logo': 'assets/images/tron.jpg',
+                          'balance': trxBalance.toString(),
+                          'otherCurrency': trxNairaPrice.toStringAsFixed(2),
+                          'symbol': 'TRX',
+                          'price': trxUsdPrice,
+                          'nairaRate': nairaRate,
+                        },
+                      ];
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BetSubScreen(
+                            walletList: walletList,
+                          ),
+                        ),
+                      );
+                      setState(() {
+                        _loader4 = false;
+                      });
+                    });
+                  }
+                } else {
+                  Navigator.pushNamed(context, 'sign_up');
+                  setState(() {
+                    _loader4 = false;
+                  });
+                }
               },
-              child: Container(
-                // decoration: ,
+            child: Card(
+                elevation: 4,
                 margin: EdgeInsets.symmetric(horizontal: 15),
-                height: 90,
-                color: lightgreen,
+                 color: lightgreen,
                 child: Center(
-                  child: ListTile(
-                    leading: Image.asset(
-                      'assets/images/34.png',
-                       height: 30,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: ListTile(
+                          leading: Image.asset(
+                            'assets/images/34.png',
+                            height: 30,
                             width: 30,
-                    ),
-                    title: Text('Bet subscription'),
+                          ),
+                          title: Text('Bet subscription'),
+                          subtitle: Text('Fund Your bet account here'),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Visibility(
+                        child: LinearProgressIndicator(
+                          minHeight: 6,
+                        ),
+                        visible: _loader4 ? true : false,
+                      ),
+                    ],
                   ),
                 ),
               ),

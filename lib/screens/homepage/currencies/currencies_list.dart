@@ -36,7 +36,7 @@ class _CurrenciesListState extends State<CurrenciesList> {
     // 'assets/images/pax.png',
   ];
 
-  dynamic cbnNairaRate, nairaVeloceSellRate, nairaVeloceBuyRate;
+  dynamic  nairaVeloceSellRate, nairaVeloceBuyRate;
   dynamic naira1;
   dynamic transactionList;
   List nairaTransactionList = [];
@@ -81,11 +81,11 @@ class _CurrenciesListState extends State<CurrenciesList> {
 
     naira1 = await GetNairaRate().getNairaRate();
 
-    cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
     nairaVeloceSellRate = (naira1['sell_rate']).toStringAsFixed(1);
     nairaVeloceBuyRate = (naira1['buy_rate']).toStringAsFixed(1);
 
     transactionList = await AuthService().getTransactionList();
+    
     // print(transactionList);
     Map list = await transactionList['nairaWalletTransactionList'];
     // print(list);
@@ -185,9 +185,9 @@ if(bchList != null){
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            // height: MediaQuery.of(context).size.height * 0.118,
+            height: MediaQuery.of(context).size.height * 0.11,
             child: NairaWalletCard(
-              nairaRate: cbnNairaRate,
+              nairaRate: nairaVeloceBuyRate,
               press: () async {
                 setState(() {
                   _loader = true;
@@ -209,7 +209,7 @@ if(bchList != null){
                         builder: (context) => NairaWalletScreen(
                           nairaBalance: nairaBalance,
                           user: users,
-                          nairaRate: cbnNairaRate,
+                          nairaRate: nairaVeloceBuyRate,
                           nairatransactionList: nairaTransactionList,
 
                           // currency: currencies[index],
@@ -243,7 +243,7 @@ if(bchList != null){
             height: 0,
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.3181,
+            height: MediaQuery.of(context).size.height *0.31,
             child: !_loading
                 ? ListView.builder(
                     itemCount:
@@ -330,7 +330,7 @@ if(bchList != null){
                 : SingleChildScrollView(
                     physics: AlwaysScrollableScrollPhysics(),
                     child: Container(
-                      height: MediaQuery.of(context).size.height * 0.35,
+                      height: MediaQuery.of(context).size.height *  0.31,
                       child: _showLoader(),
                     ),
                   ),

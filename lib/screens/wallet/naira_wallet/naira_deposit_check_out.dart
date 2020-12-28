@@ -107,12 +107,15 @@ class _NairaDepositeCheckoutScreenState
           SizedBox(height: 10),
           Container(
             width: double.infinity,
+            padding: EdgeInsets.all(10),
             child: Center(
-              child: Text(
-                widget.text,
-                style: TextStyle(
-                  // fontWeight: FontWeight.bold,
-                  fontSize: 17,
+              child: FittedBox(
+                child: Text(
+                  widget.text,
+                  style: TextStyle(
+                    // fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                  ),
                 ),
               ),
             ),
@@ -121,11 +124,13 @@ class _NairaDepositeCheckoutScreenState
           Container(
             width: double.infinity,
             child: Center(
-              child: Text(
-                widget.text1,
-                style: TextStyle(
-                  // fontWeight: FontWeight.bold,
-                  fontSize: 13,
+              child: FittedBox(
+                child: Text(
+                  widget.text1,
+                  style: TextStyle(
+                    // fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
                 ),
               ),
             ),
