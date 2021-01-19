@@ -18,13 +18,15 @@ class TextFieldContainer extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       width: size.width * 0.8,
       decoration: BoxDecoration(
+        
           gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: [yellowStart, yellowEnd],
+              colors: [textFieldBackground, textFieldBackground],
             ),
         // color: yellowEnd,
         borderRadius: BorderRadius.circular(29),
+      
       ),
       child: child,
     );

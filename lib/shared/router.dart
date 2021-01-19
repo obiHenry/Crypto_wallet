@@ -1,6 +1,8 @@
+import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/account_pin_code_setup/account_pin_code_setup_screen.dart';
 import 'package:Crypto_wallet/screens/logins_and_signUp/set_up/set_up_screen.dart';
 import 'package:Crypto_wallet/screens/logins_and_signUp/sign_in/login.dart';
-import 'package:Crypto_wallet/screens/logins_and_signUp/sign_up/sign_up_screen.dart';
+import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/account_sign_up/sign_up_screen.dart';
+import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/verify_email/verify_email_screen.dart';
 import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
 import 'package:Crypto_wallet/screens/vtu_services/mobile_top_up_screen/mobile_top_up_screen.dart';
 import 'package:Crypto_wallet/screens/wallet/coin_wallet/recieve_coin/buy_coin_screen.dart';
@@ -37,6 +39,10 @@ class MyRouter {
         return MaterialPageRoute(builder: (_) => TransferNairaScreen());
          case 'user_profile':
         return MaterialPageRoute(builder: (_) => UserProfileScreen());
+         case 'verification_screen':
+        return MaterialPageRoute(builder: (_) => VerifyEmailAddress(settings.arguments));
+         case 'pin_code_screen':
+        return MaterialPageRoute(builder: (_) => AccountPinCodeSetup());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

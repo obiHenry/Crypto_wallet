@@ -1,11 +1,10 @@
 import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
 import 'package:Crypto_wallet/services/dialog_service.dart';
-import 'package:Crypto_wallet/services/send_airtime.dart';
-import 'package:Crypto_wallet/services/send_smile_airtime.dart';
+import 'package:Crypto_wallet/services/api_services.dart';
 import 'package:Crypto_wallet/services/validator.dart';
-import 'package:Crypto_wallet/widgets/alert_sheet.dart';
-import 'package:Crypto_wallet/widgets/bills-payment_form.dart';
-import 'package:Crypto_wallet/widgets/succesful_page.dart';
+import 'package:Crypto_wallet/shared/alert_sheet.dart';
+import 'package:Crypto_wallet/shared/bills-payment_form.dart';
+import 'package:Crypto_wallet/shared/succesful_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Crypto_wallet/services/auth.dart';
@@ -133,10 +132,10 @@ class _BodyState extends State<Body> {
     //  isNairaWallet = true;
 
     final List billers = [
-      {'network': 'MTN', 'code': '01'},
-      {'network': 'GLO', 'code': '02'},
-      {'network': 'AIRTEL', 'code': '04'},
-      {'network': '9 MOBILE', 'code': '03'},
+      {'network': 'MTN', 'code': 'MTN'},
+      {'network': 'GLO', 'code': 'GLO'},
+      {'network': 'AIRTEL', 'code': 'AIRTEL'},
+      {'network': '9 MOBILE', 'code': '9MOBILE'},
       {'network': 'SMILE', 'code': '05'},
     ];
 
@@ -493,8 +492,8 @@ class _BodyState extends State<Body> {
                 });
                 if (isValid == 'valid') {
                   setState(() {
-                    DialogService()
-                        .getSnackBar(context, ' valid ', Colors.lightGreen);
+                    // DialogService()
+                    //     .getSnackBar(context, ' valid ', Colors.lightGreen);
                     enableSubmitButton();
                   });
                 } else {
@@ -609,7 +608,7 @@ class _BodyState extends State<Body> {
                               } else {
                                 if (isSmile) {
                                   _progressDialog.show();
-                                  dynamic result = await SendSmileAirtime()
+                                  dynamic result = await ApiServices()
                                       .sendSmileAirtime(
                                           phoneNumber, nairaAmount.text);
 
@@ -630,6 +629,7 @@ class _BodyState extends State<Body> {
                                         name['code'] != 'ERR202' &&
                                         name['code'] != 'ERR206') {
                                       dynamic response = name['details'];
+                                      dynamic txRef = name['trans_id'];
                                       print(response);
 
                                       dynamic nairaBalance =
@@ -641,14 +641,16 @@ class _BodyState extends State<Body> {
                                       if (result1['status']) {
                                         dynamic result2 = await AuthService()
                                             .updateTransactionList(
-                                                "Smile airtime Recharge",
-                                                'Naira Wallet',
-                                                '$biller smartno: $phoneNumber',
-                                                currencyAmount.text,
-                                                nairaAmount.text,
-                                                'nairaWalletTransactionList',
-                                                symbol,
-                                                true);
+                                          "Smile airtime Recharge",
+                                          'Naira Wallet',
+                                          '$biller smartno: $phoneNumber',
+                                          currencyAmount.text,
+                                          nairaAmount.text,
+                                          'nairaWalletTransactionList',
+                                          symbol,
+                                          true,
+                                          // txRef
+                                        );
                                         if (result2['status']) {
                                           _progressDialog.hide();
                                           Navigator.pushAndRemoveUntil(
@@ -712,20 +714,29 @@ class _BodyState extends State<Body> {
                                   }
                                 } else {
                                   _progressDialog.show();
-                                  dynamic result = await SendAirtime()
-                                      .sendAirtime(phoneNumber,
-                                          nairaAmount.text, code.toString());
+                                  dynamic result = await ApiServices()
+                                      .sendAirtime(
+                                          phoneNumber, nairaAmount.text, code);
 
                                   if (result['status'] = true) {
                                     dynamic rep = result['message'].toString();
-                                    print(rep);
+                                    print(rep.toString());
                                     dynamic name = json.decode(rep);
-                                    print(
-                                        'error${result['message'].toString()}');
+                                    dynamic me = name['description'];
+                                    print(me);
 
-                                    if (name['status'] == 'ORDER_RECEIVED') {
-                                      
-                                      print(name['status']);
+                                    if (name['code'] != 'ERR101' &&
+                                        name['code'] != 'ERR102' &&
+                                        name['code'] != 'ERR103' &&
+                                        name['code'] != 'ERR104' &&
+                                        name['code'] != 'ERR105' &&
+                                        name['code'] != 'ERR106' &&
+                                        name['code'] != 'ERR107' &&
+                                        name['code'] != 'ERR201' &&
+                                        name['code'] != 'ERR202') {
+                                      dynamic response = name['details'];
+                                      dynamic txRef = name['trans_id'];
+                                      print(response);
 
                                       dynamic nairaBalance =
                                           double.parse(balance) -
@@ -736,14 +747,16 @@ class _BodyState extends State<Body> {
                                       if (result1['status']) {
                                         dynamic result2 = await AuthService()
                                             .updateTransactionList(
-                                                "Airtime Recharge",
-                                                'Naira Wallet',
-                                                '$biller mobile: $phoneNumber',
-                                                currencyAmount.text,
-                                                nairaAmount.text,
-                                                'nairaWalletTransactionList',
-                                                symbol,
-                                                true);
+                                          "airtime Recharge",
+                                          'Naira Wallet',
+                                          '$biller phone: $phoneNumber',
+                                          currencyAmount.text,
+                                          nairaAmount.text,
+                                          'nairaWalletTransactionList',
+                                          symbol,
+                                          true,
+                                          // txRef
+                                        );
                                         if (result2['status']) {
                                           _progressDialog.hide();
                                           Navigator.pushAndRemoveUntil(
@@ -752,9 +765,9 @@ class _BodyState extends State<Body> {
                                                 builder: (context) =>
                                                     SuccessfulPage(
                                                   text:
-                                                      'Airtime purchse was successful',
+                                                      'Airtime purchase was successful',
                                                   text1:
-                                                      'You\'ve successfully recharged $phoneNumber  with  \₦${nairaAmount.text}',
+                                                      'You\'ve successfully recharged $biller phone:$phoneNumber  with  \₦${nairaAmount.text}',
                                                   press: () {
                                                     Navigator.pushAndRemoveUntil(
                                                         context,
@@ -786,14 +799,25 @@ class _BodyState extends State<Body> {
                                             textColor: Colors.white);
                                       }
                                     } else {
-                                      _progressDialog.hide();
-                                      print(name['status'].toString());
-                                      Fluttertoast.showToast(
-                                          msg: 'error occurred try again',
-                                          toastLength: Toast.LENGTH_LONG,
-                                          gravity: ToastGravity.BOTTOM,
-                                          backgroundColor: Colors.black,
-                                          textColor: Colors.white);
+                                      if (name['code'] == 'ERR201') {
+                                        _progressDialog.hide();
+                                        print(name['description'].toString());
+                                        Fluttertoast.showToast(
+                                            msg: name['description'].toString(),
+                                            toastLength: Toast.LENGTH_LONG,
+                                            gravity: ToastGravity.BOTTOM,
+                                            backgroundColor: Colors.black,
+                                            textColor: Colors.white);
+                                      } else {
+                                        _progressDialog.hide();
+                                        print(name['description'].toString());
+                                        Fluttertoast.showToast(
+                                            msg: 'error occurred try again',
+                                            toastLength: Toast.LENGTH_LONG,
+                                            gravity: ToastGravity.BOTTOM,
+                                            backgroundColor: Colors.black,
+                                            textColor: Colors.white);
+                                      }
                                     }
                                   } else {
                                     _progressDialog.hide();
@@ -828,7 +852,7 @@ class _BodyState extends State<Body> {
                               } else {
                                 if (isSmile = true) {
                                   _progressDialog.show();
-                                  dynamic result = await SendSmileAirtime()
+                                  dynamic result = await ApiServices()
                                       .sendSmileAirtime(
                                           phoneNumber, nairaAmount.text);
 
@@ -849,6 +873,7 @@ class _BodyState extends State<Body> {
                                         name['code'] != 'ERR202' &&
                                         name['code'] != 'ERR206') {
                                       dynamic response = name['details'];
+                                      dynamic txRef = name['trans_id'];
                                       print(response);
 
                                       dynamic nairaBalance =
@@ -860,14 +885,16 @@ class _BodyState extends State<Body> {
                                       if (result1['status']) {
                                         dynamic result2 = await AuthService()
                                             .updateTransactionList(
-                                                "Smile airtime Recharge",
-                                                'Naira Wallet',
-                                                '$biller smartno: $phoneNumber',
-                                                currencyAmount.text,
-                                                nairaAmount.text,
-                                                'nairaWalletTransactionList',
-                                                symbol,
-                                                true);
+                                          "Smile airtime Recharge",
+                                          'Naira Wallet',
+                                          '$biller smartno: $phoneNumber',
+                                          currencyAmount.text,
+                                          nairaAmount.text,
+                                          'nairaWalletTransactionList',
+                                          symbol,
+                                          true,
+                                          // txRef
+                                        );
                                         if (result2['status']) {
                                           _progressDialog.hide();
                                           Navigator.pushAndRemoveUntil(
@@ -931,34 +958,50 @@ class _BodyState extends State<Body> {
                                   }
                                 } else {
                                   _progressDialog.show();
-                                  dynamic result = await SendAirtime()
-                                      .sendAirtime(phoneNumber,
-                                          nairaAmount.text, code);
+                                  dynamic result = await ApiServices()
+                                      .sendAirtime(
+                                          phoneNumber, nairaAmount.text, code);
 
                                   if (result['status'] = true) {
                                     dynamic rep = result['message'].toString();
+                                    print(rep.toString());
                                     dynamic name = json.decode(rep);
+                                    dynamic me = name['description'];
+                                    print(me);
 
-                                    if (name['status'] == 'ORDER_RECEIVED') {
-                                      print(name['status'].toString());
-                                      dynamic coinBalance =
+                                    if (name['code'] != 'ERR101' &&
+                                        name['code'] != 'ERR102' &&
+                                        name['code'] != 'ERR103' &&
+                                        name['code'] != 'ERR104' &&
+                                        name['code'] != 'ERR105' &&
+                                        name['code'] != 'ERR106' &&
+                                        name['code'] != 'ERR107' &&
+                                        name['code'] != 'ERR201' &&
+                                        name['code'] != 'ERR202') {
+                                      dynamic response = name['details'];
+                                      dynamic txRef = name['trans_id'];
+                                      print(response);
+
+                                      dynamic nairaBalance =
                                           double.parse(balance) -
-                                              coinTotalAmount;
-                                      dynamic response = await AuthService()
+                                              nairaTotalAmount;
+                                      dynamic result1 = await AuthService()
                                           .updateWallet(
-                                              coinBalance.toString(), symbol1);
-                                      if (response['status']) {
-                                        dynamic response1 = await AuthService()
+                                              nairaBalance.toString(), 'naira');
+                                      if (result1['status']) {
+                                        dynamic result2 = await AuthService()
                                             .updateTransactionList(
-                                                "Airtime Recharge",
-                                                '$symbol1 Wallet',
-                                                '$biller mobile: $phoneNumber',
-                                                currencyAmount.text,
-                                                nairaAmount.text,
-                                                "${symbol1}WalletTransactionList",
-                                                symbol1,
-                                                true);
-                                        if (response1['status']) {
+                                          "airtime Recharge",
+                                          'Naira Wallet',
+                                          '$biller phone: $phoneNumber',
+                                          currencyAmount.text,
+                                          nairaAmount.text,
+                                          'nairaWalletTransactionList',
+                                          symbol,
+                                          true,
+                                          // txRef
+                                        );
+                                        if (result2['status']) {
                                           _progressDialog.hide();
                                           Navigator.pushAndRemoveUntil(
                                               context,
@@ -966,9 +1009,9 @@ class _BodyState extends State<Body> {
                                                 builder: (context) =>
                                                     SuccessfulPage(
                                                   text:
-                                                      'Airtime purchse was successful',
+                                                      'Airtime purchase was successful',
                                                   text1:
-                                                      'You\'ve successfully recharged $phoneNumber  with  \₦${nairaAmount.text}',
+                                                      'You\'ve successfully recharged $biller phone:$phoneNumber  with  \₦${nairaAmount.text}',
                                                   press: () {
                                                     Navigator.pushAndRemoveUntil(
                                                         context,
@@ -983,8 +1026,8 @@ class _BodyState extends State<Body> {
                                         } else {
                                           _progressDialog.hide();
                                           Fluttertoast.showToast(
-                                              msg: response1['message']
-                                                  .toString(),
+                                              msg:
+                                                  result2['message'].toString(),
                                               toastLength: Toast.LENGTH_LONG,
                                               gravity: ToastGravity.BOTTOM,
                                               backgroundColor: Colors.black,
@@ -993,21 +1036,32 @@ class _BodyState extends State<Body> {
                                       } else {
                                         _progressDialog.hide();
                                         Fluttertoast.showToast(
-                                            msg: response['message'].toString(),
+                                            msg: result1['message'].toString(),
                                             toastLength: Toast.LENGTH_LONG,
                                             gravity: ToastGravity.BOTTOM,
                                             backgroundColor: Colors.black,
                                             textColor: Colors.white);
                                       }
                                     } else {
-                                      _progressDialog.hide();
-                                      print(name['status'].toString());
-                                      Fluttertoast.showToast(
-                                          msg: 'error occurred try again',
-                                          toastLength: Toast.LENGTH_LONG,
-                                          gravity: ToastGravity.BOTTOM,
-                                          backgroundColor: Colors.black,
-                                          textColor: Colors.white);
+                                      if (name['code'] == 'ERR201') {
+                                        _progressDialog.hide();
+                                        print(name['description'].toString());
+                                        Fluttertoast.showToast(
+                                            msg: name['description'].toString(),
+                                            toastLength: Toast.LENGTH_LONG,
+                                            gravity: ToastGravity.BOTTOM,
+                                            backgroundColor: Colors.black,
+                                            textColor: Colors.white);
+                                      } else {
+                                        _progressDialog.hide();
+                                        print(name['description'].toString());
+                                        Fluttertoast.showToast(
+                                            msg: 'error occurred try again',
+                                            toastLength: Toast.LENGTH_LONG,
+                                            gravity: ToastGravity.BOTTOM,
+                                            backgroundColor: Colors.black,
+                                            textColor: Colors.white);
+                                      }
                                     }
                                   } else {
                                     _progressDialog.hide();

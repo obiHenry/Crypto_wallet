@@ -3,12 +3,15 @@ import 'package:Crypto_wallet/services/dialog_service.dart';
 import 'package:Crypto_wallet/services/internet_connection.dart';
 import 'package:Crypto_wallet/services/validator.dart';
 import 'package:Crypto_wallet/shared/rounded_button.dart';
+import 'package:Crypto_wallet/shared/rounded_field.dart';
+import 'package:Crypto_wallet/shared/rounded_drop_down.dart';
 import 'package:Crypto_wallet/shared/rounded_input_field.dart';
 import 'package:Crypto_wallet/shared/rounded_password_field.dart';
-import 'package:Crypto_wallet/widgets/constants.dart';
-import 'package:flutter/foundation.dart';
+import 'package:Crypto_wallet/shared/constants.dart';
+import 'package:Crypto_wallet/services/aaccount_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
 
 class UserProfileBody extends StatefulWidget {
   @override
@@ -25,10 +28,49 @@ class _UserProfileBodyState extends State<UserProfileBody> {
   bool _isConnected = true;
   bool enableButton = false;
   bool enablePasswordButton = false;
+  bool enableBankAccountButton = false;
   String currentPassword = '';
   String newPassword = '';
   String confirmPassword = '';
   String type = 'alnum';
+  bool isValidating = false;
+  bool isAccountNumber = false;
+  bool accountIsNull = false;
+  String accountNumber, bank;
+  dynamic code, accountname;
+  String bankName;
+  bool isChanged = false;
+  // accountName;
+  final accountName = TextEditingController();
+
+  final List banks = [
+    {'name': 'Access Bank Plc', 'code': '044'},
+    {'name': 'Citibank Nigeria Limited', 'code': '023'},
+    {'name': 'Coronation Merchant Bank[6]', 'code': '559'},
+    {'name': 'Ecobank Nigeria Plc', 'code': '050'},
+    {'name': 'Fidelity Bank Plc', 'code': '070'},
+    {'name': 'First City Monument Bank Limited', 'code': '214'},
+    {'name': 'First Bank of Nigeria Limited', 'code': '011'},
+    {'name': 'FSDH Merchant Bank[8]', 'code': '601'},
+    {'name': 'Guaranty Trust Bank Plc', 'code': '058'},
+    {'name': 'Heritage Banking Company Limited', 'code': '030'},
+    {'name': 'Jaiz Bank Plc', 'code': '301'},
+    {'name': 'Keystone Bank Limited', 'code': '082'},
+    {'name': 'Polaris Bank Limited', 'code': '076'},
+    // 'Providus Bank Limited',
+    // 'Rand Merchant Bank',
+    {'name': 'Stanbic IBTC Bank Plc', 'code': '304'},
+    {'name': 'Standard Chartered', 'code': '068'},
+    {'name': 'Sterling Bank Plc', 'code': '232'},
+    {'name': 'SunTrust Bank Nigeria Limited', 'code': '100'},
+    // {'name':'Titan Trust Bank Limited','code': '100'},
+    // {'name':'TAJBank Limited[4][5]','code': '100'},
+    {'name': 'Union Bank of Nigeria Plc', 'code': '032'},
+    {'name': 'United Bank for Africa', 'code': '033'},
+    {'name': 'Unity Bank Plc', 'code': '215'},
+    {'name': 'Wema Bank Plc Bank Limited[3]', 'code': '035'},
+    {'name': 'ZENITH BANK PLC', 'code': '057'},
+  ];
   // List<String> genders = ['Male', 'Female'];
 
   @override
@@ -48,6 +90,9 @@ class _UserProfileBodyState extends State<UserProfileBody> {
                 setState(() {
                   user = value;
                   _loading = false;
+                  accountName.text = user['bankAccountName'] != null
+                      ? user['bankAccountName']
+                      : '';
                 });
                 enableSubmitButton();
               }
@@ -101,6 +146,67 @@ class _UserProfileBodyState extends State<UserProfileBody> {
           enablePasswordButton = false;
         });
       }
+    } else if (from == 'bank account') {
+      String accountnumber =
+          Validators.accountNumber(user['bankAccountNumber']);
+      String accountBank = Validators.bankName(code);
+      if ((accountnumber == null) && (accountBank == null)) {
+        setState(() {
+          enableBankAccountButton = true;
+        });
+      } else {
+        setState(() {
+          enableBankAccountButton = false;
+        });
+      }
+    }
+  }
+
+  validate() async {
+    // setState(() {
+    //   isValidating = false;
+    // });
+    enableBankAccountButton = false;
+    accountName.clear();
+    accountIsNull = false;
+
+    if (user['bankAccountNumber'].length == 10 && user['bankName'] != null) {
+      // } else {
+      setState(() {
+        isValidating = true;
+        enableBankAccountButton = false;
+      });
+      print(code);
+
+      dynamic result = await AccountValidator()
+          .validateAccount(user['bankAccountNumber'], code.toString());
+      // print('anything form me${result.toString()}');
+      dynamic account = result['message'];
+      dynamic name = json.decode(account);
+      print(name.toString());
+      accountname = await name['data']['data']['accountname'];
+      print('this is the $accountname');
+      if (accountname == null) {
+        setState(() {
+          accountIsNull = true;
+          isValidating = false;
+          enableBankAccountButton = false;
+        });
+      } else {
+        setState(() {
+          accountIsNull = false;
+          accountName.text = accountname;
+          isValidating = false;
+          enableBankAccountButton = true;
+        });
+        print(accountName.text);
+      }
+
+      setState(() {
+        isValidating = false;
+      });
+
+      return result;
     }
   }
 
@@ -126,7 +232,7 @@ class _UserProfileBodyState extends State<UserProfileBody> {
                     endIndent: size.width * 0.3 - 80,
                   ),
                   SizedBox(height: 20),
-                  measurementSettings(),
+                  bankAccountSettings(),
                 ],
               ),
             ),
@@ -169,11 +275,12 @@ class _UserProfileBodyState extends State<UserProfileBody> {
         RoundedInputField(
           validator: (value) {
             String isValid;
-            isValid = Validators.alnum(value, "Contact name");
-            if (value.isNotEmpty) {
-              isValid = "Contact name is required";
-            } else {
-              isValid = null;
+            switch (type = 'alnum') {
+              case 'alnum':
+                isValid = Validators.alnum(value, "Contact name");
+                break;
+              default:
+                isValid = value.isNotEmpty ? null : "Contact name is required";
             }
 
             return isValid;
@@ -197,7 +304,6 @@ class _UserProfileBodyState extends State<UserProfileBody> {
           validator: (value) {
             String isValid;
             switch (type = 'phone') {
-             
               case 'phone':
                 isValid = Validators.phone(value);
                 break;
@@ -440,7 +546,7 @@ class _UserProfileBodyState extends State<UserProfileBody> {
     );
   }
 
-  Widget measurementSettings() {
+  Widget bankAccountSettings() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -449,28 +555,149 @@ class _UserProfileBodyState extends State<UserProfileBody> {
           "Account Details",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 20),
-        RoundedButton(
-          press: () async {
-            if (user.containsKey('gender') && user['gender'] != null) {
-              final result = await Navigator.pushNamed(context, '/measurement',
-                  arguments: {
-                    'user': user,
-                    'inCheckout': false,
-                  });
-              if (result != null && result is String) {
+        SizedBox(height: 10),
+        Visibility(
+          visible: !accountIsNull ? false : true,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 17),
+            child: Text(
+              ' Could not resolve account, check the account and try again',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Focus(
+          child: RoundedField(
+            text: Container(
+              height: 1,
+              width: 1,
+              padding: EdgeInsets.all(10),
+              child: Visibility(
+                  visible: !isValidating ? false : true,
+                  child: SizedBox(
+                      height: 1,
+                      width: 1,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                      ))),
+            ),
+            isNumberType: true,
+            hintText: 'Account Number',
+            initialValue: user['bankAccountNumber'] != null
+                ? user['bankAccountNumber']
+                : '',
+            press: (value) {
+              user['bankAccountNumber'] = value;
+              String isValid = Validators.accountNumber(value);
+              String isValid1 = Validators.bankName(code);
+              setState(() {
+                enableBankAccountButton = false;
+              });
+              if (isValid == null && isValid1 == null) {
+                validate();
                 setState(() {
-                  user['shoulder'] = result;
+                  dialog.getSnackBar(context, 'valid', Colors.lightGreen);
+                  enableSubmitButton(from: 'bank account');
                 });
+              } else {
                 dialog.getSnackBar(
-                    context, 'Measurements updated successfully', Colors.green);
+                  context,
+                  isValid,
+                  Colors.red,
+                );
               }
-            } else {
-              dialog.getSnackBar(context,
-                  'You have to fill in your details first', kPrimaryColor);
-            }
+            },
+          ),
+        ),
+        Focus(
+          // getBankName(),
+          child: RoundedDropDown(
+            hintText: user['bankName'] != null ? user['bankName'] : '',
+            options: banks,
+            valueText1: isChanged ? bankName : user['bankName'],
+
+            // valueText: user['bankName'] != null
+            // ? user['bankName']
+            // : '',
+            // bankName: bankName.toString(),
+            onChanged: (value) async {
+              setState(() {
+                isChanged = true;
+              });
+              print('this is the value $value');
+              user['bankName'] = value.toLowerCase();
+              banks.forEach((element) {
+                bankName = element['name'].toString();
+                if (value == element['name'].toString()) {
+                  code = element['code'].toString();
+                  print('this is the code $code');
+                }
+              });
+
+              String isValid = Validators.bankName(code);
+              String isValid1 =
+                  Validators.accountNumber(user['bankAccountNumber']);
+
+              setState(() {
+                enableBankAccountButton = false;
+              });
+              if (isValid == null && isValid1 == null) {
+                validate();
+
+                setState(() {
+                  dialog.getSnackBar(context, ' valid ', Colors.lightGreen);
+                  enableSubmitButton(from: 'bank account');
+                });
+              } else {
+                dialog.getSnackBar(
+                  context,
+                  isValid,
+                  Colors.red,
+                );
+              }
+            },
+          ),
+        ),
+        RoundedField(
+          // initialValue:  user['bankAccountName'] != null
+          //       ? user['bankAccountName']
+          //       : '',
+          press: (value) {
+            user['bankAccountName'] = value;
           },
-          text: 'EDIT MEASUREMENT',
+          hintText: 'Account Name',
+          enabled: false,
+          controller: accountName,
+          // label: 'Account Name',
+        ),
+        SizedBox(
+          height: 10,
+        ),
+       !_loader
+            ?  RoundedButton(
+          press: !enableBankAccountButton
+              ? null
+              : () async {
+                  setState(() {
+                    _loader = true;
+                  });
+                  dynamic result = await _auth.saveDetails(user);
+                  setState(() {
+                    _loader = false;
+                  });
+                  if (result['status']) {
+                    dialog.getSnackBar(
+                        context, 'User data updated', Colors.green);
+                  } else {
+                    dialog.getSnackBar(context, result['message'], Colors.red);
+                  }
+                },
+          text: 'UPDATE ACCOUNT DETAILS',
+        ): Center(
+          child:  CircularProgressIndicator(),
         ),
       ],
     );

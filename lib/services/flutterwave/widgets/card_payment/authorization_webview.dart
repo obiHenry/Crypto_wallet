@@ -28,7 +28,8 @@ class _AuthorizationWebviewState extends State<AuthorizationWebview> {
                   onPageStarted: this._pageStarted,
                 )
               : HtmlElementView(
-                  viewType: '',
+                  viewType:
+                      "<body><iframe src='${this.widget._url}'></iframe></body>",
                 ),
         ),
       ),

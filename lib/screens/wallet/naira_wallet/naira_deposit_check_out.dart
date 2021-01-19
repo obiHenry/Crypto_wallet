@@ -1,6 +1,6 @@
-import 'package:Crypto_wallet/services/auth.dart';
+
 import 'package:Crypto_wallet/shared/CustomTextStyle.dart';
-import 'package:Crypto_wallet/widgets/button.dart';
+import 'package:Crypto_wallet/shared/button.dart';
 import 'package:flutter/material.dart';
 
 class NairaDepositeCheckoutScreen extends StatefulWidget {
@@ -36,24 +36,24 @@ class NairaDepositeCheckoutScreen extends StatefulWidget {
 
 class _NairaDepositeCheckoutScreenState
     extends State<NairaDepositeCheckoutScreen> {
-  void _showBottomSheet(Widget widget) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Container(
-            padding: EdgeInsets.symmetric(
-              vertical: 20,
-            ),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.vertical(
-              top: Radius.circular(25),
-              bottom: Radius.circular(25),
-            )),
-            child: widget,
-            // behavior: HitTestBehavior.opaque,
-          );
-        });
-  }
+  // void _showBottomSheet(Widget widget) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return Container(
+  //           padding: EdgeInsets.symmetric(
+  //             vertical: 20,
+  //           ),
+  //           decoration: BoxDecoration(
+  //               borderRadius: BorderRadius.vertical(
+  //             top: Radius.circular(25),
+  //             bottom: Radius.circular(25),
+  //           )),
+  //           child: widget,
+  //           // behavior: HitTestBehavior.opaque,
+  //         );
+  //       });
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,11 @@
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/validator.dart';
 import 'package:flutter/material.dart';
-
+import 'package:Crypto_wallet/services/api_services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import '../../../shared/shared.dart';
+import 'dart:math';
+import 'dart:convert';
 
 class Body extends StatefulWidget {
   _BodyState createState() => _BodyState();
@@ -277,24 +278,65 @@ class _BodyState extends State<Body> {
                             });
                             dynamic result =
                                 await _auth.signInWithEmail(email, password);
-                            setState(() {
-                              _loader = false;
-                            });
-                            dynamic users = await _auth.getUserDataById();
-
                             if (result['status']) {
-                              if (users.containsKey('userName')) {
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                    'tab_screen', (route) => false);
-                                getSnackBar(
-                                  'signed in successfully',
-                                  Colors.lightGreen,
-                                );
-                              } else {
-                                Navigator.of(context).pushNamed(
-                                  'set_up',
-                                );
-                              }
+
+                                    
+                                    dynamic user =
+                                        await _auth.getUserDataById();
+                                    var rnd = new Random();
+                                    var next = rnd.nextDouble() * 1000000;
+                                    while (next < 100000) {
+                                      next *= 10;
+                                    }
+                                    print('rndomnumber ${next.toInt()}');
+                                    dynamic token = next.toInt();
+                                    // dynamic userName = user['userName'].toString();
+                                    // String email = user['email'].toString();
+                                    var userName = email.split('@').take(1);
+                                    // print(userName.toString());
+                                    dynamic result1 = await ApiServices()
+                                        .sendEmailVerificationToken(
+                                            userEmail: user['email'],
+                                            subject:
+                                                'Email address verification',
+                                            content:
+                                                'Verify your email for Veloce,    Use the code below to verify  your email.   $token ',
+                                            userName: userName);
+                                    if (result1['status']) {
+                                      dynamic result2 =
+                                          json.decode(result1['message']);
+
+                                      if (result2['status'] == '1') {
+                                        print(
+                                            'this is the email result ${result1['message'].toString()}');
+
+                                        Navigator.of(context).pushNamed(
+                                            'verification_screen',
+                                            arguments: {
+                                              'email': user['email'],
+                                              'token': token.toString(),
+                                            });
+                                        setState(() {
+                                          _loader = false;
+                                        });
+                                      } else {
+                                        getSnackBar(
+                                          result2['response'].toString(),
+                                          Colors.red,
+                                        );
+                                        setState(() {
+                                          _loader = false;
+                                        });
+                                        print(result2['response'].toString());
+                                      }
+                                    } else {
+                                      getSnackBar(
+                                          result1['message'], Colors.red);
+                                      print(result1['message'].toString());
+                                      setState(() {
+                                        _loader = false;
+                                      });
+                                    }
                             } else {
                               String msg = (result['message'] != null &&
                                       result['message'].isNotEmpty)

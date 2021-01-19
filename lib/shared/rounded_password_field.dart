@@ -1,5 +1,5 @@
 import 'package:Crypto_wallet/shared/text_field_container.dart';
-import 'package:Crypto_wallet/widgets/constants.dart';
+import 'package:Crypto_wallet/shared/constants.dart';
 import 'package:flutter/material.dart';
 
 class RoundedPasswordField extends StatefulWidget {
@@ -25,15 +25,19 @@ class _RoundedPasswordFieldState extends State<RoundedPasswordField> {
         obscureText: showPassword,
         onChanged: widget.onChanged,
         cursorColor: kPrimaryColor,
+       
         decoration: InputDecoration(
           hintText: widget.hintText,
           icon: Icon(
             Icons.lock,
-            color: kPrimaryColor,
+            // color: Colors.black,
           ),
+          focusColor: Colors.grey,
+          
           suffixIcon: IconButton(
             icon: Icon(Icons.visibility),
-            color: kPrimaryColor,
+            focusColor: Colors.grey,
+            // color: kPrimaryColor,
             onPressed: () {
               setState(() {
                 showPassword = !showPassword ? true : false;

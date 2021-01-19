@@ -7,8 +7,10 @@ class ChargeResponse {
   String message;
   ChargeResponseData data;
   Meta meta;
+  bool isManual;
 
-  ChargeResponse({this.status, this.message, this.data, this.meta});
+  ChargeResponse(
+      {this.status, this.message, this.data, this.meta, this.isManual = false});
 
   ChargeResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];

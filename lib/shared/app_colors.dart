@@ -37,4 +37,7 @@ const Color purpleEndEthereum = Color.fromRGBO(156, 10, 239, 1);
 const lightYellow = const Color(0xfff5eda8);
 const lightBlue = const Color(0xffd6ecd1);
 const lightBlue1 = const Color(0xffcee7c9);
-const lightgreen = const Color(0xffc9f6cd);
+// #e2f4e2
+const lightgreen = const Color(0xffe2f4e2);
+const buttonColor = const Color(0xff0e7a0d);
+const textFieldBackground = const Color(0xffe2f4e2);

@@ -6,12 +6,13 @@ import 'package:tripledes/tripledes.dart';
 class FlutterwaveUtils {
   /// Encrypts data using 3DES technology.
   /// Returns a String
+  // ignore: missing_return
   static String tripleDESEncrypt(dynamic data, String encryptionKey) {
     try {
       final blockCipher = BlockCipher(TripleDESEngine(), encryptionKey);
       return blockCipher.encodeB64(data);
     } catch (error) {
-      throw (FlutterWaveError(error));
+      print(FlutterWaveError(error));
     }
   }
 

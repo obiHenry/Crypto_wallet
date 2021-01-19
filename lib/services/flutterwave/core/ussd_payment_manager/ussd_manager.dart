@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:Crypto_wallet/services/flutterwave/utils/flutterwave_get_url.dart';
 import 'package:flutter/material.dart';
 import 'package:Crypto_wallet/services/flutterwave/models/requests/ussd/ussd_request.dart';
 import 'package:Crypto_wallet/services/flutterwave/models/responses/charge_response.dart';
@@ -40,8 +41,8 @@ class USSDPaymentManager {
       USSDRequest ussdRequest, http.Client client) async {
     final requestBody = ussdRequest.toJson();
 
-    final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
-        FlutterwaveURLS.PAY_WITH_USSD;
+    final url = getUrl(FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
+        FlutterwaveURLS.PAY_WITH_USSD);
     try {
       final http.Response response = await client.post(url,
           headers: {HttpHeaders.authorizationHeader: this.secretKey},
@@ -51,7 +52,7 @@ class USSDPaymentManager {
           ChargeResponse.fromJson(json.decode(response.body));
       return chargeResponse;
     } catch (error) {
-      throw (FlutterError(error.toString()));
+      print(error.toString());
     } finally {
       client.close();
     }

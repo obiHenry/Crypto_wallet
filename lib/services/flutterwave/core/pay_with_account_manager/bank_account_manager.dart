@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:Crypto_wallet/services/flutterwave/utils/flutterwave_get_url.dart';
 import 'package:flutter/material.dart';
 import 'package:Crypto_wallet/services/flutterwave/core/metrics/metric_manager.dart';
 import 'package:Crypto_wallet/services/flutterwave/models/requests/pay_with_bank_account/pay_with_bank_account.dart';
@@ -45,8 +46,8 @@ class BankAccountPaymentManager {
     final stopWatch = Stopwatch();
     final requestBody = bankAccountRequest.toJson();
 
-    final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
-        FlutterwaveURLS.PAY_WITH_ACCOUNT;
+    final url = getUrl(FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
+        FlutterwaveURLS.PAY_WITH_ACCOUNT);
     try {
       final http.Response response = await client.post(url,
           headers: {HttpHeaders.authorizationHeader: this.secretKey},
@@ -65,7 +66,7 @@ class BankAccountPaymentManager {
           publicKey,
           MetricManager.INITIATE_ACCOUNT_CHARGE_ERROR,
           "${stopWatch.elapsedMilliseconds}ms");
-      throw (FlutterError(error.toString()));
+      print(error.toString());
     }
   }
 }

@@ -11,8 +11,9 @@ class PaymentService {
   // String publicKey = 'FLWPUBK_TEST-SANDBOXDEMOKEY-X';
   // String encryptionKey = 'FLWSECK_TEST74e0b6c7db0e';
 
-   String publicKey = 'FLWPUBK-4ab13dc3cc43187792d94cdcb1ba7d8e-X';
-   String encryptionKey = 'dd78218a4fe9f20af0f8347a ';
+  final String publicKey = 'FLWPUBK-4ab13dc3cc43187792d94cdcb1ba7d8e-X';
+  final String encryptionKey = 'dd78218a4fe9f20af0f8347a ';
+  final String secretKey = 'FLWSECK-dd78218a4fe9bacc11cfa690367b3cd7-X';
 
   Future handlePaymentInitialization(
       BuildContext context, String amount, Map user) async {
@@ -23,17 +24,17 @@ class PaymentService {
       currency: selectedCurrency,
       context: context,
       publicKey: publicKey,
+      encryptionKey: encryptionKey,
+      secretKey: secretKey,
       email: user['email'],
       fullName: user['userName'],
       txRef: txRef,
       narration: 'Payment for products ordered',
       phoneNumber: user['mobile'],
-      
       acceptAccountPayment: true,
-      // acceptCardPayment: true,
+      acceptCardPayment: true,
       acceptUSSDPayment: true,
       isDebugMode: false,
-      encryptionKey: encryptionKey,
     );
     try {
       final ChargeResponse response =

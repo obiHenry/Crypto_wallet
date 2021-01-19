@@ -1,14 +1,16 @@
 import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/price_formatter.dart';
-import 'package:Crypto_wallet/widgets/bank_deposit_checkout_screen.dart';
-import 'package:Crypto_wallet/widgets/button.dart';
-import 'package:Crypto_wallet/widgets/outlined_number_input_field.dart';
-import 'package:Crypto_wallet/widgets/succesful_page.dart';
-import 'package:Crypto_wallet/widgets/transfer_checkout_screen.dart';
+import 'package:Crypto_wallet/shared/button.dart';
+import 'package:Crypto_wallet/shared/outlined_number_input_field.dart';
+import 'package:Crypto_wallet/shared/alert_sheet.dart';
+import 'package:Crypto_wallet/shared/transfer_checkout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:Crypto_wallet/shared/succesful_page.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/account_pin_code_setup/confirm_pin_code_screen.dart';
+import 'package:Crypto_wallet/screens/settings/users_settings_screen.dart';
 
 class TransferToBankAccount extends StatefulWidget {
   final currency;
@@ -51,9 +53,10 @@ class _TransferToBankAccountState extends State<TransferToBankAccount> {
   bool isNaira = false;
   bool isCurrency = false;
   ProgressDialog _progressDialog;
+  dynamic transactionpin;
   @override
   Widget build(BuildContext context) {
-     _progressDialog = ProgressDialog(
+    _progressDialog = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
       textDirection: TextDirection.rtl,
@@ -163,7 +166,6 @@ class _TransferToBankAccountState extends State<TransferToBankAccount> {
                           text1:
                               'from  your naira wallet to your bank account ',
                           press: () async {
-                            
                             if (balance < totalInNaira) {
                               Fluttertoast.showToast(
                                   msg:
@@ -173,93 +175,226 @@ class _TransferToBankAccountState extends State<TransferToBankAccount> {
                                   backgroundColor: Colors.black,
                                   textColor: Colors.white);
                             } else {
-                              _progressDialog.show();
-                              dynamic result = await AuthService().updateOrder(
-                                'naira',
-                                '',
-                                nairaMoney.toString(),
-                                widget.user['userName'].toString(),
-                                widget.user['email'].toString(),
-                                'withdrawOrder',
-                                widget.user['mobile'].toString(),
-                                false,
-                                widget.user['bankAccountName'],
-                              widget.user['bankName'],
-                              widget.user['bankAccountNumber'].toString(),
-                              );
+                              if (widget.user.containsKey('transactionPin')) {
+                                transactionpin = widget.user['transactionPin'];
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ConfirmPinCodeScreen(
+                                        initailCode: transactionpin,
+                                        fromTransaction: true,
+                                        doSuccessMethod: () async {
+                                          print('is a success');
 
-                              if (result['status']) {
-                                dynamic remainedNairaBalance =
-                                    balance - totalInNaira;
+                                          _progressDialog.show();
+                                          dynamic result =
+                                              await AuthService().updateOrder(
+                                            'naira',
+                                            '',
+                                            nairaMoney.toString(),
+                                            widget.user['userName'].toString(),
+                                            widget.user['email'].toString(),
+                                            'withdrawOrder',
+                                            widget.user['mobile'].toString(),
+                                            false,
+                                            widget.user['bankAccountName'],
+                                            widget.user['bankName'],
+                                            widget.user['bankAccountNumber']
+                                                .toString(),
+                                          );
 
-                                dynamic result1 = await AuthService()
-                                    .updateWallet(
-                                        remainedNairaBalance.toString(),
-                                        'naira');
-                                if (result1['status']) {
-                                  dynamic result2 = await AuthService()
-                                      .updateTransactionList(
-                                          'withdraw',
-                                          'Naira Wallet',
-                                          'Bank Account',
-                                          '',
-                                          nairaMoney.toString(),
-                                          'nairaWalletTransactionList',
-                                          '',
-                                          false);
+                                          if (result['status']) {
+                                            dynamic remainedNairaBalance =
+                                                balance - totalInNaira;
 
-                                  if (result2['status']) {
-                                    _progressDialog.hide();
-                                    Navigator.pushAndRemoveUntil(
+                                            dynamic result1 =
+                                                await AuthService()
+                                                    .updateWallet(
+                                                        remainedNairaBalance
+                                                            .toString(),
+                                                        'naira');
+                                            if (result1['status']) {
+                                              dynamic result2 = await AuthService()
+                                                  .updateTransactionList(
+                                                      'withdrawal',
+                                                      'Naira Wallet',
+                                                      'Bank Account',
+                                                      '',
+                                                      nairaMoney.toString(),
+                                                      'nairaWalletTransactionList',
+                                                      '',
+                                                      false);
+
+                                              if (result2['status']) {
+                                                _progressDialog.hide();
+                                                Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          SuccessfulPage(
+                                                        text:
+                                                            'Order recieved , you will receive your money in the next 24 hours',
+                                                        text1:
+                                                            'You\'ve successfully placed order to withdraw sum of \₦${formatPrice(nairaMoney)}',
+                                                        press: () {
+                                                          Navigator.pushAndRemoveUntil(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          TabScreen()),
+                                                              (route) => false);
+                                                        },
+                                                      ),
+                                                    ),
+                                                    (route) => false);
+                                              } else {
+                                                _progressDialog.hide();
+                                                Fluttertoast.showToast(
+                                                    msg: result2['message'],
+                                                    toastLength:
+                                                        Toast.LENGTH_SHORT,
+                                                    gravity:
+                                                        ToastGravity.BOTTOM,
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    textColor: Colors.white);
+                                              }
+                                            } else {
+                                              _progressDialog.hide();
+                                              Fluttertoast.showToast(
+                                                  msg: result1['message'],
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  backgroundColor: Colors.black,
+                                                  textColor: Colors.white);
+                                            }
+                                          } else {
+                                            _progressDialog.hide();
+                                            String msg = (result['message'] !=
+                                                        null &&
+                                                    result['message']
+                                                        .isNotEmpty)
+                                                ? result['message']
+                                                : 'An unknown error occured; retry';
+                                            Fluttertoast.showToast(
+                                                msg: msg,
+                                                toastLength: Toast.LENGTH_SHORT,
+                                                gravity: ToastGravity.BOTTOM,
+                                                backgroundColor: Colors.black,
+                                                textColor: Colors.white);
+                                          }
+                                        },
+                                        title: 'verify Transaction pin',
+                                        subtitle: 'Enter your transaction pin ',
+                                      ),
+                                    ));
+                              } else {
+                                _showBottomSheet(AlertSheet(
+                                  text1:
+                                      'We noticed you don\'t have a transaction pin yet',
+                                  text2:
+                                      'you can create one in your settings to be able to transact ',
+                                  text3: 'Create one now',
+                                  press: () {
+                                    Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => SuccessfulPage(
-                                            text:
-                                                'money is  successfully transferred, you will receive your money in the next 24 hours',
-                                            text1:
-                                                'You\'ve successfully deposited  \₦${formatPrice(nairaMoney)}',
-                                            press: () {
-                                              Navigator.pushAndRemoveUntil(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          TabScreen()),
-                                                  (route) => false);
-                                            },
-                                          ),
-                                        ),
-                                        (route) => false);
-                                  } else {
-                                    _progressDialog.hide();
-                                    Fluttertoast.showToast(
-                                        msg: result2['message'],
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        backgroundColor: Colors.black,
-                                        textColor: Colors.white);
-                                  }
-                                } else {
-                                  _progressDialog.hide();
-                                  Fluttertoast.showToast(
-                                      msg: result1['message'],
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.BOTTOM,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.white);
-                                }
-                              } else {
-                                _progressDialog.hide();
-                                String msg = (result['message'] != null &&
-                                        result['message'].isNotEmpty)
-                                    ? result['message']
-                                    : 'An unknown error occured; retry';
-                                Fluttertoast.showToast(
-                                    msg: msg,
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM,
-                                    backgroundColor: Colors.black,
-                                    textColor: Colors.white);
+                                            builder: (context) =>
+                                                UsersSettingsScreen()));
+                                  },
+                                ));
                               }
+
+                              // _progressDialog.show();
+                              // dynamic result = await AuthService().updateOrder(
+                              //   'naira',
+                              //   '',
+                              //   nairaMoney.toString(),
+                              //   widget.user['userName'].toString(),
+                              //   widget.user['email'].toString(),
+                              //   'withdrawOrder',
+                              //   widget.user['mobile'].toString(),
+                              //   false,
+                              //   widget.user['bankAccountName'],
+                              //   widget.user['bankName'],
+                              //   widget.user['bankAccountNumber'].toString(),
+                              // );
+
+                              // if (result['status']) {
+                              //   dynamic remainedNairaBalance =
+                              //       balance - totalInNaira;
+
+                              //   dynamic result1 = await AuthService()
+                              //       .updateWallet(
+                              //           remainedNairaBalance.toString(),
+                              //           'naira');
+                              //   if (result1['status']) {
+                              //     dynamic result2 = await AuthService()
+                              //         .updateTransactionList(
+                              //             'withdraw',
+                              //             'Naira Wallet',
+                              //             'Bank Account',
+                              //             '',
+                              //             nairaMoney.toString(),
+                              //             'nairaWalletTransactionList',
+                              //             '',
+                              //             false);
+
+                              //     if (result2['status']) {
+                              //       _progressDialog.hide();
+                              //       Navigator.pushAndRemoveUntil(
+                              //           context,
+                              //           MaterialPageRoute(
+                              //             builder: (context) => SuccessfulPage(
+                              //               text:
+                              //                   'money is  successfully transferred, you will receive your money in the next 24 hours',
+                              //               text1:
+                              //                   'You\'ve successfully deposited  \₦${formatPrice(nairaMoney)}',
+                              //               press: () {
+                              //                 Navigator.pushAndRemoveUntil(
+                              //                     context,
+                              //                     MaterialPageRoute(
+                              //                         builder: (context) =>
+                              //                             TabScreen()),
+                              //                     (route) => false);
+                              //               },
+                              //             ),
+                              //           ),
+                              //           (route) => false);
+                              //     } else {
+                              //       _progressDialog.hide();
+                              //       Fluttertoast.showToast(
+                              //           msg: result2['message'],
+                              //           toastLength: Toast.LENGTH_SHORT,
+                              //           gravity: ToastGravity.BOTTOM,
+                              //           backgroundColor: Colors.black,
+                              //           textColor: Colors.white);
+                              //     }
+                              //   } else {
+                              //     _progressDialog.hide();
+                              //     Fluttertoast.showToast(
+                              //         msg: result1['message'],
+                              //         toastLength: Toast.LENGTH_SHORT,
+                              //         gravity: ToastGravity.BOTTOM,
+                              //         backgroundColor: Colors.black,
+                              //         textColor: Colors.white);
+                              //   }
+                              // } else {
+                              //   _progressDialog.hide();
+                              //   String msg = (result['message'] != null &&
+                              //           result['message'].isNotEmpty)
+                              //       ? result['message']
+                              //       : 'An unknown error occured; retry';
+                              //   Fluttertoast.showToast(
+                              //       msg: msg,
+                              //       toastLength: Toast.LENGTH_SHORT,
+                              //       gravity: ToastGravity.BOTTOM,
+                              //       backgroundColor: Colors.black,
+                              //       textColor: Colors.white);
+                              // }
                             }
                           }),
                     );

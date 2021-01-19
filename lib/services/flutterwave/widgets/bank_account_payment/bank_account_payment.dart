@@ -35,6 +35,7 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
   final TextEditingController _accountNumberController =
       TextEditingController();
   final TextEditingController _bankController = TextEditingController();
+  bool _fetchBanksFailed = false;
 
   BuildContext _loadingDialogContext;
 
@@ -161,6 +162,12 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
   }
 
   Widget _banks() {
+    if (_fetchBanksFailed) {
+      if (mounted)
+        setState(() {
+          _fetchBanksFailed = false;
+        });
+    }
     return FutureBuilder(
         future: this.banks,
         builder: (BuildContext context,
@@ -169,6 +176,7 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
             return this._bankLists(snapshot.data);
           }
           if (snapshot.hasError) {
+            _fetchBanksFailed = true;
             return Center(child: Text("Unable to fetch banks."));
           }
           return Center(child: CircularProgressIndicator());

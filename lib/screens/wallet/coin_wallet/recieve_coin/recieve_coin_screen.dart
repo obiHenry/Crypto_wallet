@@ -1,6 +1,6 @@
 
-import 'package:Crypto_wallet/widgets/button.dart';
-import 'package:Crypto_wallet/widgets/text_botton.dart';
+import 'package:Crypto_wallet/shared/button.dart';
+import 'package:Crypto_wallet/shared/text_botton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart'; 

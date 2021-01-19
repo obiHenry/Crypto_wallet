@@ -67,7 +67,7 @@ return null;
   }
 
   static String firstName(String value) {
-    if (value.isEmpty) {
+    if (value == null) {
       return 'please enter first name';
     }
    

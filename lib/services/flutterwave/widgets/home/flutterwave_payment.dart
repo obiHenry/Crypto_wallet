@@ -1,3 +1,6 @@
+import 'package:Crypto_wallet/services/flutterwave/widgets/flutterwave_view_utils.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:Crypto_wallet/services/flutterwave/core/card_payment_manager/card_payment_manager.dart';
 import 'package:Crypto_wallet/services/flutterwave/core/flutterwave_payment_manager.dart';
@@ -7,6 +10,8 @@ import 'package:Crypto_wallet/services/flutterwave/models/responses/charge_respo
 import 'package:Crypto_wallet/services/flutterwave/widgets/bank_account_payment/bank_account_payment.dart';
 import 'package:Crypto_wallet/services/flutterwave/widgets/card_payment/card_payment.dart';
 import 'package:Crypto_wallet/services/flutterwave/widgets/ussd_payment/pay_with_ussd.dart';
+import 'package:url_launcher/url_launcher.dart';
+// import 'url';
 import 'flutterwave_payment_option.dart';
 
 class FlutterwaveUI extends StatefulWidget {
@@ -58,19 +63,22 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
                             Text(
                               "SECURED BY FLUTTERWAVE",
                               style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 10.0,
-                                  letterSpacing: 1.0),
+                                color: Colors.black,
+                                fontSize: 10.0,
+                                letterSpacing: 1.0,
+                              ),
                             )
                           ],
                         ),
                         SizedBox(
                           width: double.infinity,
-                          height: 100,
+                          height: kIsWeb ? 100 : 5,
                         ),
                         Container(
                           width: double.infinity,
-                          margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                          margin: kIsWeb
+                              ? EdgeInsets.fromLTRB(0, 100, 0, 0)
+                              : EdgeInsets.fromLTRB(0, 5, 0, 0),
                           child: Text(
                             "How would you \nlike to pay?",
                             textAlign: TextAlign.left,
@@ -168,6 +176,84 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
                             ],
                           ),
                         ),
+                        Visibility(
+                          visible: paymentManager.manualBankTransfer,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 15.0),
+                              Container(
+                                color: Color(0xFFfff1d0),
+                                padding: EdgeInsets.all(8.0),
+                                width: double.infinity,
+                                child: RichText(
+                                  text: TextSpan(
+                                    text:
+                                        "Having issues paying with the above methods?\nYou can pay to the following account details and send a picture of your payment via WhatsApp to ",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16.0,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text: "+234 703 3671 000\n\n",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            decoration:
+                                                TextDecoration.underline,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              launch(
+                                                  'https://api.whatsapp.com/send?phone=2347033671000');
+                                            }),
+                                      TextSpan(
+                                        text: "Account Number: ",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: "1017206366\n",
+                                      ),
+                                      TextSpan(
+                                        text: "Account Name: ",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text:
+                                            "customizednativeschool.com ltd\n",
+                                      ),
+                                      TextSpan(
+                                        text: "Bank name: ",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: "Zenith Bank\n",
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Divider(
+                                height: 1,
+                                color: Colors.pink,
+                              ),
+                              SizedBox(
+                                height: 50.0,
+                                child: FlutterwavePaymentOption(
+                                  handleClick: this._confirmManualPayment,
+                                  buttonText: "I have paid",
+                                  isManual: true,
+                                ),
+                              )
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -226,5 +312,20 @@ class _FlutterwaveUIState extends State<FlutterwaveUI> {
       ),
     );
     this._scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  void _confirmManualPayment() {
+    FlutterwaveViewUtils.confirmManualPaymentModal(context,
+        widget._flutterwavePaymentManager.amount, _saveManualPaymentOrder);
+  }
+
+  void _saveManualPaymentOrder() {
+    Navigator.pop(this.context);
+    ChargeResponse response = ChargeResponse(
+      status: 'success',
+      message: "Payment made; pending confirmation",
+      isManual: true,
+    );
+    Navigator.pop(this.context, response);
   }
 }

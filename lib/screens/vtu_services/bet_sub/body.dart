@@ -1,9 +1,9 @@
 import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
 import 'package:Crypto_wallet/services/dialog_service.dart';
 import 'package:Crypto_wallet/services/validator.dart';
-import 'package:Crypto_wallet/widgets/alert_sheet.dart';
-import 'package:Crypto_wallet/widgets/bills-payment_form.dart';
-import 'package:Crypto_wallet/widgets/succesful_page.dart';
+import 'package:Crypto_wallet/shared/alert_sheet.dart';
+import 'package:Crypto_wallet/shared/bills-payment_form.dart';
+import 'package:Crypto_wallet/shared/succesful_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Crypto_wallet/services/auth.dart';

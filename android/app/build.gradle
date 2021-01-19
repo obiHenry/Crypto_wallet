@@ -32,6 +32,11 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+    // rootProject.ext {
+    //     set('FlutterFire', [
+    //     FirebaseSDKVersion: '25.12.0'
+    //     ])
+    // }
 
     lintOptions {
         disable 'InvalidPackage'
@@ -46,6 +51,14 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
+    //   signingConfigs {
+    //     release {
+    //         keyAlias keystoreProperties['keyAlias']
+    //         keyPassword keystoreProperties['keyPassword']
+    //         storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+    //         storePassword keystoreProperties['storePassword']
+    //     }
+    // }
 
     buildTypes {
         release {
@@ -71,13 +84,19 @@ android {
     }
 }
 
+//configurations {
+//    compile.exclude group: 'androidx.annotation', module: 'annotation'
+//}
+
 flutter {
     source '../..'
 }
 
 dependencies {
     def multidex_version = "2.0.1"
-    implementation 'androidx.multidex:multidex:$multidex_version'
+    implementation "androidx.multidex:multidex:2.0.1"
+
+    // implementation 'androidx.multidex:multidex:$multidex_version'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation platform('com.google.firebase:firebase-bom:25.12.0')

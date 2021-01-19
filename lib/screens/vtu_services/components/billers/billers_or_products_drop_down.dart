@@ -1,5 +1,5 @@
 import 'package:Crypto_wallet/services/price_formatter.dart';
-import 'package:Crypto_wallet/widgets/constants.dart';
+import 'package:Crypto_wallet/shared/constants.dart';
 import 'package:flutter/material.dart';
 
 class BillersOrProductsDropDown extends StatefulWidget {
@@ -104,8 +104,8 @@ class _BillersOrProductsDropDownState extends State<BillersOrProductsDropDown> {
                   amount = double.parse(option['PRODUCT_AMOUNT']) + charge;
                 }
 
-                if (option['PACKAGE_AMOUNT'] != null) {
-                  cableAmount = double.parse(option['PACKAGE_AMOUNT']);
+                if (option['package'] != null) {
+                  cableAmount = double.parse(option['price']);
                 }
 
                 if (option['MINIMUN_AMOUNT'] != null) {
@@ -117,8 +117,8 @@ class _BillersOrProductsDropDownState extends State<BillersOrProductsDropDown> {
                   value = option['network'].toString();
                 } else if (option['PRODUCT_NAME'] != null) {
                   value = option['PRODUCT_NAME'].toString();
-                } else if (option['PACKAGE_NAME'] != null) {
-                  value = option['PACKAGE_NAME'].toString();
+                } else if (option['package'] != null) {
+                  value = option['package'].toString();
                 } else if (option['PRODUCT_TYPE'] != null) {
                   value = option['PRODUCT_TYPE'].toString();
                 }
@@ -136,9 +136,9 @@ class _BillersOrProductsDropDownState extends State<BillersOrProductsDropDown> {
                             ? Text(
                                 '${option['PRODUCT_NAME']} (\₦${formatPrice(amount.toStringAsFixed(0))})')
                             : Container(),
-                        option['PACKAGE_NAME'] != null
+                        option['package'] != null
                             ? Text(
-                                '${option['PACKAGE_NAME']} (\₦${formatPrice(cableAmount.toStringAsFixed(0))})')
+                                '${option['package']} (\₦${formatPrice(cableAmount.toStringAsFixed(0))})')
                             : Container(),
                         option['PRODUCT_TYPE'] != null
                             ? Text(

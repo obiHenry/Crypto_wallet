@@ -2,6 +2,7 @@
 import 'package:Crypto_wallet/screens/vtu_services/bet_sub/body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:Crypto_wallet/shared/app_colors.dart';
 
 class BetSubScreen extends StatefulWidget {
   final walletList;
@@ -30,7 +31,7 @@ class _BetSubScreenState extends State<BetSubScreen> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          backgroundColor: Colors.lightGreen,
+          backgroundColor: blueMain,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
           ),

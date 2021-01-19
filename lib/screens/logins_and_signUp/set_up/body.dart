@@ -4,8 +4,8 @@ import 'package:Crypto_wallet/services/aaccount_validator.dart';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/validator.dart';
 import 'package:Crypto_wallet/shared/app_colors.dart';
-import 'package:Crypto_wallet/widgets/drop_down_input_field.dart';
-import 'package:Crypto_wallet/widgets/outlined_number_input_field.dart';
+import 'package:Crypto_wallet/shared/drop_down_input_field.dart';
+import 'package:Crypto_wallet/shared/outlined_number_input_field.dart';
 import 'package:flutter/material.dart';
 
 class Body extends StatefulWidget {
@@ -90,8 +90,9 @@ class _BodyState extends State<Body> {
     accountName.clear();
     accountIsNull = false;
 
-    if (accountNumber.length < 10 && bank.isEmpty) {
-    } else {
+    if (accountNumber.length == 10 && bank.isNotEmpty) {
+      //   return null
+      // } else {
       setState(() {
         isValidating = true;
         enableButton = false;
@@ -435,11 +436,15 @@ class _BodyState extends State<Body> {
                                       });
                                     }
                                     if (result['status']) {
-                                      Navigator.pushNamedAndRemoveUntil(context,
-                                          'tab_screen', (route) => false);
-                                      getSnackBar(
-                                          'information saved successfully',
-                                          Colors.green);
+                                      Navigator.pushNamed(
+                                          context, 'pin_code_screen');
+
+
+                                      // Navigator.pushNamedAndRemoveUntil(context,
+                                      //     'tab_screen', (route) => false);
+                                      // getSnackBar(
+                                      //     'information saved successfully',
+                                      //     Colors.green);
                                     } else {
                                       getSnackBar(
                                         result['message'],

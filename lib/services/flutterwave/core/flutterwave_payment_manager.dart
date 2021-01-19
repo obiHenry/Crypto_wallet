@@ -27,27 +27,31 @@ class FlutterwavePaymentManager {
   bool acceptUSSDPayment;
   String country;
 
-  FlutterwavePaymentManager(
-      {@required this.publicKey,
-      @required this.encryptionKey,
-      @required this.secretKey,
-      @required this.currency,
-      @required this.amount,
-      @required this.email,
-      @required this.fullName,
-      @required this.txRef,
-      @required this.isDebugMode,
-      @required this.phoneNumber,
-      this.country,
-      this.acceptAccountPayment = false,
-      this.acceptBankTransferPayment = false,
-      this.acceptCardPayment = false,
-      this.acceptUSSDPayment = false,
-      this.frequency,
-      this.duration,
-      this.isPermanent,
-      this.narration,
-      this.network = ""});
+  bool manualBankTransfer;
+
+  FlutterwavePaymentManager({
+    @required this.publicKey,
+    @required this.encryptionKey,
+    @required this.secretKey,
+    @required this.currency,
+    @required this.amount,
+    @required this.email,
+    @required this.fullName,
+    @required this.txRef,
+    @required this.isDebugMode,
+    @required this.phoneNumber,
+    this.country,
+    this.acceptAccountPayment = false,
+    this.acceptBankTransferPayment = false,
+    this.acceptCardPayment = false,
+    this.acceptUSSDPayment = false,
+    this.frequency,
+    this.duration,
+    this.isPermanent,
+    this.narration,
+    this.network = "",
+    this.manualBankTransfer = false,
+  });
 
   /// Returns an instance of CardPaymentManager
   CardPaymentManager getCardPaymentManager() {

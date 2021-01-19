@@ -7,14 +7,14 @@ import 'package:Crypto_wallet/screens/wallet/coin_wallet/send_coin/send_coin_scr
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/dialog_service.dart';
 import 'package:Crypto_wallet/services/price_formatter.dart';
-import 'package:Crypto_wallet/services/recieve_coin.dart';
+import 'package:Crypto_wallet/services/api_services.dart';
 import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
 import 'package:Crypto_wallet/screens/settings/users_settings_screen.dart';
 import 'package:Crypto_wallet/screens/transactions/transaction_list_screen.dart';
 import 'package:Crypto_wallet/screens/vtu_services/vtu_services_screen.dart';
-import 'package:Crypto_wallet/widgets/alert_sheet.dart';
-import 'package:Crypto_wallet/widgets/bottom_navigation_view.dart';
-import 'package:Crypto_wallet/widgets/transaction_item_card.dart';
+import 'package:Crypto_wallet/shared/alert_sheet.dart';
+import 'package:Crypto_wallet/shared/bottom_navigation_view.dart';
+import 'package:Crypto_wallet/shared/transaction_item_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -229,168 +229,137 @@ class _WalletState extends State<Wallet> {
                         ),
                       ),
                       SizedBox(height: 30),
+                      // SizedBox(height: 60,),
 
-                      Container(
-                        height: 60,
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        decoration: BoxDecoration(
-                          color: Colors.white24,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            !_loader1
-                                ? InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        _loader1 = true;
-                                      });
-                                      if (balance <= 0) {
-                                        _showBottomSheet(AlertSheet(
-                                          text1:
-                                              'No coin was found in your wallet',
-                                          text2: 'you can buy from us',
-                                          text3: 'Buy now',
-                                          press: () {
-                                            _showBottomSheet(BuyCoinScreen(
-                                              currency: widget.currency,
-                                              balance: widget.balance,
-                                              user: widget.user,
-                                              nairaRate:
-                                                  widget.nairaVeloceSellRate,
-                                            ));
-                                          },
-                                        ));
-                                        Fluttertoast.showToast(
-                                            msg:
-                                                'You don\'t have any money to send ',
-                                            toastLength: Toast.LENGTH_SHORT,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.black,
-                                            textColor: Colors.white);
-                                        setState(() {
-                                          _loader1 = false;
-                                        });
-                                      } else {
-                                        _showBottomSheet(SendCoinScreen(
-                                          currency: widget.currency,
-                                          balance: widget.balance,
-                                          user: widget.user,
-                                        ));
-                                        setState(() {
-                                          _loader1 = false;
-                                        });
-                                      }
-                                    },
-                                    splashColor: yellowEnd,
-                                    child: Container(
-                                      // width: MediaQuery.of(context).size.width *
-                                      //     0.35,
-                                      height: 50,
-                                      alignment: Alignment.center,
-                                      // decoration: BoxDecoration(
-                                      //   color: Colors.white24,
-                                      //   borderRadius: BorderRadius.all(
-                                      //     Radius.circular(10),
-                                      //   ),
-                                      // ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          SvgPicture.asset(
-                                              'assets/images/send.svg'),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Container(
-                                            child: Text(
-                                              'Send',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                : CircularProgressIndicator(),
-                            SizedBox(width: 30),
-                            !_loader
-                                ? InkWell(
-                                    splashColor: yellowEnd,
-                                    onTap: () async {
-                                      setState(() {
-                                        _loader = true;
-                                      });
-
-                                      dynamic userId =
-                                          FirebaseAuth.instance.currentUser.uid;
-                                      print(widget.currency['currency']);
-                                      dynamic value =
-                                          await RecieveCoin().recieveCoin(
-                                        widget.currency['currency'],
-                                        userId,
-                                        widget.user['email'],
-                                      );
-
-                                      if (value['status']) {
-                                        _showBottomSheet(RecieveCoinScreen(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          !_loader1
+                              ? InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _loader1 = true;
+                                    });
+                                    if (balance <= 0) {
+                                      _showBottomSheet(AlertSheet(
+                                        text1:
+                                            'No coin was found in your wallet',
+                                        text2: 'you can buy from us',
+                                        text3: 'Buy now',
+                                        press: () {
+                                          _showBottomSheet(BuyCoinScreen(
                                             currency: widget.currency,
-                                            value: value));
-                                      } else {
-                                        String msg = (value['message'] !=
-                                                    null &&
-                                                value['message'].isNotEmpty)
-                                            ? value['message']
-                                            : 'An unknown error occured; retry';
-                                        DialogService().getSnackBar(
-                                          context,
-                                          msg,
-                                          Colors.red,
-                                        );
-                                      }
+                                            balance: widget.balance,
+                                            user: widget.user,
+                                            nairaRate:
+                                                widget.nairaVeloceSellRate,
+                                          ));
+                                        },
+                                      ));
+                                      Fluttertoast.showToast(
+                                          msg:
+                                              'You don\'t have any money to send ',
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          backgroundColor: Colors.black,
+                                          textColor: Colors.white);
                                       setState(() {
-                                        _loader = false;
+                                        _loader1 = false;
                                       });
-
-                                      // print('dkjfkz$value');
-                                    },
-                                    child: Container(
-                                      // width: MediaQuery.of(context).size.width *
-                                      //     0.35,
-                                      height: 50,
-                                      alignment: Alignment.center,
-
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          SvgPicture.asset(
-                                              'assets/images/receive.svg'),
-                                          Container(
-                                            child: Text(
-                                              'Receive',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    } else {
+                                      _showBottomSheet(SendCoinScreen(
+                                        currency: widget.currency,
+                                        balance: widget.balance,
+                                        user: widget.user,
+                                      ));
+                                      setState(() {
+                                        _loader1 = false;
+                                      });
+                                    }
+                                  },
+                                  splashColor: yellowEnd,
+                                  child: Container(
+                                    width: 80,
+                                    height: 35,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(50),
+                                        ),
+                                        border: Border.all(
+                                            color: blueMain, width: 2)),
+                                    child: Text(
+                                      'Send',
+                                      style: TextStyle(
+                                          color: blueMain,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
                                     ),
-                                  )
-                                : CircularProgressIndicator(),
-                            SizedBox(
-                              width: 30,
-                            ),
-                            InkWell(
+                                  ),
+                                )
+                              : CircularProgressIndicator(),
+                          !_loader
+                              ? InkWell(
+                                  splashColor: yellowEnd,
+                                  onTap: () async {
+                                    setState(() {
+                                      _loader = true;
+                                    });
+
+                                    dynamic userId =
+                                        FirebaseAuth.instance.currentUser.uid;
+                                    print(widget.currency['currency']);
+                                    dynamic value =
+                                        await ApiServices().recieveCoin(
+                                      widget.currency['currency'],
+                                      userId,
+                                      widget.user['email'],
+                                    );
+
+                                    if (value['status']) {
+                                      _showBottomSheet(RecieveCoinScreen(
+                                          currency: widget.currency,
+                                          value: value));
+                                    } else {
+                                      String msg = (value['message'] != null &&
+                                              value['message'].isNotEmpty)
+                                          ? value['message']
+                                          : 'An unknown error occured; retry';
+                                      DialogService().getSnackBar(
+                                        context,
+                                        msg,
+                                        Colors.red,
+                                      );
+                                    }
+                                    setState(() {
+                                      _loader = false;
+                                    });
+
+                                    // print('dkjfkz$value');
+                                  },
+                                  child: Container(
+                                    width: 80,
+                                    height: 35,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(50),
+                                        ),
+                                        border: Border.all(
+                                            color: blueMain, width: 2)),
+                                    child: Text(
+                                      'Recieve',
+                                      style: TextStyle(
+                                          color: blueMain,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                )
+                              : CircularProgressIndicator(),
+                               InkWell(
                               onTap: () {
                                 _showBottomSheet(BuyCoinScreen(
                                   currency: widget.currency,
@@ -398,41 +367,25 @@ class _WalletState extends State<Wallet> {
                                   user: widget.user,
                                   nairaRate: widget.nairaVeloceSellRate,
                                 ));
-                              },
-                              child: Container(
-                                // width: MediaQuery.of(context).size.width *
-                                //     0.35,
-                                height: 50,
-                                alignment: Alignment.center,
-
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Container(
-                                      width: 50,
-                                      height: 30,
-                                      child:
-                                          Image.asset('assets/images/buy.png'),
-                                    ),
-                                    // SizedBox(
-                                    //   width: 5,
-                                    // ),
-                                    Container(
-                                      child: Text(
-                                        'Buy',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ),
-                                  ],
+                              },child:
+                          Container(
+                            width: 80,
+                            height: 35,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: blueMain,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(50),
                                 ),
-                              ),
+                                border: Border.all(color: blueMain, width: 2)),
+                            child: Text(
+                              'Buy',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500),
                             ),
-                            SizedBox(
-                              width: 30,
-                            ),
+                          ),),
                             InkWell(
                               onTap: () {
                                 _showBottomSheet(SellCoinScreen(
@@ -442,37 +395,231 @@ class _WalletState extends State<Wallet> {
                                   nairaRate: widget.nairaVeloceBuyRate,
                                 ));
                               },
-                              child: Container(
-                                height: 50,
-                                alignment: Alignment.center,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Container(
-                                      width: 40,
-                                      height: 30,
-                                      child: Image.asset(
-                                          'assets/images/selling.png'),
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Container(
-                                      child: Text(
-                                        'Sell',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ),
-                                  ],
+                              child:
+                          Container(
+                            width: 80,
+                            height: 35,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(50),
                                 ),
-                              ),
-                            )
-                          ],
-                        ),
+                                border: Border.all(color: blueMain, width: 2)),
+                            child: Text(
+                              'Sell',
+                              style: TextStyle(
+                                  color: blueMain,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),),
+                        ],
                       ),
+
+                      // Container(
+                      //   height: 60,
+                      //   width: MediaQuery.of(context).size.width * 0.9,
+                      //   decoration: BoxDecoration(
+                      //     color: Colors.white24,
+                      //     borderRadius: BorderRadius.all(
+                      //       Radius.circular(10),
+                      //     ),
+                      //   ),
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       // !_loader1
+                      //       //     ? InkWell(
+                      //       //         onTap: () {
+
+                      //       //         child: Container(
+                      //       //           // width: MediaQuery.of(context).size.width *
+                      //       //           //     0.35,
+                      //       //           height: 50,
+                      //       //           alignment: Alignment.center,
+                      //       //           // decoration: BoxDecoration(
+                      //       //           //   color: Colors.white24,
+                      //       //           //   borderRadius: BorderRadius.all(
+                      //       //           //     Radius.circular(10),
+                      //       //           //   ),
+                      //       //           // ),
+                      //       //           child: Column(
+                      //       //             mainAxisAlignment:
+                      //       //                 MainAxisAlignment.center,
+                      //       //             children: <Widget>[
+                      //       //               SvgPicture.asset(
+                      //       //                   'assets/images/send.svg'),
+                      //       //               SizedBox(
+                      //       //                 width: 5,
+                      //       //               ),
+                      //       //               Container(
+                      //       //                 child: Text(
+                      //       //                   'Send',
+                      //       //                   style: TextStyle(
+                      //       //                       color: Colors.white,
+                      //       //                       fontSize: 17,
+                      //       //                       fontWeight: FontWeight.w500),
+                      //       //                 ),
+                      //       //               ),
+                      //       //             ],
+                      //       //           ),
+                      //       //         ),
+                      //       //       )
+                      //       //     : CircularProgressIndicator(),
+                      //       // SizedBox(width: 30),
+                      //       // !_loader
+                      //       //     ? InkWell(
+                      //       //         splashColor: yellowEnd,
+                      //       //         onTap: () async {
+                      //       //           setState(() {
+                      //       //             _loader = true;
+                      //       //           });
+
+                      //       //           dynamic userId =
+                      //       //               FirebaseAuth.instance.currentUser.uid;
+                      //       //           print(widget.currency['currency']);
+                      //       //           dynamic value =
+                      //       //               await ApiServices().recieveCoin(
+                      //       //             widget.currency['currency'],
+                      //       //             userId,
+                      //       //             widget.user['email'],
+                      //       //           );
+
+                      //       //           if (value['status']) {
+                      //       //             _showBottomSheet(RecieveCoinScreen(
+                      //       //                 currency: widget.currency,
+                      //       //                 value: value));
+                      //       //           } else {
+                      //       //             String msg = (value['message'] !=
+                      //       //                         null &&
+                      //       //                     value['message'].isNotEmpty)
+                      //       //                 ? value['message']
+                      //       //                 : 'An unknown error occured; retry';
+                      //       //             DialogService().getSnackBar(
+                      //       //               context,
+                      //       //               msg,
+                      //       //               Colors.red,
+                      //       //             );
+                      //       //           }
+                      //       //           setState(() {
+                      //       //             _loader = false;
+                      //       //           });
+
+                      //       //           // print('dkjfkz$value');
+                      //       //         },
+                      //       //         child: Container(
+                      //       //           // width: MediaQuery.of(context).size.width *
+                      //       //           //     0.35,
+                      //       //           height: 50,
+                      //       //           alignment: Alignment.center,
+
+                      //       //           child: Column(
+                      //       //             mainAxisAlignment:
+                      //       //                 MainAxisAlignment.center,
+                      //       //             children: <Widget>[
+                      //       //               SvgPicture.asset(
+                      //       //                   'assets/images/receive.svg'),
+                      //       //               Container(
+                      //       //                 child: Text(
+                      //       //                   'Receive',
+                      //       //                   style: TextStyle(
+                      //       //                       color: Colors.white,
+                      //       //                       fontSize: 17,
+                      //       //                       fontWeight: FontWeight.w500),
+                      //       //                 ),
+                      //       //               ),
+                      //       //             ],
+                      //       //           ),
+                      //       //         ),
+                      //       //       )
+                      //       //     : CircularProgressIndicator(),
+                      //       // SizedBox(
+                      //       //   width: 30,
+                      //       // ),
+                      //       // InkWell(
+                      //       //   onTap: () {
+                      //       //     _showBottomSheet(BuyCoinScreen(
+                      //       //       currency: widget.currency,
+                      //       //       balance: widget.balance,
+                      //       //       user: widget.user,
+                      //       //       nairaRate: widget.nairaVeloceSellRate,
+                      //       //     ));
+                      //       //   },
+                      //       //   child: Container(
+                      //       //     // width: MediaQuery.of(context).size.width *
+                      //       //     //     0.35,
+                      //       //     height: 50,
+                      //       //     alignment: Alignment.center,
+
+                      //       //     child: Column(
+                      //       //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       //       children: <Widget>[
+                      //       //         Container(
+                      //       //           width: 50,
+                      //       //           height: 30,
+                      //       //           child:
+                      //       //               Image.asset('assets/images/buy.png'),
+                      //       //         ),
+                      //       //         // SizedBox(
+                      //       //         //   width: 5,
+                      //       //         // ),
+                      //       //         Container(
+                      //       //           child: Text(
+                      //       //             'Buy',
+                      //       //             style: TextStyle(
+                      //       //                 color: Colors.white,
+                      //       //                 fontSize: 17,
+                      //       //                 fontWeight: FontWeight.w500),
+                      //       //           ),
+                      //       //         ),
+                      //       //       ],
+                      //       //     ),
+                      //       //   ),
+                      //       // ),
+                      //       // SizedBox(
+                      //       //   width: 30,
+                      //       // ),
+                      //       // InkWell(
+                      //       //   onTap: () {
+                      //       //     _showBottomSheet(SellCoinScreen(
+                      //       //       currency: widget.currency,
+                      //       //       balance: widget.balance,
+                      //       //       user: widget.user,
+                      //       //       nairaRate: widget.nairaVeloceBuyRate,
+                      //       //     ));
+                      //       //   },
+                      //       //   child: Container(
+                      //       //     height: 50,
+                      //       //     alignment: Alignment.center,
+                      //       //     child: Column(
+                      //       //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       //       children: <Widget>[
+                      //       //         Container(
+                      //       //           width: 40,
+                      //       //           height: 30,
+                      //       //           child: Image.asset(
+                      //       //               'assets/images/selling.png'),
+                      //       //         ),
+                      //       //         SizedBox(
+                      //       //           width: 5,
+                      //       //         ),
+                      //       //         Container(
+                      //       //           child: Text(
+                      //       //             'Sell',
+                      //       //             style: TextStyle(
+                      //       //                 color: Colors.white,
+                      //       //                 fontSize: 17,
+                      //       //                 fontWeight: FontWeight.w500),
+                      //       //           ),
+                      //       //         ),
+                      //       //       ],
+                      //       //     ),
+                      //       //   ),
+                      //       // )
+                      //     ],
+                      //   ),
+                      // ),
                       SizedBox(
                         height: 20,
                       ),
@@ -562,7 +709,7 @@ class _WalletState extends State<Wallet> {
               ),
             ),
             Container(
-              height: MediaQuery.of(context).size.height * 0.43,
+              height: MediaQuery.of(context).size.height * 0.5,
               child: RefreshIndicator(
                 child: !_loading
                     ?
@@ -580,7 +727,7 @@ class _WalletState extends State<Wallet> {
                     : SingleChildScrollView(
                         physics: AlwaysScrollableScrollPhysics(),
                         child: Container(
-                          height: MediaQuery.of(context).size.height * .43,
+                          height: MediaQuery.of(context).size.height * .5,
                           child: _showLoader(),
                         ),
                       ),

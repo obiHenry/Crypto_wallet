@@ -1,7 +1,6 @@
 
-import 'package:Crypto_wallet/screens/transactions/transaction_list_screen.dart';
 import 'package:Crypto_wallet/screens/vtu_services/vtu_services_screen.dart';
-import 'package:Crypto_wallet/widgets/bottom_navigation_view.dart';
+import 'package:Crypto_wallet/shared/bottom_navigation_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

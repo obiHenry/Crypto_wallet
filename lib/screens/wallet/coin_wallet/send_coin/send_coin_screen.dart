@@ -1,9 +1,9 @@
 import 'package:Crypto_wallet/services/price_formatter.dart';
-import 'package:Crypto_wallet/services/send_coin.dart';
-import 'package:Crypto_wallet/widgets/button.dart';
-import 'package:Crypto_wallet/widgets/check_out_screen.dart';
-import 'package:Crypto_wallet/widgets/outlined_number_input_field.dart';
-import 'package:Crypto_wallet/widgets/send_textField.dart';
+import 'package:Crypto_wallet/services/api_services.dart';
+import 'package:Crypto_wallet/shared/button.dart';
+import 'package:Crypto_wallet/shared/check_out_screen.dart';
+import 'package:Crypto_wallet/shared/outlined_number_input_field.dart';
+import 'package:Crypto_wallet/shared/send_textField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -62,6 +62,7 @@ class _SendCoinScreenState extends State<SendCoinScreen> {
       } else {
         setState(() => address.text = 'Unknown error: $e');
       }
+    // ignore: dead_code_catch_following_catch
     } on FormatException {
       setState(() => address.text =
           'null (User returned using the "back"-button before scanning anything. Result)');
@@ -130,7 +131,7 @@ class _SendCoinScreenState extends State<SendCoinScreen> {
                             return 'Please enter value';
                           });
                           // return null;
-                          // return 'Please enter value';
+                          return 'Please enter value';
                         } else {
                           var price = double.parse(widget.currency['price']);
                           dynamic usd = double.parse(value);
@@ -260,7 +261,7 @@ class _SendCoinScreenState extends State<SendCoinScreen> {
                           dynamic userId =
                               FirebaseAuth.instance.currentUser.uid;
                           dynamic apiKey = '8293ui423kjsadhas9oujwasd';
-                          Map result = await SendCoin().sendCoin(
+                          Map result = await ApiServices().sendCoin(
                             apiKey,
                             widget.currency['currency'],
                             userId,

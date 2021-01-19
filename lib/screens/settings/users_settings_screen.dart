@@ -3,7 +3,9 @@ import 'package:Crypto_wallet/shared/app_colors.dart';
 import 'package:Crypto_wallet/theme/light_color.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:Crypto_wallet/shared/logout_alert_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
 
 class UsersSettingsScreen extends StatefulWidget {
   @override
@@ -27,6 +29,16 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
     }
     super.initState();
   }
+  void _showDialogueBox({yesPressed}) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+              // padding: EdgeInsets.symmetric(vertical: 20, horizontal: 60),
+              child: LogoutAlertDialog(yesPressed: yesPressed,));
+        },
+      );
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +54,12 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
                 gradient: LinearGradient(
                   // yellowStartWallet, yellowEndWallet
                   colors: [
-                    LightColor.navyBlue2,
-                    Colors.green,
-                    LightColor.navyBlue2,
-                    Colors.lightGreen,
+                    // LightColor.navyBlue2,
+                    // Colors.green,
+                    blueMain,
+                    blueMain,
+                    // LightColor.navyBlue2,
+                    // Colors.lightGreen,
                   ],
                   begin: Alignment.bottomCenter,
                   end: Alignment(0.6, 0.3),
@@ -168,6 +182,7 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
               child: Container(
                 height: 85,
                 child: Card(
+                  elevation: 0,
                   // decoration: ,
                   margin: EdgeInsets.symmetric(horizontal: 15),
                   // height: 80,
@@ -213,10 +228,13 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
               height: 15,
             ),
             InkWell(
-              onTap: () async {},
+              onTap: () async {
+                Navigator.pushNamed(context, 'pin_code_screen');
+              },
               child: Container(
                 height: 85,
                 child: Card(
+                  elevation: 0,
                   // decoration: ,
                   margin: EdgeInsets.symmetric(horizontal: 15),
                   // height: 80,
@@ -259,34 +277,39 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
             Visibility(
               visible: userIsNull ? false : true,
               child: InkWell(
-                onTap: () async {
-                  Map res = await _auth.signOut();
+                onTap: ()  {
+                 _showDialogueBox(yesPressed: ()async{
+                    Map res = await _auth.signOut();
 
-                  if (res['status']) {
-                    Fluttertoast.showToast(
-                        msg: 'You are logged out',
-                        toastLength: Toast.LENGTH_LONG,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.black,
-                        textColor: Colors.white);
-                    setState(() {
-                      userIsNull = true;
-                    });
-                  } else {
-                    Fluttertoast.showToast(
-                        msg: res['message'].toString(),
-                        toastLength: Toast.LENGTH_LONG,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.black,
-                        textColor: Colors.white);
-                    setState(() {
-                      userIsNull = false;
-                    });
-                  }
+              if (res['status']) {
+                Fluttertoast.showToast(
+                    msg: 'You are logged out',
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.BOTTOM,
+                    backgroundColor: Colors.black,
+                    textColor: Colors.white);
+                setState(() {
+                  userIsNull = true;
+                });
+                Navigator.of(context).pop();
+              } else {
+                Fluttertoast.showToast(
+                    msg: res['message'].toString(),
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.BOTTOM,
+                    backgroundColor: Colors.black,
+                    textColor: Colors.white);
+                setState(() {
+                  userIsNull = false;
+                });
+                Navigator.of(context).pop();
+              }
+                 });
                 },
                 child: Container(
                   height: 85,
                   child: Card(
+                    elevation: 0,
                     // decoration: ,
                     margin: EdgeInsets.symmetric(horizontal: 15),
                     // height: 80,
@@ -319,6 +342,9 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
                               title: Text('Logout'),
                             ),
                           ),
+                          // AlertDialog(
+                            
+                          // )
                         ],
                       ),
                     ),

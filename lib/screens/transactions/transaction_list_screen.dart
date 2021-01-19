@@ -1,5 +1,5 @@
 import 'package:Crypto_wallet/theme/light_color.dart';
-import 'package:Crypto_wallet/widgets/title_text.dart';
+import 'package:Crypto_wallet/shared/title_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

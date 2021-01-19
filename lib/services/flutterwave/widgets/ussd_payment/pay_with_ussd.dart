@@ -162,7 +162,6 @@ class _PayWithUssdState extends State<PayWithUssd> {
     try {
       final ChargeResponse response =
           await this.widget._paymentManager.payWithUSSD(request, http.Client());
-      print(response.data.id);
       if (FlutterwaveConstants.SUCCESS == response.status) {
         this._afterChargeInitiated(response);
       } else {

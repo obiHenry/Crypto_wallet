@@ -1,6 +1,6 @@
 import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/shared/CustomTextStyle.dart';
-import 'package:Crypto_wallet/widgets/button.dart';
+import 'package:Crypto_wallet/shared/button.dart';
 import 'package:flutter/material.dart';
 
 class BillsCheckOutScreen extends StatefulWidget {

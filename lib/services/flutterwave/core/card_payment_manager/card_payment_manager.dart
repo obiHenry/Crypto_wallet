@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:Crypto_wallet/services/flutterwave/utils/flutterwave_get_url.dart';
 import 'package:flutter/material.dart';
 import 'package:Crypto_wallet/services/flutterwave/core/core_utils/flutterwave_api_utils.dart';
 import 'package:Crypto_wallet/services/flutterwave/core/metrics/metric_manager.dart';
@@ -90,8 +91,8 @@ class CardPaymentManager {
       return;
     }
 
-    final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
-        FlutterwaveURLS.CHARGE_CARD_URL;
+    final url = getUrl(FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
+        FlutterwaveURLS.CHARGE_CARD_URL);
 
     _stopwatch.start();
 

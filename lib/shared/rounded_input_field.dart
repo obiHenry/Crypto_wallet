@@ -1,5 +1,5 @@
 
-import 'package:Crypto_wallet/widgets/constants.dart';
+import 'package:Crypto_wallet/shared/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'text_field_container.dart';

@@ -1,9 +1,8 @@
 import 'dart:io';
 
 import 'package:Crypto_wallet/screens/wallet/naira_wallet/deposit_naira-screen.dart';
+import 'package:Crypto_wallet/services/api_services.dart';
 import 'package:Crypto_wallet/services/auth.dart';
-import 'package:Crypto_wallet/services/get_currency.dart';
-import 'package:Crypto_wallet/services/get_naira_rate.dart';
 import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/theme/light_color.dart';
 import 'package:flutter/material.dart';
@@ -32,34 +31,31 @@ class _HomePageScreenState extends State<HomePageScreen> {
   @override
   void didChangeDependencies() async {
     AuthService().getUserDataById().then((value) {
-      user = value;
-      GetNairaRate().getNairaRate().then((value) {
-        naira1 = value;
-        nairaRate = (naira1['buy_rate'].toString());
-        naira = user['naira'];
-        rate = double.parse(nairaRate);
-        balance = double.parse(naira);
-        nairaBalance = balance.toStringAsFixed(2);
-        usd = balance / rate;
-        usdEqui = usd.toStringAsFixed(2);
-        setState(() {
-          balanceAvailable = true;
+      if (value != null) {
+        user = value;
+        AuthService().getNairaRate().then((value) {
+          naira1 = value;
+          nairaRate = (naira1['buy_rate'].toString());
+          if (user.containsKey('naira')) {
+            naira = user['naira'];
+
+            rate = double.parse(nairaRate);
+            balance = double.parse(naira);
+            nairaBalance = balance.toStringAsFixed(2);
+            usd = balance / rate;
+            usdEqui = usd.toStringAsFixed(2);
+            setState(() {
+              balanceAvailable = true;
+            });
+
+            print('anyting$usdEqui');
+            print(nairaBalance);
+          }
         });
-        
-        print('anyting$usdEqui');
-        print(nairaBalance);
-      });
+      }
     });
 
-    //  void currency() {
-
-    // Locale locale = Localizations.localeOf(context);
-
-    // String  f = CurrencyPickerUtils.getCountryByIsoCode('PK').currencyCode.toString();
-    var format = NumberFormat.simpleCurrency(locale: Platform.localeName);
-    print("CURRENCY SYMBOL ${format.currencySymbol}"); // $
-    print("CURRENCY NAME ${format.currencyName}"); // USD
-// }
+  
     super.didChangeDependencies();
   }
 
@@ -69,7 +65,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
     print('anyting$usdEqui');
 
     print(nairaBalance);
-    ChangeNotifierProvider.value(value: GetCurrencies());
+    ChangeNotifierProvider.value(value: ApiServices());
 
     return Scaffold(
       backgroundColor: lightBlueStart,
@@ -88,10 +84,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
               gradient: LinearGradient(
                 // yellowStartWallet, yellowEndWallet
                 colors: [
-                  LightColor.navyBlue2,
-                  Colors.green,
-                  LightColor.navyBlue2,
-                  Colors.lightGreen,
+                  // LightColor.navyBlue2,
+                  blueMain,
+                  // Colors.green,
+                  blueMain,
+                  // LightColor.navyBlue2,
+                  // Colors.lightGreen,
                 ],
                 begin: Alignment.bottomCenter,
                 end: Alignment(0.6, 0.3),
@@ -226,8 +224,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
               gradient: LinearGradient(
                 // yellowStartWallet, yellowEndWallet
                 colors: [
-                  LightColor.navyBlue2,
-                  LightColor.navyBlue2,
+                  blueMain,
+                  blueMain
+                  // LightColor.navyBlue2,
+                  // LightColor.navyBlue2,
                 ],
                 begin: Alignment.bottomCenter,
                 end: Alignment(0.6, 0.3),
@@ -287,7 +287,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            balanceAvailable 
+                            balanceAvailable
                                 ? Text(
                                     '₦${formatPrice(nairaBalance)}',
                                     style: TextStyle(
@@ -296,8 +296,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                         fontWeight: FontWeight.w500),
                                   )
                                 : Text(
-                                    'Loading....',
-                                    style: TextStyle(color: Colors.white),
+                                    '₦0.00',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w500),
                                   ),
                             // Transform(
                             //   transform: Matrix4.identity()..scale(0.9),
@@ -332,15 +335,19 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                     ),
                                   )
                                 : Text(
-                                    'Loading...',
-                                    style: TextStyle(color: Colors.white),
+                                    '\$0.00',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
                                   ),
                             InkWell(
                               onTap: () {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => DepositMoney(balance: nairaBalance)));
+                                        builder: (context) => DepositMoney(
+                                            balance: nairaBalance)));
                               },
                               child: Container(
                                 width: 50,

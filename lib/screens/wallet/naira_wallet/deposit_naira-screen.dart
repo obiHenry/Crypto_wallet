@@ -14,8 +14,8 @@ class DepositMoney extends StatefulWidget {
 }
 
 class _DepositMoneyState extends State<DepositMoney> {
-  bool _loader = false;
-  bool _loader1 = false;
+  // bool _loader = false;
+  // bool _loader1 = false;
 
   void _showBottomSheet(Widget widget) {
     showModalBottomSheet(

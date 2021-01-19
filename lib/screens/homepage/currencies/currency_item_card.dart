@@ -23,7 +23,7 @@ class _CurrencyItemCardState extends State<CurrencyItemCard> {
       onTap: widget.press,
       child: Card(
         margin: EdgeInsets.symmetric(horizontal: 20,vertical: 5),
-        elevation: 6,
+        elevation: 0,
               child: Stack(children: [
           Container(
             height: 75,

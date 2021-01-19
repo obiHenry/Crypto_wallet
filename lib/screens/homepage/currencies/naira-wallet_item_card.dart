@@ -55,7 +55,7 @@ class _NairaWalletCardState extends State<NairaWalletCard> {
       onTap: widget.press,
       child: Card(
         margin: EdgeInsets.symmetric(horizontal: 20),
-        elevation: 6,
+        elevation: 0,
               child: Stack(children: [
           Container(
             // height: 80,

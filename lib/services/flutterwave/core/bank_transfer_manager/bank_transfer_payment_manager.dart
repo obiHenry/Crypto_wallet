@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:Crypto_wallet/services/flutterwave/utils/flutterwave_get_url.dart';
 import 'package:flutter/material.dart';
 import 'package:Crypto_wallet/services/flutterwave/core/flutterwave_error.dart';
 import 'package:Crypto_wallet/services/flutterwave/models/requests/bank_transfer/bank_transfer_request.dart';
@@ -44,8 +45,8 @@ class BankTransferPaymentManager {
   Future<BankTransferResponse> payWithBankTransfer(
       BankTransferRequest bankTransferRequest, http.Client client) async {
     final requestBody = bankTransferRequest.toJson();
-    final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
-        FlutterwaveURLS.BANK_TRANSFER;
+    final url = getUrl(FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
+        FlutterwaveURLS.BANK_TRANSFER);
     try {
       final http.Response response = await client.post(url,
           headers: {HttpHeaders.authorizationHeader: this.publicKey},
@@ -56,7 +57,7 @@ class BankTransferPaymentManager {
 
       return bankTransferResponse;
     } catch (error) {
-      throw (FlutterError(error.toString()));
+      print(error.toString());
     }
   }
 
@@ -64,8 +65,8 @@ class BankTransferPaymentManager {
   /// it returns an instance of ChargeResponse or throws an error
   Future<ChargeResponse> verifyPayment(
       final String flwRef, final http.Client client) async {
-    final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
-        FlutterwaveURLS.VERIFY_TRANSACTION;
+    final url = getUrl(FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
+        FlutterwaveURLS.VERIFY_TRANSACTION);
     final VerifyChargeRequest verifyRequest = VerifyChargeRequest(flwRef);
     final payload = verifyRequest.toJson();
     try {
@@ -77,7 +78,7 @@ class BankTransferPaymentManager {
           ChargeResponse.fromJson(jsonDecode(response.body));
       return cardResponse;
     } catch (error) {
-      throw (FlutterWaveError(error.toString()));
+      print(FlutterWaveError(error.toString()));
     }
   }
 }

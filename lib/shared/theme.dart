@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 final appTheme = ThemeData(
-  primarySwatch: Colors.yellow,
+  primarySwatch: Colors.lightGreen,
+  // accentColor: 
   // fontFamily: 'Rubik',
 );

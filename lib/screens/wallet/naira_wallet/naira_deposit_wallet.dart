@@ -2,10 +2,10 @@ import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/theme/light_color.dart';
-import 'package:Crypto_wallet/widgets/alert_sheet.dart';
-import 'package:Crypto_wallet/widgets/button.dart';
-import 'package:Crypto_wallet/widgets/send_textField.dart';
-import 'package:Crypto_wallet/widgets/succesful_page.dart';
+import 'package:Crypto_wallet/shared/alert_sheet.dart';
+import 'package:Crypto_wallet/shared/button.dart';
+import 'package:Crypto_wallet/shared/send_textField.dart';
+import 'package:Crypto_wallet/shared/succesful_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -394,7 +394,7 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
                                   return 'Please enter value';
                                 });
                                 // return null;
-                                // return 'Please enter value';
+                                return 'Please enter value';
                               } else {
                                 dynamic nairaPrice =
                                     double.parse(widget.currency['price']) *
@@ -445,7 +445,7 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
                           ),
                         ),
                         validator: (value) {
-                          if (value.isEmpty || currencyAmount == 0.0) {
+                          if (value.isEmpty ) {
                             Future.value(Duration(seconds: 1)).whenComplete(() {
                               nairaAmount.text = "0.0";
                             });

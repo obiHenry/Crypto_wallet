@@ -1,15 +1,13 @@
 import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
 import 'package:Crypto_wallet/services/dialog_service.dart';
-import 'package:Crypto_wallet/services/send_data.dart';
-import 'package:Crypto_wallet/services/smile_and_spectranet_payment.dart';
 import 'package:Crypto_wallet/services/validator.dart';
-import 'package:Crypto_wallet/widgets/alert_sheet.dart';
-import 'package:Crypto_wallet/widgets/bills-payment_form.dart';
-import 'package:Crypto_wallet/widgets/succesful_page.dart';
+import 'package:Crypto_wallet/shared/alert_sheet.dart';
+import 'package:Crypto_wallet/shared/bills-payment_form.dart';
+import 'package:Crypto_wallet/shared/succesful_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Crypto_wallet/services/auth.dart';
-import 'package:Crypto_wallet/services/get_internet_bundles.dart';
+import 'package:Crypto_wallet/services/api_services.dart';
 import 'package:Crypto_wallet/screens/vtu_services/components/outLined_box.dart';
 import 'package:Crypto_wallet/screens/vtu_services/components/bills_check_out_screen.dart';
 import 'dart:convert';
@@ -142,7 +140,7 @@ class _BodyState extends State<Body> {
   @override
   void didChangeDependencies() {
     // _loading = true;
-    InternetService().getDataBundles().then((value) {
+    ApiServices().getDataBundles().then((value) {
       if (mounted) {
         setState(() {
           // currencies = nairaWallet;
@@ -944,7 +942,7 @@ class _BodyState extends State<Body> {
                               if (isSmile) {
                                 _progressDialog.show();
                                 dynamic result =
-                                    await SmileAndSpectranetPayment()
+                                    await ApiServices()
                                         .sendSmileData(phoneNumber,
                                             nairaAmount.text, productCode);
                                 if (result['status'] = true) {
@@ -1050,7 +1048,7 @@ class _BodyState extends State<Body> {
                               } else if (isSpectranet) {
                                 _progressDialog.show();
                                 dynamic result =
-                                    await SmileAndSpectranetPayment()
+                                    await ApiServices()
                                         .sendSpectranetData(
                                             nairaAmount.text, productCode);
 
@@ -1158,7 +1156,7 @@ class _BodyState extends State<Body> {
                                 }
                               } else {
                                 _progressDialog.show();
-                                dynamic result = await SendData()
+                                dynamic result = await ApiServices()
                                     .sendData(dataPlan, phoneNumber, code);
 
                                 if (result['status'] = true) {
@@ -1274,7 +1272,7 @@ class _BodyState extends State<Body> {
                                if (isSmile) {
                                 _progressDialog.show();
                                 dynamic result =
-                                    await SmileAndSpectranetPayment()
+                                    await ApiServices()
                                         .sendSmileData(phoneNumber,
                                             nairaAmount.text, productCode);
                                 if (result['status'] = true) {
@@ -1380,7 +1378,7 @@ class _BodyState extends State<Body> {
                               } else if (isSpectranet) {
                                 _progressDialog.show();
                                 dynamic result =
-                                    await SmileAndSpectranetPayment()
+                                    await ApiServices()
                                         .sendSpectranetData(
                                             nairaAmount.text, productCode);
 
@@ -1488,7 +1486,7 @@ class _BodyState extends State<Body> {
                                 }
                               } else {
                                 _progressDialog.show();
-                                dynamic result = await SendData()
+                                dynamic result = await ApiServices()
                                     .sendData(dataPlan, phoneNumber, code);
 
                                 if (result['status'] = true) {

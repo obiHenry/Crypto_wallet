@@ -27,6 +27,8 @@ class Flutterwave {
   bool isPermanent;
   String narration;
 
+  bool manualBankTransfer;
+
   //todo include these when they become available and stable on v3
   // bool acceptVoucherPayment;
   // bool acceptUKAccountPayment;
@@ -58,6 +60,7 @@ class Flutterwave {
     this.acceptAccountPayment = false,
     this.acceptCardPayment = false,
     this.acceptUSSDPayment = false,
+    this.manualBankTransfer = false,
   }) {
     _validateKeys();
     this.currency = this.currency.toUpperCase();
@@ -79,24 +82,26 @@ class Flutterwave {
   /// Nullable
   Future<ChargeResponse> initializeForUiPayments() async {
     FlutterwavePaymentManager paymentManager = FlutterwavePaymentManager(
-        publicKey: this.publicKey,
-        encryptionKey: this.encryptionKey,
-        secretKey: this.secretKey,
-        currency: this.currency,
-        email: this.email,
-        fullName: this.fullName,
-        amount: this.amount,
-        txRef: this.txRef,
-        isDebugMode: this.isDebugMode,
-        narration: this.narration,
-        isPermanent: this.isPermanent,
-        phoneNumber: this.phoneNumber,
-        frequency: this.frequency,
-        duration: this.duration,
-        acceptAccountPayment: this.acceptAccountPayment,
-        acceptCardPayment: this.acceptCardPayment,
-        acceptUSSDPayment: this.acceptUSSDPayment,
-        country: this._setCountry());
+      publicKey: this.publicKey,
+      encryptionKey: this.encryptionKey,
+      secretKey: this.secretKey,
+      currency: this.currency,
+      email: this.email,
+      fullName: this.fullName,
+      amount: this.amount,
+      txRef: this.txRef,
+      isDebugMode: this.isDebugMode,
+      narration: this.narration,
+      isPermanent: this.isPermanent,
+      phoneNumber: this.phoneNumber,
+      frequency: this.frequency,
+      duration: this.duration,
+      acceptAccountPayment: this.acceptAccountPayment,
+      acceptCardPayment: this.acceptCardPayment,
+      acceptUSSDPayment: this.acceptUSSDPayment,
+      country: this._setCountry(),
+      manualBankTransfer: this.manualBankTransfer,
+    );
 
     final chargeResponse = await this._launchPaymentScreen(paymentManager);
     return chargeResponse;

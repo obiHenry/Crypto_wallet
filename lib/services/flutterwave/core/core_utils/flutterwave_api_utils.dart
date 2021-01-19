@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:Crypto_wallet/services/flutterwave/utils/flutterwave_get_url.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../services/flutterwave/core/flutterwave_error.dart';
@@ -15,11 +16,13 @@ class FlutterwaveAPIUtils {
   /// it returns an instance of GetBanksResponse or throws an error
   static Future<List<GetBanksResponse>> getBanks(
       final http.Client client, final String secretKey) async {
+    final url = getUrl(FlutterwaveURLS.GET_BANKS_URL);
     try {
       final response = await client.get(
-        FlutterwaveURLS.GET_BANKS_URL,
+        url,
         headers: {HttpHeaders.authorizationHeader: secretKey},
       );
+
       if (response.statusCode == 200) {
         final List<dynamic> jsonDecoded = jsonDecode(response.body)['data'];
         final banks =
@@ -29,11 +32,11 @@ class FlutterwaveAPIUtils {
         });
         return banks;
       } else {
-        throw (FlutterWaveError(
-            "Unable to fetch banks. Please contact support"));
+        print(
+            FlutterWaveError("Unable to fetch banks. Please contact support"));
       }
     } catch (error) {
-      throw (FlutterWaveError(error.toString()));
+      print(FlutterWaveError(error.toString()));
     } finally {
       client.close();
     }
@@ -51,8 +54,8 @@ class FlutterwaveAPIUtils {
       [String feature = ""]) async {
     final stopWatch = Stopwatch();
 
-    final url = FlutterwaveURLS.getBaseUrl(isDebugMode) +
-        FlutterwaveURLS.VALIDATE_CHARGE;
+    final url = getUrl(FlutterwaveURLS.getBaseUrl(isDebugMode) +
+        FlutterwaveURLS.VALIDATE_CHARGE);
     final ValidateChargeRequest chargeRequest =
         ValidateChargeRequest(otp, flwRef, isBankAccount);
     final payload = chargeRequest.toJson();
@@ -72,7 +75,7 @@ class FlutterwaveAPIUtils {
         MetricManager.logMetric(client, secretKey, "{$feature}_ERROR",
             "${stopWatch.elapsedMilliseconds}ms");
       }
-      throw (FlutterWaveError(error.toString()));
+      print(FlutterWaveError(error.toString()));
     }
   }
 
@@ -87,8 +90,8 @@ class FlutterwaveAPIUtils {
       [String feature = ""]) async {
     final stopWatch = Stopwatch();
 
-    final url =
-        FlutterwaveURLS.getBaseUrl(isDebugMode) + 'transactions/$id/verify';
+    final url = getUrl(
+        FlutterwaveURLS.getBaseUrl(isDebugMode) + 'transactions/$id/verify');
     try {
       stopWatch.start();
       final http.Response response = await client
@@ -106,7 +109,7 @@ class FlutterwaveAPIUtils {
         MetricManager.logMetric(client, publicKey, "{$feature}_ERROR",
             "${stopWatch.elapsedMilliseconds}ms");
       }
-      throw (FlutterWaveError(error.toString()));
+      print(FlutterWaveError(error.toString()));
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:Crypto_wallet/services/flutterwave/utils/flutterwave_get_url.dart';
 import 'package:flutter/material.dart';
 import 'package:Crypto_wallet/services/flutterwave/models/requests/voucher/voucher_payment_request.dart';
 import 'package:Crypto_wallet/services/flutterwave/models/responses/charge_response.dart';
@@ -57,8 +58,8 @@ class VoucherPaymentManager {
   /// Returns an inatance of ChargeResponse or throws an error
   Future<ChargeResponse> payWithVoucher(
       VoucherPaymentRequest payload, http.Client client) async {
-    final url = FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
-        FlutterwaveURLS.VOUCHER_PAYMENT;
+    final url = getUrl(FlutterwaveURLS.getBaseUrl(this.isDebugMode) +
+        FlutterwaveURLS.VOUCHER_PAYMENT);
     try {
       final http.Response response = await client.post(url,
           headers: {HttpHeaders.authorizationHeader: this.publicKey},
@@ -68,7 +69,7 @@ class VoucherPaymentManager {
           ChargeResponse.fromJson(json.decode(response.body));
       return chargeResponse;
     } catch (error) {
-      throw (FlutterError(error.toString()));
+      print(error.toString());
     }
   }
 }

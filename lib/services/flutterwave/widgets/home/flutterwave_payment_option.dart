@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 class FlutterwavePaymentOption extends StatelessWidget {
   final Function handleClick;
   final String buttonText;
+  final bool isManual;
 
-  FlutterwavePaymentOption({this.handleClick, this.buttonText});
+  FlutterwavePaymentOption(
+      {this.handleClick, this.buttonText, this.isManual = false});
 
   @override
   Widget build(BuildContext context) {
@@ -16,16 +18,17 @@ class FlutterwavePaymentOption extends StatelessWidget {
         child: RichText(
           textAlign: TextAlign.left,
           text: TextSpan(
-            text: "Pay with ",
+            text: !isManual ? "Pay with " : "",
             style: TextStyle(fontSize: 20, color: Colors.black),
             children: [
               TextSpan(
                 text: buttonText,
                 style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Colors.black),
-              )
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+              ),
             ],
           ),
         ),

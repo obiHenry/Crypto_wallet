@@ -49,6 +49,7 @@ class AuthService with ChangeNotifier {
       _dbRef.child('Users').child(user.uid).update({
         'email': email,
         'createdAt': DateTime.now().toString(),
+        'verified': false,
       });
       dynamic data = _userFromFirebaseUser(user);
       return {'status': data != null ? true : false, 'message': data};
@@ -242,6 +243,7 @@ class AuthService with ChangeNotifier {
     String walletTransactionList,
     String currency,
     bool status,
+    // String transactionId,
   ) async {
     userId = FirebaseAuth.instance.currentUser.uid;
     try {
@@ -259,7 +261,8 @@ class AuthService with ChangeNotifier {
         'currency': currency,
         'createdAt': DateTime.now().toString(),
         'completed': status,
-        'uid': userId
+        'uid': userId,
+        // 'transId': transactionId,
       });
       return {'status': true, 'message': 'transaction updated'};
 
@@ -271,20 +274,22 @@ class AuthService with ChangeNotifier {
   }
 
   Future getTransactionList() async {
-    userId = FirebaseAuth.instance.currentUser.uid;
-    try {
-      dynamic transactionList = await _dbRef
-          .child('TransactionList')
-          .child(userId)
-          .once()
-          .then((DataSnapshot snapshot) {
-        dynamic transactionList = snapshot.value;
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser.uid;
+      try {
+        dynamic transactionList = await _dbRef
+            .child('TransactionList')
+            .child(userId)
+            .once()
+            .then((DataSnapshot snapshot) {
+          dynamic transactionList = snapshot.value;
+          return transactionList;
+        });
+        // await setUserData(user: user);
         return transactionList;
-      });
-      // await setUserData(user: user);
-      return transactionList;
-    } catch (e) {
-      print(e.toString());
+      } catch (e) {
+        print(e.toString());
+      }
     }
   }
 
@@ -315,6 +320,57 @@ class AuthService with ChangeNotifier {
       await _auth.sendPasswordResetEmail(email: email);
       return {'status': true, 'message': 'Password reset mail sent to $email'};
     } catch (e) {
+      return {'status': false, 'message': e.message.toString()};
+    }
+  }
+
+  Future getNairaRate() async {
+    try {
+      dynamic naira = await _dbRef
+          .child('naira_equivalence')
+          .once()
+          .then((DataSnapshot snapshot) {
+        dynamic naira = snapshot.value;
+        print(naira['current-price']);
+        return naira;
+      });
+
+      return naira;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future verifyUser() async {
+    userId = FirebaseAuth.instance.currentUser.uid;
+    dynamic time = DateTime.now().toString();
+    try {
+      // await setUserData();
+      await _dbRef.child('Users').child(userId).update({
+        'verifiedAt': time,
+        'verified': true,
+        'updatedAT': time,
+      });
+      return {'status': true, 'message': 'user Verified'};
+    } catch (e) {
+      print(e.toString());
+      return {'status': false, 'message': e.message.toString()};
+    }
+  }
+
+  Future setTransactionPin(transactionPin) async {
+    userId = FirebaseAuth.instance.currentUser.uid;
+    dynamic time = DateTime.now().toString();
+    try {
+      // await setUserData();
+      await _dbRef.child('Users').child(userId).update({
+        
+        'transactionPin': transactionPin,
+        'updatedAT': time,
+      });
+      return {'status': true, 'message': 'user transaction pin stored successfully'};
+    } catch (e) {
+      print(e.toString());
       return {'status': false, 'message': e.message.toString()};
     }
   }
