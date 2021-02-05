@@ -12,8 +12,20 @@ import 'dart:convert';
 class PinCodeVerificationScreen extends StatefulWidget {
   final String email;
   final String token;
+  final Function onVerifySuccess;
+  final bool fromExternal;
+  final Function sendEmailForExternal;
+  final String mailSubject;
+  final String mailContent;
 
-  PinCodeVerificationScreen({this.email, this.token});
+  PinCodeVerificationScreen(
+      {this.email,
+      this.token,
+      this.fromExternal,
+      this.onVerifySuccess,
+      this.sendEmailForExternal,
+      this.mailContent,
+      this.mailSubject});
 
   @override
   _PinCodeVerificationScreenState createState() =>
@@ -36,7 +48,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
   bool resendClicked = false;
   bool loading = false;
   dynamic gottenToken;
-  String token;
+  // String token;
 
   getSnackBar(
     String value,
@@ -62,7 +74,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
 
   @override
   void initState() {
-    token = widget.token;
+    // token = widget.token;
     // token = resendClicked ? gottenToken : widget.token;
 
     onTapRecognizer = TapGestureRecognizer()..onTap = () async {};
@@ -85,21 +97,19 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
     gottenToken = next.toInt();
     print('gottenToken $gottenToken');
 
-    // if (resendClicked) {
-    token = gottenToken.toString();
-    // } else {
-    //   token = widget.token;
-    // }
-
-    // dynamic userName = user['userName'].toString();
+    // token = gottenToken.toString();
     String email = user['email'].toString();
     var userName = email.split('@').take(1);
     print(userName.toString());
+
     dynamic result1 = await ApiServices().sendEmailVerificationToken(
         userEmail: user['email'],
-        subject: 'Email address verification',
-        content:
-            'Verify your email for Veloce,    Use the code below to verify  your email.   $token ',
+        subject: widget.fromExternal
+            ? widget.mailSubject
+            : 'Email address verification',
+        content: widget.fromExternal
+            ? '${widget.mailContent} $gottenToken'
+            : 'Verify your email for Veloce,    Use the code below to verify  your email.  $gottenToken. ',
         userName: userName);
     if (result1['status']) {
       dynamic result2 = json.decode(result1['message']);
@@ -158,7 +168,9 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
-                  'Email Address Verification',
+                  widget.fromExternal
+                      ? widget.mailSubject
+                      : 'Email Address Verification',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                   textAlign: TextAlign.center,
                 ),
@@ -187,7 +199,9 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              Center(child: Text('check your spam if u didn\'t see the mail in the primary')),
+              Center(
+                  child: Text(
+                      'check your spam if u didn\'t see the mail in the primary')),
               SizedBox(
                 height: 20,
               ),
@@ -262,7 +276,9 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: Text(
-                  hasError ? "*Please fill up all the cells correctly with the code sent to you" : "",
+                  hasError
+                      ? "*Please fill up all the cells correctly with the code sent to you"
+                      : "",
                   style: TextStyle(
                       color: Colors.red,
                       fontSize: 12,
@@ -335,35 +351,89 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                             });
                             formKey.currentState.validate();
                             // conditions for validating
-                            print(token);
-                            if (currentText.length != 6 ||
-                                currentText != token) {
-                              errorController.add(ErrorAnimationType
-                                  .shake); // Triggering error shake animation
-                              setState(() {
-                                hasError = true;
-                                processing = false;
-                              });
-                            } else {
-                              dynamic result1 =
-                                  await AuthService().verifyUser();
-                              if (result1['status']) {
+                            // print(token);
+
+                            if (resendClicked) {
+                              print(
+                                  ' the gotten code ${gottenToken.toString()}');
+                              if (currentText.length != 6 ||
+                                  currentText != gottenToken.toString()) {
+                                errorController.add(ErrorAnimationType
+                                    .shake); // Triggering error shake animation
                                 setState(() {
+                                  hasError = true;
                                   processing = false;
-                                  hasError = false;
-                                  scaffoldKey.currentState
-                                      .showSnackBar(SnackBar(
-                                    content: Text("verified"),
-                                    duration: Duration(seconds: 4),
-                                  ));
                                 });
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                    'set_up', (route) => false);
                               } else {
-                                scaffoldKey.currentState.showSnackBar(SnackBar(
-                                  content: Text(result1['message']),
-                                  duration: Duration(seconds: 4),
-                                ));
+                                if (widget.fromExternal) {
+                                  widget.onVerifySuccess();
+                                   setState(() {
+                                    processing = false;
+                                  });
+                                } else {
+                                  dynamic result1 =
+                                      await AuthService().verifyUser();
+                                  if (result1['status']) {
+                                    setState(() {
+                                      processing = false;
+                                      hasError = false;
+                                      scaffoldKey.currentState
+                                          .showSnackBar(SnackBar(
+                                        content: Text("verified"),
+                                        duration: Duration(seconds: 4),
+                                      ));
+                                    });
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                            'set_up', (route) => false);
+                                  } else {
+                                    scaffoldKey.currentState
+                                        .showSnackBar(SnackBar(
+                                      content: Text(result1['message']),
+                                      duration: Duration(seconds: 4),
+                                    ));
+                                  }
+                                }
+                              }
+                            } else {
+                              if (currentText.length != 6 ||
+                                  currentText != widget.token) {
+                                errorController.add(ErrorAnimationType
+                                    .shake); // Triggering error shake animation
+                                setState(() {
+                                  hasError = true;
+                                  processing = false;
+                                });
+                              } else {
+                                if (widget.fromExternal) {
+                                  widget.onVerifySuccess();
+                                  setState(() {
+                                    processing = false;
+                                  });
+                                } else {
+                                  dynamic result1 =
+                                      await AuthService().verifyUser();
+                                  if (result1['status']) {
+                                    setState(() {
+                                      processing = false;
+                                      hasError = false;
+                                      scaffoldKey.currentState
+                                          .showSnackBar(SnackBar(
+                                        content: Text("verified"),
+                                        duration: Duration(seconds: 4),
+                                      ));
+                                    });
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                            'set_up', (route) => false);
+                                  } else {
+                                    scaffoldKey.currentState
+                                        .showSnackBar(SnackBar(
+                                      content: Text(result1['message']),
+                                      duration: Duration(seconds: 4),
+                                    ));
+                                  }
+                                }
                               }
                             }
                           },

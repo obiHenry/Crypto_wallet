@@ -2,6 +2,7 @@
 import 'package:Crypto_wallet/screens/vtu_services/mobile_top_up_screen/body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:Crypto_wallet/shared/app_colors.dart';
 
 class MobileTopUpScreen extends StatefulWidget {
   final walletList;
@@ -30,7 +31,7 @@ class _MobileTopUpScreenState extends State<MobileTopUpScreen> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          backgroundColor: Colors.lightGreen,
+          backgroundColor: blueMain,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
           ),

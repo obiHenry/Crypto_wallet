@@ -8,8 +8,8 @@ import 'package:Crypto_wallet/shared/succesful_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Crypto_wallet/services/auth.dart';
-import 'package:Crypto_wallet/screens/vtu_services/components/outLined_box.dart';
-import 'package:Crypto_wallet/screens/vtu_services/components/bills_check_out_screen.dart';
+import 'package:Crypto_wallet/shared/outLined_box.dart';
+import 'package:Crypto_wallet/shared/bills_check_out_screen.dart';
 import 'dart:convert';
 
 import 'package:progress_dialog/progress_dialog.dart';
@@ -45,6 +45,7 @@ class _BodyState extends State<Body> {
   dynamic packageName, packageCode;
   String smartCardNumber;
   bool accountSelected = false;
+  String dropDownValue;
 
   // @override
   // void initState() {
@@ -138,7 +139,7 @@ class _BodyState extends State<Body> {
           // currencies = nairaWallet;
           dynamic data = json.decode(value['message']);
           print(data.toString());
-           cableList = data;
+          cableList = data;
           // cableList = data['TV_ID'];
           print('anytime am ready');
           print(cableList.toString());
@@ -334,7 +335,7 @@ class _BodyState extends State<Body> {
                                 double.parse(value) / double.parse(price);
                             currencyAmount.text =
                                 nairaUsdEquivalance.toStringAsFixed(8);
-                                if (currencyAmount.text != null) {
+                            if (currencyAmount.text != null) {
                               enableSubmitButton();
                               // enableButton = true;
                             }
@@ -454,6 +455,7 @@ class _BodyState extends State<Body> {
               ),
 
               billerOnChanged: (value) {
+                dropDownValue = value;
                 biller = value.toLowerCase();
                 print(cableList.toString());
 
@@ -471,36 +473,31 @@ class _BodyState extends State<Body> {
                     if (value == element['network'].toString()) {
                       if (cableList != null) {
                         if (element['network'] == 'dstv') {
-                          //  if (packages != null) {
-                          //   packages.clear();
-                          // }
-                          // List data = cableList['DSTV'];
-                          // print(data.toString());
+                          setState(() {
+                            dropDownValue = null;
+                            nairaAmount.clear();
+                          });
 
-                          // data.forEach((element) {
-                            packages = cableList['DSTV'];
-                          // });
-                          // code = '01';
-                          // bundles = data['PRODUCT'];
+                          packages = cableList['DSTV'];
+
                           print('anything');
 
                           print(packages);
                         } else if (element['network'] == 'gotv') {
+                          setState(() {
+                            dropDownValue = null;
+                            nairaAmount.clear();
+                          });
                           packages = cableList['GOTV'];
-                          //  if (packages != null) {
-                          //   packages.clear();
-                          // }
-                          // List data = cableList['GOtv'];
-                          // print(data.toString());
-
-                          // data.forEach((element) {
-                          //   packages = element['PRODUCT'];
-                          // });
-                          // code = '02';
+                         
                           print('anything');
 
                           print(packages);
                         } else if (element['network'] == 'startimes') {
+                          setState(() {
+                            dropDownValue = null;
+                            nairaAmount.clear();
+                          });
                           packages = cableList['STARTIMES'];
                           // packages.clear();
                           // List data = cableList['Startimes'];
@@ -539,8 +536,9 @@ class _BodyState extends State<Body> {
                   });
 
                   packages.forEach((element) {
-                    if (value == element['package']) {
-                      packageCode = element['product code'];
+                    if (value == element['title']) {
+                      dropDownValue = element['title'];
+                      packageCode = element['name'];
 
                       amount = double.parse(element['price']);
                       nairaAmount.text = amount.toStringAsFixed(0);
@@ -557,6 +555,7 @@ class _BodyState extends State<Body> {
                   );
                 }
               },
+              valueText: dropDownValue,
 
               walletList: widget.walletList,
               numberOrReferenceText: 'Smart card number',
@@ -640,9 +639,8 @@ class _BodyState extends State<Body> {
                               ));
                             } else {
                               _progressDialog.show();
-                              dynamic result = await ApiServices()
-                                  .sendCableSub(
-                                      biller, packageCode, smartCardNumber);
+                              dynamic result = await ApiServices().sendCableSub(
+                                  biller, packageCode, smartCardNumber);
 
                               if (result['status'] = true) {
                                 dynamic rep = result['message'].toString();
@@ -666,8 +664,7 @@ class _BodyState extends State<Body> {
                                             nairaAmount.text,
                                             'nairaWalletTransactionList',
                                             symbol,
-                                            true
-                                            );
+                                            true);
                                     if (result2['status']) {
                                       _progressDialog.hide();
                                       Navigator.pushAndRemoveUntil(
@@ -749,9 +746,8 @@ class _BodyState extends State<Body> {
                               ));
                             } else {
                               _progressDialog.show();
-                              dynamic result = await ApiServices()
-                                  .sendCableSub(
-                                      biller, packageCode, smartCardNumber);
+                              dynamic result = await ApiServices().sendCableSub(
+                                  biller, packageCode, smartCardNumber);
 
                               if (result['status'] = true) {
                                 dynamic rep = result['message'].toString();

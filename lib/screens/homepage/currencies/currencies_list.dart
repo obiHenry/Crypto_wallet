@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'currency_item_card.dart';
 import 'naira-wallet_item_card.dart';
+import 'package:Crypto_wallet/screens/logins_and_signUp/set_up/set_up_screen.dart';
+
+import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/account_sign_up/sign_up_screen.dart';
+
 import 'dart:math';
 import 'dart:convert';
 
@@ -30,8 +34,8 @@ class _CurrenciesListState extends State<CurrenciesList> {
     'assets/images/btc.png',
     'assets/images/etherium.jpg',
     'assets/images/ripple.png',
-    'assets/images/bitcoin_cash.png',
     'assets/images/litcoin.jpg',
+    'assets/images/bitcoin_cash.png',
     'assets/images/tron.jpg',
     // 'assets/images/pax.png',
   ];
@@ -76,34 +80,50 @@ class _CurrenciesListState extends State<CurrenciesList> {
   @override
   void didChangeDependencies() async {
     getCurrencies = Provider.of<ApiServices>(context);
-
-    _checkInternet().then((value) {
-      if (value) {
-        getCurrencies.refreshCurrencies().then((value) {
-          if (mounted) {
-            setState(() {
-              // currencies = nairaWallet;
-              currencies = value;
-              print(currencies.toString());
-              _loading = false;
-              _isConnected = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (getCurrencies.currencies.length < 1) {
+        _checkInternet().then((value) {
+          if (value) {
+            getCurrencies.refreshCurrencies().then((value) {
+              if (mounted) {
+                setState(() {
+                  // currencies = nairaWallet;
+                  currencies = value;
+                  print('this is the currencies ${currencies.toString()}');
+                  _loading = false;
+                  _isConnected = true;
+                });
+                for (int i = 0; i < currencies.length; i++) {
+                  _loaders[i.toString()] = false;
+                }
+                // print(_loaders.toString());
+              }
             });
-            for (int i = 0; i < currencies.length; i++) {
-              _loaders[i.toString()] = false;
+          } else {
+            if (mounted) {
+              setState(() {
+                _isConnected = false;
+              });
             }
-            // print(_loaders.toString());
           }
         });
       } else {
         if (mounted) {
           setState(() {
-            _isConnected = false;
+            currencies = getCurrencies.currencies;
+            _loading = false;
           });
+          for (int i = 0; i < currencies.length; i++) {
+            _loaders[i.toString()] = false;
+          }
         }
       }
     });
-
-    naira1 = await AuthService().getNairaRate();
+    if (auth.naira == null) {
+      naira1 = await AuthService().getNairaRate();
+    } else {
+      naira1 = auth.naira;
+    }
 
     nairaVeloceSellRate = (naira1['sell_rate']).toStringAsFixed(1);
     nairaVeloceBuyRate = (naira1['buy_rate']).toStringAsFixed(1);
@@ -219,7 +239,7 @@ class _CurrenciesListState extends State<CurrenciesList> {
                 });
                 dynamic users = await auth.getUserDataById();
 
-                if (user != null) {
+                // if (user != null) {
                   if (users.containsKey('verified')) {
                     bool verified = users['verified'];
                     if (!verified) {
@@ -252,6 +272,7 @@ class _CurrenciesListState extends State<CurrenciesList> {
                               .pushNamed('verification_screen', arguments: {
                             'email': users['email'],
                             'token': token.toString(),
+                            'fromExternal': false,
                           });
                           setState(() {
                             _loader = false;
@@ -259,16 +280,15 @@ class _CurrenciesListState extends State<CurrenciesList> {
                         } else {
                           getSnackBar(
                               result2['response'].toString(), Colors.red);
-                               setState(() {
+                          setState(() {
                             _loader = false;
                           });
-                          
                         }
                       } else {
                         getSnackBar(result1['message'], Colors.red);
-                         setState(() {
-                            _loader = false;
-                          });
+                        setState(() {
+                          _loader = false;
+                        });
                       }
                     } else {
                       if (users.containsKey('userName')) {
@@ -289,20 +309,26 @@ class _CurrenciesListState extends State<CurrenciesList> {
                           _loader = false;
                         });
                       } else {
-                        Navigator.pushNamed(context, 'set_up');
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SetUpScreen()));
+                        // Navigator.pushNamed(context, 'set_up');
                         setState(() {
                           _loader = false;
                         });
                       }
                     }
                   }
-                } else {
-                  Navigator.pushNamed(context, 'sign_up');
-                  setState(() {
-                    _loader = false;
-                  });
-                  print('anything');
-                }
+                // } else {
+                //   Navigator.push(context,
+                //       MaterialPageRoute(builder: (context) => SignUpScreen()));
+                //   // Navigator.pushNamed(context, 'sign_up');
+                //   setState(() {
+                //     _loader = false;
+                //   });
+                //   print('anything');
+                // }
               },
               widget: Visibility(
                 child: LinearProgressIndicator(
@@ -333,7 +359,7 @@ class _CurrenciesListState extends State<CurrenciesList> {
                           });
                           dynamic users = await auth.getUserDataById();
 
-                          if (user != null) {
+                          // if (user != null) {
                             if (users.containsKey('verified')) {
                               bool verified = users['verified'];
                               if (!verified) {
@@ -368,6 +394,7 @@ class _CurrenciesListState extends State<CurrenciesList> {
                                         arguments: {
                                           'email': users['email'],
                                           'token': token.toString(),
+                                          'fromExternal': false,
                                         });
                                     setState(() {
                                       _loaders[index.toString()] = false;
@@ -431,70 +458,30 @@ class _CurrenciesListState extends State<CurrenciesList> {
                                     _loaders[index.toString()] = false;
                                   });
                                 } else {
-                                  Navigator.pushNamed(context, 'set_up');
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SetUpScreen()));
+                                  // Navigator.pushNamed(context, 'set_up');
                                   setState(() {
                                     _loaders[index.toString()] = false;
                                   });
                                 }
                               }
                             }
+                          // } else {
+                          //   Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //           builder: (context) => SignUpScreen()));
 
-                            //   if (!users.containsKey('userName')) {
-                            //     Navigator.pushNamed(context, 'set_up');
-                            //     setState(() {
-                            //       _loaders[index.toString()] = false;
-                            //     });
+                          //   // pushNamed(context, 'sign_up');
+                          //   setState(() {
+                          //     _loaders[index.toString()] = false;
+                          //   });
 
-                            //   } else {
-                            //     dynamic balanceList = [
-                            //       users['BTC'].toString(),
-                            //       users['ETH'].toString(),
-                            //       users['XRP'].toString(),
-                            //       users['BCH'].toString(),
-                            //       users['LTC'].toString(),
-                            //       users['TRX'].toString(),
-                            //     ];
-
-                            //     dynamic currencyTransactionList = [
-                            //       bitcoinTransactionList,
-                            //       ethereumTransactionList,
-                            //       rippleTransactionList,
-                            //       bitcoinCashTransactionList,
-                            //       litcoinTransactionList,
-                            //       tronTransactionList,
-                            //     ];
-                            //     final transactions = currencyTransactionList[
-                            //         index % currencyTransactionList.length];
-
-                            //     final balance =
-                            //         balanceList[index % balanceList.length];
-                            //     print(transactions);
-                            //     Navigator.push(
-                            //       context,
-                            //       MaterialPageRoute(
-                            //         builder: (context) => Wallet(
-                            //           currency: currencies[index],
-                            //           image: image,
-                            //           balance: balance,
-                            //           user: users,
-                            //           transactions: transactions,
-                            //           nairaVeloceBuyRate: nairaVeloceBuyRate,
-                            //           nairaVeloceSellRate: nairaVeloceSellRate,
-                            //         ),
-                            //       ),
-                            //     );
-                            //     setState(() {
-                            //       _loaders[index.toString()] = false;
-                            //     });
-                            //   }
-                          } else {
-                            Navigator.pushNamed(context, 'sign_up');
-                            setState(() {
-                              _loaders[index.toString()] = false;
-                            });
-
-                            print('anything');
-                          }
+                          //   print('anything');
+                          // }
                         },
                         widget: Visibility(
                           child: LinearProgressIndicator(
@@ -521,21 +508,32 @@ class _CurrenciesListState extends State<CurrenciesList> {
         if (await _checkInternet()) {
           // dynamic currency = await getCurrencies.refreshCurrencies();
           // if (mounted) {
-
-          getCurrencies.refreshCurrencies().then((value) {
-            if (mounted) {
-              setState(() {
-                // currencies = nairaWallet;
-                currencies = value;
-                _loading = false;
-                _isConnected = true;
-              });
-              for (int i = 0; i < currencies.length; i++) {
-                _loaders[i.toString()] = false;
-              }
-              // print(_loaders.toString());
+          List currency = await getCurrencies.refreshCurrencies();
+          if (mounted) {
+            setState(() {
+              currencies = currency;
+              _loading = false;
+              _isConnected = true;
+            });
+            for (int i = 0; i < currencies.length; i++) {
+              _loaders[i.toString()] = false;
             }
-          });
+          }
+
+          // getCurrencies.refreshCurrencies().then((value) {
+          //   if (mounted) {
+          //     setState(() {
+          //       // currencies = nairaWallet;
+          //       currencies = value;
+          //       _loading = false;
+          //       _isConnected = true;
+          //     });
+          //     for (int i = 0; i < currencies.length; i++) {
+          //       _loaders[i.toString()] = false;
+          //     }
+          //     // print(_loaders.toString());
+          //   }
+          // });
           // setState(() {
           //   currencies = currency;
           //   _loading = false;

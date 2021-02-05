@@ -2,6 +2,8 @@ import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:Crypto_wallet/services/api_services.dart';
+import 'package:Crypto_wallet/Screens/logins_and_signUp/password_reset/pass_reset_screen.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../shared/shared.dart';
 import 'dart:math';
@@ -268,19 +270,17 @@ class _BodyState extends State<Body> {
                 Container(
                   child: !_loader
                       ? RaisedButton(
-                        color: yellowStart,
-                        disabledColor: Colors.grey,
-                          onPressed: !enableButton? 
-                          null
-                          :() async {
-                            setState(() {
-                              _loader = true;
-                            });
-                            dynamic result =
-                                await _auth.signInWithEmail(email, password);
-                            if (result['status']) {
-
-                                    
+                          color: yellowStart,
+                          disabledColor: Colors.grey,
+                          onPressed: !enableButton
+                              ? null
+                              : () async {
+                                  setState(() {
+                                    _loader = true;
+                                  });
+                                  dynamic result = await _auth.signInWithEmail(
+                                      email, password);
+                                  if (result['status']) {
                                     dynamic user =
                                         await _auth.getUserDataById();
                                     var rnd = new Random();
@@ -337,20 +337,20 @@ class _BodyState extends State<Body> {
                                         _loader = false;
                                       });
                                     }
-                            } else {
-                              String msg = (result['message'] != null &&
-                                      result['message'].isNotEmpty)
-                                  ? result['message']
-                                  : 'An unknown error occured; retry';
-                              getSnackBar(
-                                msg,
-                                Colors.red,
-                              );
-                            }
+                                  } else {
+                                    String msg = (result['message'] != null &&
+                                            result['message'].isNotEmpty)
+                                        ? result['message']
+                                        : 'An unknown error occured; retry';
+                                    getSnackBar(
+                                      msg,
+                                      Colors.red,
+                                    );
+                                  }
 
-                            // Navigator.pushNamedAndRemoveUntil(context, 'bitcoin',
-                            //     (Route<dynamic> route) => false);
-                          },
+                                  // Navigator.pushNamedAndRemoveUntil(context, 'bitcoin',
+                                  //     (Route<dynamic> route) => false);
+                                },
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
                           ),
@@ -379,7 +379,7 @@ class _BodyState extends State<Body> {
                       : CircularProgressIndicator(),
                 ),
                 SizedBox(height: 25),
-                 Container(
+                Container(
                   child: Row(
                     // crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -401,7 +401,12 @@ class _BodyState extends State<Body> {
                 ),
                 SizedBox(height: 20),
                 Container(
-                  child: Text('Forgot your password?', style: forgotPassword),
+                  child: InkWell(
+                      onTap: () {
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => PassReset()));
+                      },
+                      child:
+                          Text('Forgot your password?', style: forgotPassword)),
                 )
               ],
             ),

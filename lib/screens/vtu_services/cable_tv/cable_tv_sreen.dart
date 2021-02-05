@@ -2,6 +2,7 @@
 import 'package:Crypto_wallet/screens/vtu_services/cable_tv/body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:Crypto_wallet/shared/app_colors.dart';
 
 class CableTvScreen extends StatefulWidget {
   final walletList;
@@ -30,7 +31,7 @@ class _CableTvScreenState extends State<CableTvScreen> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          backgroundColor: Colors.lightGreen,
+          backgroundColor: blueMain,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
           ),

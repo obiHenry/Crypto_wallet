@@ -4,7 +4,6 @@ import 'package:Crypto_wallet/screens/vtu_services/utilty_bills/utility_bills_sc
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/api_services.dart';
 import 'package:Crypto_wallet/shared/app_colors.dart';
-import 'package:Crypto_wallet/theme/light_color.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +12,6 @@ import 'cable_tv/cable_tv_sreen.dart';
 import 'internet_services/internet_service_screen.dart';
 import 'mobile_top_up_screen/mobile_top_up_screen.dart';
 import 'dart:math';
-import 'dart:convert';
 
 class VtuServicesScreen extends StatefulWidget {
   @override
@@ -28,6 +26,12 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
   dynamic bchBalance;
   dynamic ltcBalance;
   dynamic trxBalance;
+   dynamic btcBalance1;
+  dynamic ethBalance1;
+  dynamic xrpBalance1;
+  dynamic bchBalance1;
+  dynamic ltcBalance1;
+  dynamic trxBalance1;
   double nairaUsdEquivalance;
   dynamic cbnNairaRate;
   ApiServices getCurrencies;
@@ -86,12 +90,8 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                 gradient: LinearGradient(
                   // yellowStartWallet, yellowEndWallet
                   colors: [
-                    // LightColor.navyBlue2,
-                    // Colors.green,
                     blueMain,
                     blueMain,
-                    // LightColor.navyBlue2,
-                    // Colors.lightGreen,
                   ],
                   begin: Alignment.bottomCenter,
                   end: Alignment(0.6, 0.3),
@@ -207,13 +207,6 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
             SizedBox(
               height: 20,
             ),
-            // Text(
-            //   'Method of Transfer',
-            //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            // ),
-            // SizedBox(
-            //   height: 22,
-            // ),
             InkWell(
               onTap: () async {
                 setState(() {
@@ -254,6 +247,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                               .pushNamed('verification_screen', arguments: {
                             'email': user['email'],
                             'token': token.toString(),
+                            'fromExternal':false,
                           });
                           setState(() {
                             _loader = false;
@@ -280,6 +274,12 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                         bchBalance = user['BCH'].toString();
                         ltcBalance = user['LTC'].toString();
                         trxBalance = user['TRX'].toString();
+                        btcBalance1 = double.parse(btcBalance);
+                        ethBalance1 = double.parse(ethBalance);
+                        xrpBalance1 = double.parse(xrpBalance);
+                        bchBalance1 = double.parse(bchBalance);
+                        ltcBalance1 = double.parse(ltcBalance);
+                        trxBalance1 = double.parse(trxBalance);
 
                         getCurrencies =
                             Provider.of<ApiServices>(context, listen: false);
@@ -342,7 +342,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'BTC Wallet',
                               'logo': 'assets/images/btc.png',
-                              'balance': btcBalance.toString(),
+                              'balance': btcBalance1.toStringAsFixed(7),
                               'otherCurrency': btcNairaPrice.toStringAsFixed(2),
                               'symbol': 'BTC',
                               'price': btcUsdPrice,
@@ -351,7 +351,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'ETH Wallet',
                               'logo': 'assets/images/etherium.jpg',
-                              'balance': ethBalance.toString(),
+                              'balance': ethBalance1.toStringAsFixed(7),
                               'otherCurrency': ethNairaPrice.toStringAsFixed(2),
                               'symbol': 'ETH',
                               'price': ethUsdPrice,
@@ -360,7 +360,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'XRP Wallet',
                               'logo': 'assets/images/ripple.png',
-                              'balance': xrpBalance.toString(),
+                              'balance': xrpBalance1.toStringAsFixed(7),
                               'otherCurrency': xrpNairaPrice.toStringAsFixed(2),
                               'symbol': 'XRP',
                               'price': xrpUsdPrice,
@@ -369,7 +369,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'BCH Wallet',
                               'logo': 'assets/images/bitcoin_cash.png',
-                              'balance': bchBalance.toString(),
+                              'balance': bchBalance1.toStringAsFixed(7),
                               'otherCurrency': bchNairaPrice.toStringAsFixed(2),
                               'symbol': 'BCH',
                               'price': bchUsdPrice,
@@ -378,7 +378,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'LTC Wallet',
                               'logo': 'assets/images/litcoin.jpg',
-                              'balance': ltcBalance.toString(),
+                              'balance': ltcBalance1.toStringAsFixed(7),
                               'otherCurrency': ltcNairaPrice.toStringAsFixed(2),
                               'symbol': 'LTC',
                               'price': ltcUsdPrice,
@@ -387,7 +387,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'TRX Wallet',
                               'logo': 'assets/images/tron.jpg',
-                              'balance': trxBalance.toString(),
+                              'balance': trxBalance1.toStringAsFixed(7),
                               'otherCurrency': trxNairaPrice.toStringAsFixed(2),
                               'symbol': 'TRX',
                               'price': trxUsdPrice,
@@ -425,165 +425,11 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                 }
               },
 
-              // if (currentUser != null) {
-              //   if (!user.containsKey('userName')) {
-              //     Navigator.pushNamed(context, 'set_up');
-              //     setState(() {
-              //       _loader = false;
-              //     });
-              //   } else {
-              //     user = await AuthService().getUserDataById();
-              //     dynamic naira1 = await AuthService().getNairaRate();
-              //     nairaRate = (naira1['buy_rate']).toStringAsFixed(1);
-
-              //     cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
-
-              //     nairaBalance = user['naira'].toString();
-              //     btcBalance = user['BTC'].toString();
-              //     ethBalance = user['ETH'].toString();
-              //     xrpBalance = user['XRP'].toString();
-              //     bchBalance = user['BCH'].toString();
-              //     ltcBalance = user['LTC'].toString();
-              //     trxBalance = user['TRX'].toString();
-
-              //     getCurrencies =
-              //         Provider.of<ApiServices>(context, listen: false);
-              //     getCurrencies.refreshCurrencies().then((value) {
-              //       currencies = value;
-              //       price.clear();
-              //       currencies.forEach((element) {
-              //         dynamic pri = json.decode(element['price']);
-              //         price.add(pri);
-              //       });
-
-              //       btcUsdPrice = price[0];
-              //       ethUsdPrice = price[1];
-              //       xrpUsdPrice = price[2];
-              //       ltcUsdPrice = price[3];
-              //       bchUsdPrice = price[4];
-              //       trxUsdPrice = price[5];
-
-              //       nairaUsdEquivalance =
-              //           double.parse(nairaBalance) / double.parse(nairaRate);
-
-              //       btcNairaPrice = (double.parse(btcBalance) * btcUsdPrice) *
-              //           double.parse(nairaRate);
-
-              //       ethNairaPrice = (double.parse(ethBalance) * ethUsdPrice) *
-              //           double.parse(nairaRate);
-              //       xrpNairaPrice = (double.parse(xrpBalance) * xrpUsdPrice) *
-              //           double.parse(nairaRate);
-              //       ltcNairaPrice = (double.parse(ltcBalance) * ltcUsdPrice) *
-              //           double.parse(nairaRate);
-              //       bchNairaPrice = (double.parse(bchBalance) * bchUsdPrice) *
-              //           double.parse(nairaRate);
-              //       trxNairaPrice = (double.parse(trxBalance) * trxUsdPrice) *
-              //           double.parse(nairaRate);
-
-              //       print('mine$btcNairaPrice');
-              //       print(nairaUsdEquivalance);
-              //       setState(() {
-              //         listIsEmpty = false;
-              //       });
-              //       dynamic naira = double.parse(nairaBalance);
-
-              //       walletList = [
-              //         {
-              //           'walletName': 'Naira Wallet',
-              //           'logo': 'assets/images/index.png',
-              //           'balance': naira.toStringAsFixed(2),
-              //           'otherCurrency':
-              //               nairaUsdEquivalance.toStringAsFixed(2),
-              //           'symbol': 'USD',
-              //           'price': nairaRate,
-              //           'nairaRate': nairaRate,
-              //         },
-              //         {
-              //           'walletName': 'BTC Wallet',
-              //           'logo': 'assets/images/btc.png',
-              //           'balance': btcBalance.toString(),
-              //           'otherCurrency': btcNairaPrice.toStringAsFixed(2),
-              //           'symbol': 'BTC',
-              //           'price': btcUsdPrice,
-              //           'nairaRate': nairaRate,
-              //         },
-              //         {
-              //           'walletName': 'ETH Wallet',
-              //           'logo': 'assets/images/etherium.jpg',
-              //           'balance': ethBalance.toString(),
-              //           'otherCurrency': ethNairaPrice.toStringAsFixed(2),
-              //           'symbol': 'ETH',
-              //           'price': ethUsdPrice,
-              //           'nairaRate': nairaRate,
-              //         },
-              //         {
-              //           'walletName': 'XRP Wallet',
-              //           'logo': 'assets/images/ripple.png',
-              //           'balance': xrpBalance.toString(),
-              //           'otherCurrency': xrpNairaPrice.toStringAsFixed(2),
-              //           'symbol': 'XRP',
-              //           'price': xrpUsdPrice,
-              //           'nairaRate': nairaRate,
-              //         },
-              //         {
-              //           'walletName': 'BCH Wallet',
-              //           'logo': 'assets/images/bitcoin_cash.png',
-              //           'balance': bchBalance.toString(),
-              //           'otherCurrency': bchNairaPrice.toStringAsFixed(2),
-              //           'symbol': 'BCH',
-              //           'price': bchUsdPrice,
-              //           'nairaRate': nairaRate,
-              //         },
-              //         {
-              //           'walletName': 'LTC Wallet',
-              //           'logo': 'assets/images/litcoin.jpg',
-              //           'balance': ltcBalance.toString(),
-              //           'otherCurrency': ltcNairaPrice.toStringAsFixed(2),
-              //           'symbol': 'LTC',
-              //           'price': ltcUsdPrice,
-              //           'nairaRate': nairaRate,
-              //         },
-              //         {
-              //           'walletName': 'TRX Wallet',
-              //           'logo': 'assets/images/tron.jpg',
-              //           'balance': trxBalance.toString(),
-              //           'otherCurrency': trxNairaPrice.toStringAsFixed(2),
-              //           'symbol': 'TRX',
-              //           'price': trxUsdPrice,
-              //           'nairaRate': nairaRate,
-              //         },
-              //       ];
-
-              //       Navigator.push(
-              //         context,
-              //         MaterialPageRoute(
-              //           builder: (context) => MobileTopUpScreen(
-              //             walletList: walletList,
-              //           ),
-              //         ),
-              //       );
-              //       setState(() {
-              //         _loader = false;
-              //       });
-              //     });
-
-              //   }
-              // } else {
-              //   Navigator.pushNamed(context, 'sign_up');
-              //   setState(() {
-              //     _loader = false;
-              //   });
-              // }
-              // },
               child: Card(
                 elevation: 0,
                 margin: EdgeInsets.symmetric(horizontal: 15),
                 color: lightgreen,
-                // child: Container(
-                // // decoration: ,
-                // margin: EdgeInsets.symmetric(horizontal: 15),
-                // // height: 90,
-                // color: lightgreen,
+               
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -661,6 +507,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                               .pushNamed('verification_screen', arguments: {
                             'email': user['email'],
                             'token': token.toString(),
+                            'fromExternal':false,
                           });
                           setState(() {
                             _loader1 = false;
@@ -693,6 +540,12 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                         bchBalance = user['BCH'].toString();
                         ltcBalance = user['LTC'].toString();
                         trxBalance = user['TRX'].toString();
+                        btcBalance1 = double.parse(btcBalance);
+                        ethBalance1 = double.parse(ethBalance);
+                        xrpBalance1 = double.parse(xrpBalance);
+                        bchBalance1 = double.parse(bchBalance);
+                        ltcBalance1 = double.parse(ltcBalance);
+                        trxBalance1 = double.parse(trxBalance);
 
                         getCurrencies =
                             Provider.of<ApiServices>(context, listen: false);
@@ -755,7 +608,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'BTC Wallet',
                               'logo': 'assets/images/btc.png',
-                              'balance': btcBalance.toString(),
+                              'balance': btcBalance1.toStringAsFixed(7),
                               'otherCurrency': btcNairaPrice.toStringAsFixed(2),
                               'symbol': 'BTC',
                               'price': btcUsdPrice,
@@ -764,7 +617,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'ETH Wallet',
                               'logo': 'assets/images/etherium.jpg',
-                              'balance': ethBalance.toString(),
+                              'balance': ethBalance1.toStringAsFixed(7),
                               'otherCurrency': ethNairaPrice.toStringAsFixed(2),
                               'symbol': 'ETH',
                               'price': ethUsdPrice,
@@ -773,7 +626,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'XRP Wallet',
                               'logo': 'assets/images/ripple.png',
-                              'balance': xrpBalance.toString(),
+                              'balance': xrpBalance1.toStringAsFixed(7),
                               'otherCurrency': xrpNairaPrice.toStringAsFixed(2),
                               'symbol': 'XRP',
                               'price': xrpUsdPrice,
@@ -782,7 +635,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'BCH Wallet',
                               'logo': 'assets/images/bitcoin_cash.png',
-                              'balance': bchBalance.toString(),
+                              'balance': bchBalance1.toStringAsFixed(7),
                               'otherCurrency': bchNairaPrice.toStringAsFixed(2),
                               'symbol': 'BCH',
                               'price': bchUsdPrice,
@@ -791,7 +644,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'LTC Wallet',
                               'logo': 'assets/images/litcoin.jpg',
-                              'balance': ltcBalance.toString(),
+                              'balance': ltcBalance1.toStringAsFixed(7),
                               'otherCurrency': ltcNairaPrice.toStringAsFixed(2),
                               'symbol': 'LTC',
                               'price': ltcUsdPrice,
@@ -800,7 +653,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'TRX Wallet',
                               'logo': 'assets/images/tron.jpg',
-                              'balance': trxBalance.toString(),
+                              'balance': trxBalance1.toStringAsFixed(7),
                               'otherCurrency': trxNairaPrice.toStringAsFixed(2),
                               'symbol': 'TRX',
                               'price': trxUsdPrice,
@@ -838,155 +691,6 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                 }
               },
 
-              //   if (currentUser != null) {
-              //     if (!user.containsKey('userName')) {
-              //       Navigator.pushNamed(context, 'set_up');
-              //       setState(() {
-              //         _loader1 = false;
-              //       });
-              //     } else {
-              //       user = await AuthService().getUserDataById();
-              //       dynamic naira1 = await AuthService().getNairaRate();
-              //       nairaRate = (naira1['buy_rate']).toStringAsFixed(1);
-
-              //       cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
-
-              //       nairaBalance = user['naira'].toString();
-              //       btcBalance = user['BTC'].toString();
-              //       ethBalance = user['ETH'].toString();
-              //       xrpBalance = user['XRP'].toString();
-              //       bchBalance = user['BCH'].toString();
-              //       ltcBalance = user['LTC'].toString();
-              //       trxBalance = user['TRX'].toString();
-
-              //       getCurrencies =
-              //           Provider.of<ApiServices>(context, listen: false);
-              //       getCurrencies.refreshCurrencies().then((value) {
-              //         currencies = value;
-              //         price.clear();
-              //         currencies.forEach((element) {
-              //           dynamic pri = json.decode(element['price']);
-              //           price.add(pri);
-              //         });
-
-              //         btcUsdPrice = price[0];
-              //         ethUsdPrice = price[1];
-              //         xrpUsdPrice = price[2];
-              //         ltcUsdPrice = price[3];
-              //         bchUsdPrice = price[4];
-              //         trxUsdPrice = price[5];
-
-              //         nairaUsdEquivalance =
-              //             double.parse(nairaBalance) / double.parse(nairaRate);
-
-              //         btcNairaPrice = (double.parse(btcBalance) * btcUsdPrice) *
-              //             double.parse(nairaRate);
-
-              //         ethNairaPrice = (double.parse(ethBalance) * ethUsdPrice) *
-              //             double.parse(nairaRate);
-              //         xrpNairaPrice = (double.parse(xrpBalance) * xrpUsdPrice) *
-              //             double.parse(nairaRate);
-              //         ltcNairaPrice = (double.parse(ltcBalance) * ltcUsdPrice) *
-              //             double.parse(nairaRate);
-              //         bchNairaPrice = (double.parse(bchBalance) * bchUsdPrice) *
-              //             double.parse(nairaRate);
-              //         trxNairaPrice = (double.parse(trxBalance) * trxUsdPrice) *
-              //             double.parse(nairaRate);
-
-              //         print('mine$btcNairaPrice');
-              //         print(nairaUsdEquivalance);
-              //         setState(() {
-              //           listIsEmpty = false;
-              //         });
-              //         dynamic naira = double.parse(nairaBalance);
-
-              //         walletList = [
-              //           {
-              //             'walletName': 'Naira Wallet',
-              //             'logo': 'assets/images/index.png',
-              //             'balance': naira.toStringAsFixed(2),
-              //             'otherCurrency':
-              //                 nairaUsdEquivalance.toStringAsFixed(2),
-              //             'symbol': 'USD',
-              //             'price': nairaRate,
-              //             'nairaRate': nairaRate,
-              //           },
-              //           {
-              //             'walletName': 'BTC Wallet',
-              //             'logo': 'assets/images/btc.png',
-              //             'balance': btcBalance.toString(),
-              //             'otherCurrency': btcNairaPrice.toStringAsFixed(2),
-              //             'symbol': 'BTC',
-              //             'price': btcUsdPrice,
-              //             'nairaRate': nairaRate,
-              //           },
-              //           {
-              //             'walletName': 'ETH Wallet',
-              //             'logo': 'assets/images/etherium.jpg',
-              //             'balance': ethBalance.toString(),
-              //             'otherCurrency': ethNairaPrice.toStringAsFixed(2),
-              //             'symbol': 'ETH',
-              //             'price': ethUsdPrice,
-              //             'nairaRate': nairaRate,
-              //           },
-              //           {
-              //             'walletName': 'XRP Wallet',
-              //             'logo': 'assets/images/ripple.png',
-              //             'balance': xrpBalance.toString(),
-              //             'otherCurrency': xrpNairaPrice.toStringAsFixed(2),
-              //             'symbol': 'XRP',
-              //             'price': xrpUsdPrice,
-              //             'nairaRate': nairaRate,
-              //           },
-              //           {
-              //             'walletName': 'BCH Wallet',
-              //             'logo': 'assets/images/bitcoin_cash.png',
-              //             'balance': bchBalance.toString(),
-              //             'otherCurrency': bchNairaPrice.toStringAsFixed(2),
-              //             'symbol': 'BCH',
-              //             'price': bchUsdPrice,
-              //             'nairaRate': nairaRate,
-              //           },
-              //           {
-              //             'walletName': 'LTC Wallet',
-              //             'logo': 'assets/images/litcoin.jpg',
-              //             'balance': ltcBalance.toString(),
-              //             'otherCurrency': ltcNairaPrice.toStringAsFixed(2),
-              //             'symbol': 'LTC',
-              //             'price': ltcUsdPrice,
-              //             'nairaRate': nairaRate,
-              //           },
-              //           {
-              //             'walletName': 'TRX Wallet',
-              //             'logo': 'assets/images/tron.jpg',
-              //             'balance': trxBalance.toString(),
-              //             'otherCurrency': trxNairaPrice.toStringAsFixed(2),
-              //             'symbol': 'TRX',
-              //             'price': trxUsdPrice,
-              //             'nairaRate': nairaRate,
-              //           },
-              //         ];
-
-              //         Navigator.push(
-              //           context,
-              //           MaterialPageRoute(
-              //             builder: (context) => InternetServiceScreen(
-              //               walletList: walletList,
-              //             ),
-              //           ),
-              //         );
-              //         setState(() {
-              //           _loader1 = false;
-              //         });
-              //       });
-              //     }
-              //   } else {
-              //     Navigator.pushNamed(context, 'sign_up');
-              //     setState(() {
-              //       _loader1 = false;
-              //     });
-              //   }
-              // },
               child: Card(
                 elevation: 0,
                 margin: EdgeInsets.symmetric(horizontal: 15),
@@ -1070,6 +774,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                               .pushNamed('verification_screen', arguments: {
                             'email': user['email'],
                             'token': token.toString(),
+                            'fromExternal':false,
                           });
                           setState(() {
                             _loader2 = false;
@@ -1102,6 +807,12 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                         bchBalance = user['BCH'].toString();
                         ltcBalance = user['LTC'].toString();
                         trxBalance = user['TRX'].toString();
+                        btcBalance1 = double.parse(btcBalance);
+                        ethBalance1 = double.parse(ethBalance);
+                        xrpBalance1 = double.parse(xrpBalance);
+                        bchBalance1 = double.parse(bchBalance);
+                        ltcBalance1 = double.parse(ltcBalance);
+                        trxBalance1 = double.parse(trxBalance);
 
                         getCurrencies =
                             Provider.of<ApiServices>(context, listen: false);
@@ -1150,7 +861,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                           });
                           dynamic naira = double.parse(nairaBalance);
 
-                          walletList = [
+                           walletList = [
                             {
                               'walletName': 'Naira Wallet',
                               'logo': 'assets/images/index.png',
@@ -1164,7 +875,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'BTC Wallet',
                               'logo': 'assets/images/btc.png',
-                              'balance': btcBalance.toString(),
+                              'balance': btcBalance1.toStringAsFixed(7),
                               'otherCurrency': btcNairaPrice.toStringAsFixed(2),
                               'symbol': 'BTC',
                               'price': btcUsdPrice,
@@ -1173,7 +884,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'ETH Wallet',
                               'logo': 'assets/images/etherium.jpg',
-                              'balance': ethBalance.toString(),
+                              'balance': ethBalance1.toStringAsFixed(7),
                               'otherCurrency': ethNairaPrice.toStringAsFixed(2),
                               'symbol': 'ETH',
                               'price': ethUsdPrice,
@@ -1182,7 +893,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'XRP Wallet',
                               'logo': 'assets/images/ripple.png',
-                              'balance': xrpBalance.toString(),
+                              'balance': xrpBalance1.toStringAsFixed(7),
                               'otherCurrency': xrpNairaPrice.toStringAsFixed(2),
                               'symbol': 'XRP',
                               'price': xrpUsdPrice,
@@ -1191,7 +902,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'BCH Wallet',
                               'logo': 'assets/images/bitcoin_cash.png',
-                              'balance': bchBalance.toString(),
+                              'balance': bchBalance1.toStringAsFixed(7),
                               'otherCurrency': bchNairaPrice.toStringAsFixed(2),
                               'symbol': 'BCH',
                               'price': bchUsdPrice,
@@ -1200,7 +911,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'LTC Wallet',
                               'logo': 'assets/images/litcoin.jpg',
-                              'balance': ltcBalance.toString(),
+                              'balance': ltcBalance1.toStringAsFixed(7),
                               'otherCurrency': ltcNairaPrice.toStringAsFixed(2),
                               'symbol': 'LTC',
                               'price': ltcUsdPrice,
@@ -1209,7 +920,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'TRX Wallet',
                               'logo': 'assets/images/tron.jpg',
-                              'balance': trxBalance.toString(),
+                              'balance': trxBalance1.toStringAsFixed(7),
                               'otherCurrency': trxNairaPrice.toStringAsFixed(2),
                               'symbol': 'TRX',
                               'price': trxUsdPrice,
@@ -1247,155 +958,6 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                 }
               },
 
-              //   if (currentUser != null) {
-              //     if (!user.containsKey('userName')) {
-              //       Navigator.pushNamed(context, 'set_up');
-              //       setState(() {
-              //         _loader2 = false;
-              //       });
-              //     } else {
-              //       user = await AuthService().getUserDataById();
-              //       dynamic naira1 = await AuthService().getNairaRate();
-              //       nairaRate = (naira1['buy_rate']).toStringAsFixed(1);
-
-              //       cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
-
-              //       nairaBalance = user['naira'].toString();
-              //       btcBalance = user['BTC'].toString();
-              //       ethBalance = user['ETH'].toString();
-              //       xrpBalance = user['XRP'].toString();
-              //       bchBalance = user['BCH'].toString();
-              //       ltcBalance = user['LTC'].toString();
-              //       trxBalance = user['TRX'].toString();
-
-              //       getCurrencies =
-              //           Provider.of<ApiServices>(context, listen: false);
-              //       getCurrencies.refreshCurrencies().then((value) {
-              //         currencies = value;
-              //         price.clear();
-              //         currencies.forEach((element) {
-              //           dynamic pri = json.decode(element['price']);
-              //           price.add(pri);
-              //         });
-
-              //         btcUsdPrice = price[0];
-              //         ethUsdPrice = price[1];
-              //         xrpUsdPrice = price[2];
-              //         ltcUsdPrice = price[3];
-              //         bchUsdPrice = price[4];
-              //         trxUsdPrice = price[5];
-
-              //         nairaUsdEquivalance =
-              //             double.parse(nairaBalance) / double.parse(nairaRate);
-
-              //         btcNairaPrice = (double.parse(btcBalance) * btcUsdPrice) *
-              //             double.parse(nairaRate);
-
-              //         ethNairaPrice = (double.parse(ethBalance) * ethUsdPrice) *
-              //             double.parse(nairaRate);
-              //         xrpNairaPrice = (double.parse(xrpBalance) * xrpUsdPrice) *
-              //             double.parse(nairaRate);
-              //         ltcNairaPrice = (double.parse(ltcBalance) * ltcUsdPrice) *
-              //             double.parse(nairaRate);
-              //         bchNairaPrice = (double.parse(bchBalance) * bchUsdPrice) *
-              //             double.parse(nairaRate);
-              //         trxNairaPrice = (double.parse(trxBalance) * trxUsdPrice) *
-              //             double.parse(nairaRate);
-
-              //         print('mine$btcNairaPrice');
-              //         print(nairaUsdEquivalance);
-              //         setState(() {
-              //           listIsEmpty = false;
-              //         });
-              //         dynamic naira = double.parse(nairaBalance);
-
-              //         walletList = [
-              //           {
-              //             'walletName': 'Naira Wallet',
-              //             'logo': 'assets/images/index.png',
-              //             'balance': naira.toStringAsFixed(2),
-              //             'otherCurrency':
-              //                 nairaUsdEquivalance.toStringAsFixed(2),
-              //             'symbol': 'USD',
-              //             'price': nairaRate,
-              //             'nairaRate': nairaRate,
-              //           },
-              //           {
-              //             'walletName': 'BTC Wallet',
-              //             'logo': 'assets/images/btc.png',
-              //             'balance': btcBalance.toString(),
-              //             'otherCurrency': btcNairaPrice.toStringAsFixed(2),
-              //             'symbol': 'BTC',
-              //             'price': btcUsdPrice,
-              //             'nairaRate': nairaRate,
-              //           },
-              //           {
-              //             'walletName': 'ETH Wallet',
-              //             'logo': 'assets/images/etherium.jpg',
-              //             'balance': ethBalance.toString(),
-              //             'otherCurrency': ethNairaPrice.toStringAsFixed(2),
-              //             'symbol': 'ETH',
-              //             'price': ethUsdPrice,
-              //             'nairaRate': nairaRate,
-              //           },
-              //           {
-              //             'walletName': 'XRP Wallet',
-              //             'logo': 'assets/images/ripple.png',
-              //             'balance': xrpBalance.toString(),
-              //             'otherCurrency': xrpNairaPrice.toStringAsFixed(2),
-              //             'symbol': 'XRP',
-              //             'price': xrpUsdPrice,
-              //             'nairaRate': nairaRate,
-              //           },
-              //           {
-              //             'walletName': 'BCH Wallet',
-              //             'logo': 'assets/images/bitcoin_cash.png',
-              //             'balance': bchBalance.toString(),
-              //             'otherCurrency': bchNairaPrice.toStringAsFixed(2),
-              //             'symbol': 'BCH',
-              //             'price': bchUsdPrice,
-              //             'nairaRate': nairaRate,
-              //           },
-              //           {
-              //             'walletName': 'LTC Wallet',
-              //             'logo': 'assets/images/litcoin.jpg',
-              //             'balance': ltcBalance.toString(),
-              //             'otherCurrency': ltcNairaPrice.toStringAsFixed(2),
-              //             'symbol': 'LTC',
-              //             'price': ltcUsdPrice,
-              //             'nairaRate': nairaRate,
-              //           },
-              //           {
-              //             'walletName': 'TRX Wallet',
-              //             'logo': 'assets/images/tron.jpg',
-              //             'balance': trxBalance.toString(),
-              //             'otherCurrency': trxNairaPrice.toStringAsFixed(2),
-              //             'symbol': 'TRX',
-              //             'price': trxUsdPrice,
-              //             'nairaRate': nairaRate,
-              //           },
-              //         ];
-
-              //         Navigator.push(
-              //           context,
-              //           MaterialPageRoute(
-              //             builder: (context) => CableTvScreen(
-              //               walletList: walletList,
-              //             ),
-              //           ),
-              //         );
-              //         setState(() {
-              //           _loader2 = false;
-              //         });
-              //       });
-              //     }
-              //   } else {
-              //     Navigator.pushNamed(context, 'sign_up');
-              //     setState(() {
-              //       _loader2 = false;
-              //     });
-              //   }
-              // },
               child: Card(
                 elevation: 0,
                 margin: EdgeInsets.symmetric(horizontal: 15),
@@ -1446,7 +1008,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                 });
                 dynamic user = await AuthService().getUserDataById();
 
-                 if (user != null) {
+                if (user != null) {
                   if (user.containsKey('verified')) {
                     bool verified = user['verified'];
                     if (!verified) {
@@ -1479,6 +1041,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                               .pushNamed('verification_screen', arguments: {
                             'email': user['email'],
                             'token': token.toString(),
+                            'fromExternal':false,
                           });
                           setState(() {
                             _loader3 = false;
@@ -1511,6 +1074,12 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                         bchBalance = user['BCH'].toString();
                         ltcBalance = user['LTC'].toString();
                         trxBalance = user['TRX'].toString();
+                        btcBalance1 = double.parse(btcBalance);
+                        ethBalance1 = double.parse(ethBalance);
+                        xrpBalance1 = double.parse(xrpBalance);
+                        bchBalance1 = double.parse(bchBalance);
+                        ltcBalance1 = double.parse(ltcBalance);
+                        trxBalance1 = double.parse(trxBalance);
 
                         getCurrencies =
                             Provider.of<ApiServices>(context, listen: false);
@@ -1559,7 +1128,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                           });
                           dynamic naira = double.parse(nairaBalance);
 
-                          walletList = [
+                           walletList = [
                             {
                               'walletName': 'Naira Wallet',
                               'logo': 'assets/images/index.png',
@@ -1573,7 +1142,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'BTC Wallet',
                               'logo': 'assets/images/btc.png',
-                              'balance': btcBalance.toString(),
+                              'balance': btcBalance1.toStringAsFixed(7),
                               'otherCurrency': btcNairaPrice.toStringAsFixed(2),
                               'symbol': 'BTC',
                               'price': btcUsdPrice,
@@ -1582,7 +1151,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'ETH Wallet',
                               'logo': 'assets/images/etherium.jpg',
-                              'balance': ethBalance.toString(),
+                              'balance': ethBalance1.toStringAsFixed(7),
                               'otherCurrency': ethNairaPrice.toStringAsFixed(2),
                               'symbol': 'ETH',
                               'price': ethUsdPrice,
@@ -1591,7 +1160,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'XRP Wallet',
                               'logo': 'assets/images/ripple.png',
-                              'balance': xrpBalance.toString(),
+                              'balance': xrpBalance1.toStringAsFixed(7),
                               'otherCurrency': xrpNairaPrice.toStringAsFixed(2),
                               'symbol': 'XRP',
                               'price': xrpUsdPrice,
@@ -1600,7 +1169,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'BCH Wallet',
                               'logo': 'assets/images/bitcoin_cash.png',
-                              'balance': bchBalance.toString(),
+                              'balance': bchBalance1.toStringAsFixed(7),
                               'otherCurrency': bchNairaPrice.toStringAsFixed(2),
                               'symbol': 'BCH',
                               'price': bchUsdPrice,
@@ -1609,7 +1178,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'LTC Wallet',
                               'logo': 'assets/images/litcoin.jpg',
-                              'balance': ltcBalance.toString(),
+                              'balance': ltcBalance1.toStringAsFixed(7),
                               'otherCurrency': ltcNairaPrice.toStringAsFixed(2),
                               'symbol': 'LTC',
                               'price': ltcUsdPrice,
@@ -1618,7 +1187,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'TRX Wallet',
                               'logo': 'assets/images/tron.jpg',
-                              'balance': trxBalance.toString(),
+                              'balance': trxBalance1.toStringAsFixed(7),
                               'otherCurrency': trxNairaPrice.toStringAsFixed(2),
                               'symbol': 'TRX',
                               'price': trxUsdPrice,
@@ -1655,10 +1224,6 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                   print('anything');
                 }
               },
-
-
-
-               
               child: Card(
                 elevation: 0,
                 margin: EdgeInsets.symmetric(horizontal: 15),
@@ -1709,8 +1274,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                 });
                 dynamic user = await AuthService().getUserDataById();
 
-
-                 if (user != null) {
+                if (user != null) {
                   if (user.containsKey('verified')) {
                     bool verified = user['verified'];
                     if (!verified) {
@@ -1743,21 +1307,23 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                               .pushNamed('verification_screen', arguments: {
                             'email': user['email'],
                             'token': token.toString(),
+                            'fromExternal':false,
+
                           });
                           setState(() {
                             _loader4 = false;
                           });
                         } else {
-                           setState(() {
+                          setState(() {
                             _loader4 = false;
                           });
                           getSnackBar(
                               result2['response'].toString(), Colors.red);
                         }
                       } else {
-                         setState(() {
-                            _loader4 = false;
-                          });
+                        setState(() {
+                          _loader4 = false;
+                        });
                         getSnackBar(result1['message'], Colors.red);
                       }
                     } else {
@@ -1775,6 +1341,12 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                         bchBalance = user['BCH'].toString();
                         ltcBalance = user['LTC'].toString();
                         trxBalance = user['TRX'].toString();
+                        btcBalance1 = double.parse(btcBalance);
+                        ethBalance1 = double.parse(ethBalance);
+                        xrpBalance1 = double.parse(xrpBalance);
+                        bchBalance1 = double.parse(bchBalance);
+                        ltcBalance1 = double.parse(ltcBalance);
+                        trxBalance1 = double.parse(trxBalance);
 
                         getCurrencies =
                             Provider.of<ApiServices>(context, listen: false);
@@ -1837,7 +1409,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'BTC Wallet',
                               'logo': 'assets/images/btc.png',
-                              'balance': btcBalance.toString(),
+                              'balance': btcBalance1.toStringAsFixed(7),
                               'otherCurrency': btcNairaPrice.toStringAsFixed(2),
                               'symbol': 'BTC',
                               'price': btcUsdPrice,
@@ -1846,7 +1418,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'ETH Wallet',
                               'logo': 'assets/images/etherium.jpg',
-                              'balance': ethBalance.toString(),
+                              'balance': ethBalance1.toStringAsFixed(7),
                               'otherCurrency': ethNairaPrice.toStringAsFixed(2),
                               'symbol': 'ETH',
                               'price': ethUsdPrice,
@@ -1855,7 +1427,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'XRP Wallet',
                               'logo': 'assets/images/ripple.png',
-                              'balance': xrpBalance.toString(),
+                              'balance': xrpBalance1.toStringAsFixed(7),
                               'otherCurrency': xrpNairaPrice.toStringAsFixed(2),
                               'symbol': 'XRP',
                               'price': xrpUsdPrice,
@@ -1864,7 +1436,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'BCH Wallet',
                               'logo': 'assets/images/bitcoin_cash.png',
-                              'balance': bchBalance.toString(),
+                              'balance': bchBalance1.toStringAsFixed(7),
                               'otherCurrency': bchNairaPrice.toStringAsFixed(2),
                               'symbol': 'BCH',
                               'price': bchUsdPrice,
@@ -1873,7 +1445,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'LTC Wallet',
                               'logo': 'assets/images/litcoin.jpg',
-                              'balance': ltcBalance.toString(),
+                              'balance': ltcBalance1.toStringAsFixed(7),
                               'otherCurrency': ltcNairaPrice.toStringAsFixed(2),
                               'symbol': 'LTC',
                               'price': ltcUsdPrice,
@@ -1882,7 +1454,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             {
                               'walletName': 'TRX Wallet',
                               'logo': 'assets/images/tron.jpg',
-                              'balance': trxBalance.toString(),
+                              'balance': trxBalance1.toStringAsFixed(7),
                               'otherCurrency': trxNairaPrice.toStringAsFixed(2),
                               'symbol': 'TRX',
                               'price': trxUsdPrice,
@@ -1919,7 +1491,6 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                   print('anything');
                 }
               },
-               
               child: Card(
                 elevation: 0,
                 margin: EdgeInsets.symmetric(horizontal: 15),

@@ -7,8 +7,8 @@ import 'package:Crypto_wallet/shared/succesful_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Crypto_wallet/services/auth.dart';
-import 'package:Crypto_wallet/screens/vtu_services/components/outLined_box.dart';
-import 'package:Crypto_wallet/screens/vtu_services/components/bills_check_out_screen.dart';
+import 'package:Crypto_wallet/shared/outLined_box.dart';
+import 'package:Crypto_wallet/shared/bills_check_out_screen.dart';
 
 import 'package:progress_dialog/progress_dialog.dart';
 

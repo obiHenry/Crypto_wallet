@@ -82,13 +82,13 @@ class _BillersOrProductsDropDownState extends State<BillersOrProductsDropDown> {
           // ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.purple,
+              color: Colors.grey,
               width: 1.0,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.purple,
+              color: Colors.grey,
               width: 1.5,
             ),
           ),
@@ -98,10 +98,10 @@ class _BillersOrProductsDropDownState extends State<BillersOrProductsDropDown> {
         items: widget.options == null
             ? null
             : widget.options.map((option) {
-                if (option['PRODUCT_AMOUNT'] != null) {
+                if (option['network_id'] != null) {
                   dynamic charge =
-                      double.parse(option['PRODUCT_AMOUNT']) * 0.066;
-                  amount = double.parse(option['PRODUCT_AMOUNT']) + charge;
+                      double.parse(option['price']) * 0.06;
+                  amount = double.parse(option['price']) + charge;
                 }
 
                 if (option['package'] != null) {
@@ -115,10 +115,10 @@ class _BillersOrProductsDropDownState extends State<BillersOrProductsDropDown> {
 
                 if (option['network'] != null) {
                   value = option['network'].toString();
-                } else if (option['PRODUCT_NAME'] != null) {
-                  value = option['PRODUCT_NAME'].toString();
-                } else if (option['package'] != null) {
-                  value = option['package'].toString();
+                } else if (option['network_id'] != null) {
+                  value = option['name'].toString();
+                } else if (option['title'] != null) {
+                  value = option['title'].toString();
                 } else if (option['PRODUCT_TYPE'] != null) {
                   value = option['PRODUCT_TYPE'].toString();
                 }
@@ -132,13 +132,13 @@ class _BillersOrProductsDropDownState extends State<BillersOrProductsDropDown> {
                         option['network'] != null
                             ? Text(option['network'].toString())
                             : Container(),
-                        option['PRODUCT_NAME'] != null
+                        option['network_id'] != null
                             ? Text(
-                                '${option['PRODUCT_NAME']} (\₦${formatPrice(amount.toStringAsFixed(0))})')
+                                '${option['name']} (\₦${formatPrice(amount.toStringAsFixed(0))})')
                             : Container(),
-                        option['package'] != null
+                        option['title'] != null
                             ? Text(
-                                '${option['package']} (\₦${formatPrice(cableAmount.toStringAsFixed(0))})')
+                                '${option['title']} (\₦${formatPrice(option['price'])})')
                             : Container(),
                         option['PRODUCT_TYPE'] != null
                             ? Text(

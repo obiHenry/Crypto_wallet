@@ -29,13 +29,25 @@ class _TransferCurrencyListinNairaState
   bool _isConnected = true;
   ApiServices getCurrencies;
   Map<String, bool> loaders = {};
+   dynamic btcBalance;
+  dynamic ethBalance;
+  dynamic xrpBalance;
+  dynamic bchBalance;
+  dynamic ltcBalance;
+  dynamic trxBalance;
+  dynamic btcBal;
+  dynamic ethBal;
+  dynamic xrpBal;
+  dynamic bchBal;
+  dynamic ltcBal;
+  dynamic trxBal;
 
   final imageList = [
     'assets/images/btc.png',
     'assets/images/etherium.jpg',
     'assets/images/ripple.png',
-    'assets/images/bitcoin_cash.png',
     'assets/images/litcoin.jpg',
+    'assets/images/bitcoin_cash.png',
     'assets/images/tron.jpg',
   ];
 
@@ -68,7 +80,7 @@ class _TransferCurrencyListinNairaState
   @override
   void didChangeDependencies() async {
     getCurrencies = Provider.of<ApiServices>(context);
-
+    
     _checkInternet().then((value) {
       if (value) {
         getCurrencies.refreshCurrencies().then((value) async {
@@ -182,6 +194,7 @@ class _TransferCurrencyListinNairaState
                                         arguments: {
                                           'email': users['email'],
                                           'token': token.toString(),
+                                          'fromExternal': false,
                                         });
                                     setState(() {
                                       loaders[index.toString()] = false;
@@ -195,13 +208,26 @@ class _TransferCurrencyListinNairaState
                                 }
                               } else {
                                 if (users.containsKey('userName')) {
+                                    btcBalance = double.parse(users['BTC']);
+                                  ethBalance = double.parse(users['ETH']);
+                                  xrpBalance = double.parse(users['XRP']);
+                                  bchBalance = double.parse(users['BCH']);
+                                  ltcBalance = double.parse(users['LTC']);
+                                  trxBalance = double.parse(users['TRX']);
+                                  btcBal = btcBalance.toStringAsFixed(7);
+                                  ethBal = ethBalance.toStringAsFixed(7);
+                                  xrpBal = xrpBalance.toStringAsFixed(7);
+                                  bchBal = bchBalance.toStringAsFixed(7);
+                                  ltcBal = ltcBalance.toStringAsFixed(7);
+                                  trxBal = trxBalance.toStringAsFixed(7);
+
                                   dynamic balanceList = [
-                                    users['BTC'].toString(),
-                                    users['ETH'].toString(),
-                                    users['XRP'].toString(),
-                                    users['BCH'].toString(),
-                                    users['LTC'].toString(),
-                                    users['TRX'].toString(),
+                                    btcBal ,
+                                    ethBal ,
+                                    xrpBal ,
+                                    bchBal ,
+                                    ltcBal ,
+                                    trxBal ,
                                   ];
 
                                    dynamic nairaBalance = users['naira'].toString();
@@ -319,28 +345,18 @@ class _TransferCurrencyListinNairaState
                   ),
             onRefresh: () async {
               if (await _checkInternet()) {
-          // dynamic currency = await getCurrencies.refreshCurrencies();
-          // if (mounted) {
 
-          getCurrencies.refreshCurrencies().then((value) {
+          List currency = await getCurrencies.refreshCurrencies();
             if (mounted) {
               setState(() {
-                // currencies = nairaWallet;
-                currencies = value;
+                 currencies = currency;
                 _loading = false;
                 _isConnected = true;
               });
               for (int i = 0; i < currencies.length; i++) {
                 loaders[i.toString()] = false;
               }
-              // print(_loaders.toString());
             }
-          });
-          // setState(() {
-          //   currencies = currency;
-          //   _loading = false;
-          // });
-          // }
         } else {
           if (mounted) {
             setState(() {

@@ -4,12 +4,14 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class AuthService with ChangeNotifier {
+
   String userId = FirebaseAuth.instance.currentUser != null
       ? FirebaseAuth.instance.currentUser.uid
       : '';
   Map userData;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _dbRef = FirebaseDatabase.instance.reference();
+  dynamic naira;
 
   void setUserId(String uid) {
     userId = uid;
@@ -326,16 +328,16 @@ class AuthService with ChangeNotifier {
 
   Future getNairaRate() async {
     try {
-      dynamic naira = await _dbRef
+      dynamic naira1 = await _dbRef
           .child('naira_equivalence')
           .once()
           .then((DataSnapshot snapshot) {
-        dynamic naira = snapshot.value;
+           naira = snapshot.value;
         print(naira['current-price']);
         return naira;
       });
 
-      return naira;
+      return naira1;
     } catch (e) {
       print(e.toString());
     }

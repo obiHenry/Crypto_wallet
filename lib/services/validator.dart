@@ -22,6 +22,20 @@ class Validators {
     return null;
   }
 
+   static String pin(String value) {
+    if (value.isEmpty) {
+      return 'Please enter your transaction pin';
+    }
+    if (value.length < 4) {
+      return 'pin must be more than 4 characters';
+    }
+
+    if(  value.length > 4){
+       return 'pin must not be greater than 4 characters';
+    }
+    return null;
+  }
+
   static String confirmPassword(String value) {
     if (value.isEmpty) {
       return 'Please confirm your password';

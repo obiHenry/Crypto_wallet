@@ -11,14 +11,18 @@ import 'package:Crypto_wallet/screens/wallet/naira_wallet/deposit_naira-screen.d
 import 'package:Crypto_wallet/screens/wallet/naira_wallet/transfer_naira_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:Crypto_wallet/Screens/logins_and_signUp/password_reset/pass_reset_screen.dart';
+import 'package:Crypto_wallet/screens/wrapper_screen.dart';
 import 'package:Crypto_wallet/screens/settings/user_profile_screen.dart';
 
 
 class MyRouter {
-  static String initialRoute = 'tab_screen';
+  static String initialRoute = 'wrapper_screen';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+       case 'wrapper_screen':
+        return MaterialPageRoute(builder: (_) => WrapperScreen());
       case 'login':
         return MaterialPageRoute(builder: (_) => Login());
       case 'tab_screen':
@@ -43,6 +47,8 @@ class MyRouter {
         return MaterialPageRoute(builder: (_) => VerifyEmailAddress(settings.arguments));
          case 'pin_code_screen':
         return MaterialPageRoute(builder: (_) => AccountPinCodeSetup());
+         case 'password_reset':
+        return MaterialPageRoute(builder: (_) => PassReset());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

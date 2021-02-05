@@ -21,9 +21,8 @@ class ApiServices with ChangeNotifier {
     print(txRef);
     try {
       var apiUrl =
-          'https://api.skyinvest.io/airtime/airtime?apiKey=8293ui423kjsadhas9oujwasd&network=$code&phone=$mobileNumber&amount=$amount&trans_id=$txRef';
-      // 'https://api.skyinvest.io/airtime/airtime?apiKey=8293ui423kjsadhas9oujwasd&phone=$mobileNumber&amount=$amount&network=$code';
-      // 'https://api.skyinvest.io/airtime/airtime.php?apiKey=8293ui423kjsadhas9oujwasd&amount=$amount&customer=$mobileNumber&reference=$txRef&auth="FLWSECK_TEST-SANDBOXDEMOKEY-X"';
+          'http://api.skyinvest.io/airtime?apiKey=8293ui423kjsadhas9oujwasd&phone=$mobileNumber&amount=$amount&network_id=$code';
+      // 'https://api.skyinvest.io/airtime/airtime?apiKey=8293ui423kjsadhas9oujwasd&network=&phone=&amount=&trans_id=$txRef';
 
       http.Response response = await http.get(apiUrl);
 
@@ -64,7 +63,7 @@ class ApiServices with ChangeNotifier {
     List bundles = [];
     try {
       var apiUrl =
-          'https://api.skyinvest.io/cable/cablelist?apiKey=8293ui423kjsadhas9oujwasd';
+          'https://api.skyinvest.io/cable/cable-bundles?apiKey=8293ui423kjsadhas9oujwasd';
       // 'https://api.skyinvest.io/cable/cablelist?apiKey=8293ui423kjsadhas9oujwasd';
 
       http.Response response = await http.get(apiUrl);
@@ -86,12 +85,12 @@ class ApiServices with ChangeNotifier {
     // currencies.clear();
     try {
       var apiUrl =
-          'https://api.nomics.com/v1/currencies/ticker?key=demo-26240835858194712a4f8cc0dc635c7a&ids=BTC,ETH,TRX,LTC,BCH,XRP&interval=1d,30d&convert=USD&per-page=100&page=1';
+          'https://api.nomics.com/v1/currencies/ticker?key=ef0ea0793f70cc0a63af1aa3803f5823&ids=BTC,ETH,TRX,LTC,BCH,XRP&interval=1d,30d&convert=USD&per-page=100&page=1';
       // Make a HTTP GET request to the CoinMarketCap API.
       // Await basically pauses execution until the get() function returns a Response
       http.Response response = await http.get(apiUrl);
       // Using the JSON class to decode the JSON String
-      var currency = await json.decode(response.body);
+      dynamic currency = await json.decode(response.body);
       // currencies.add(nairaWallet);
 
       currencies = currency;
@@ -103,7 +102,7 @@ class ApiServices with ChangeNotifier {
   }
 
   Future<List> refreshCurrencies() async {
-    currencies.clear();
+    // currencies.clear();
     await getCurrency();
     return currencies;
   }
@@ -112,7 +111,49 @@ class ApiServices with ChangeNotifier {
     List bundles = [];
     try {
       var apiUrl =
-          'https://api.skyinvest.io/databundle/bundlelist?apiKey=8293ui423kjsadhas9oujwasd';
+          'https://api.skyinvest.io/data-variations?apiKey=8293ui423kjsadhas9oujwasd';
+
+      http.Response response = await http.get(apiUrl);
+
+      dynamic recieve = json.encode(response.body);
+      dynamic rep = json.decode(recieve);
+      bundles.add(rep);
+      // String string = rep.substring(1);
+      // Map respond = json.decode(string);
+
+      return {'status': true, 'message': rep};
+    } catch (e) {
+      print(e.toString());
+      return {'status': false, 'message': e};
+    }
+  }
+
+  Future getSmileBundles() async {
+    List bundles = [];
+    try {
+      var apiUrl =
+          'https://api.skyinvest.io/smile/smile-databundles?apiKey=8293ui423kjsadhas9oujwasd';
+
+      http.Response response = await http.get(apiUrl);
+
+      dynamic recieve = json.encode(response.body);
+      dynamic rep = json.decode(recieve);
+      bundles.add(rep);
+      // String string = rep.substring(1);
+      // Map respond = json.decode(string);
+
+      return {'status': true, 'message': rep};
+    } catch (e) {
+      print(e.toString());
+      return {'status': false, 'message': e};
+    }
+  }
+
+   Future getSpectranetBundles() async {
+    List bundles = [];
+    try {
+      var apiUrl =
+          'https://api.skyinvest.io/spectranet/spectranet-bundles?apiKey=8293ui423kjsadhas9oujwasd';
 
       http.Response response = await http.get(apiUrl);
 
@@ -226,17 +267,16 @@ class ApiServices with ChangeNotifier {
     }
   }
 
-  Future sendData(dataPlan, mobileNumber, code) async {
+  Future sendData(uniqueId, mobileNumber, networkId) async {
     print('this is the account number$mobileNumber');
-    print('this is the bank$dataPlan');
-    print('this is the code$code');
+    print('this is the bank$uniqueId');
+    print('this is the code$networkId');
     print('me is here');
     dynamic txRef = DateTime.now().millisecondsSinceEpoch;
     print(txRef);
     try {
       var apiUrl =
-          'https://api.skyinvest.io/databundle/buydata?apiKey=8293ui423kjsadhas9oujwasd&network_id=$code&dataplan=$dataPlan&phone=$mobileNumber';
-      // 'https://api.skyinvest.io/databundle/buydata.php?apiKey=8293ui423kjsadhas9oujwasd&auth=$auth&userId=$userId&mobilenetwork_code=$code&customer=$mobileNumber&reference=$txRef&dataplan=$dataPlan';
+          'https://api.skyinvest.io/buy-data?apiKey=8293ui423kjsadhas9oujwasd&phone=$mobileNumber&network_id=$networkId&variation=$uniqueId';
 
       http.Response response = await http.get(apiUrl);
 
@@ -253,19 +293,16 @@ class ApiServices with ChangeNotifier {
     }
   }
 
-  Future sendSmileAirtime(
-    smartNumber,
-    amount,
-  ) async {
+  Future sendSmileAirtime(smartNumber, amount, mobile, email) async {
     print('this is the account number$smartNumber');
     print('this is the bank$amount');
-    print("this is me");
+    print("this is $email");
+    print("this is $mobile");
     dynamic txRef = DateTime.now().millisecondsSinceEpoch;
     print(txRef);
     try {
       var apiUrl =
-          'https://api.skyinvest.io/smile/smile-airtime?apiKey=8293ui423kjsadhas9oujwasd&trans_id=$txRef&smartno=$smartNumber&amount=$amount';
-      // 'https://api.skyinvest.io/airtime/airtime.php?apiKey=8293ui423kjsadhas9oujwasd&amount=$amount&customer=$mobileNumber&reference=$txRef&auth="FLWSECK_TEST-SANDBOXDEMOKEY-X"';
+          'https://api.skyinvest.io/smile/smile-airtime?apiKey=8293ui423kjsadhas9oujwasd&customer_id=$smartNumber&amount=$amount&email=$email&phone=$mobile';
 
       http.Response response = await http.get(apiUrl);
 
@@ -281,19 +318,18 @@ class ApiServices with ChangeNotifier {
     }
   }
 
-  Future sendSmileData(smartNumber, amount, productCode) async {
+  Future sendSmileData(smartNumber, planId, email, mobile) async {
     // final auth =
     //     '935CG7F36VW9A99T73I0HYXUJA10OCKNNP8S602GU31174RSJYG535MK469K78J1';
     // final userId = 'CK100240605';
     // final authText = "FLWSECK_TEST-SANDBOXDEMOKEY-X";
     print('this is the account number$smartNumber');
-    print('this is the bank$amount');
+    print('this is the bank$planId');
     dynamic txRef = DateTime.now().millisecondsSinceEpoch;
     print(txRef);
     try {
       var apiUrl =
-          'https://api.skyinvest.io/smile/smile-data?apiKey=8293ui423kjsadhas9oujwasd&trans_id=$txRef&smartno=$smartNumber&price=$amount&product_code=$productCode';
-      // 'https://api.skyinvest.io/airtime/airtime.php?apiKey=8293ui423kjsadhas9oujwasd&amount=$amount&customer=$mobileNumber&reference=$txRef&auth="FLWSECK_TEST-SANDBOXDEMOKEY-X"';
+          'https://api.skyinvest.io/smile/smile-data?apiKey=8293ui423kjsadhas9oujwasd&customer_id=$smartNumber&variation=$planId&email=$email&phone=$mobile';
 
       http.Response response = await http.get(apiUrl);
 
@@ -309,16 +345,15 @@ class ApiServices with ChangeNotifier {
     }
   }
 
-  Future sendSpectranetData(amount, productCode) async {
-    print('this is the account number$productCode');
-    print('this is the bank$amount');
+  Future sendSpectranetData(planId, email, mobile) async {
+    print('this is the account number$planId');
+    print('this is the bank$mobile');
     // dynamic txt = Date.now;
     dynamic txRef = DateTime.now().millisecondsSinceEpoch;
     print(txRef);
     try {
       var apiUrl =
-          'https://api.skyinvest.io/spectranet/spectranet?apiKey=8293ui423kjsadhas9oujwasd&product_code=$productCode&price=$amount&trans_id=$txRef';
-      // var apiUrl = 'https://mobilenig.com/API/bills/spectranet_test?username=EJIOBIHDAVID6&api_key=1bd34693a49428b1e3db43ca995efabc&product_code=$productCode&price=$amount&trans_id=$txRef';
+          'https://api.skyinvest.io/spectranet/spectranet-data?apiKey=8293ui423kjsadhas9oujwasd&customer_id=9872342349&variation=$planId&email=$email&phone=$mobile';
 
       http.Response response = await http.get(apiUrl);
 
@@ -334,7 +369,8 @@ class ApiServices with ChangeNotifier {
     }
   }
 
-  Future sendEmailVerificationToken({userEmail, subject, content, userName}) async {
+  Future sendEmailVerificationToken(
+      {userEmail, subject, content, userName}) async {
     print('this is the account number$subject');
     print('this is the bank$userEmail');
     // dynamic txt = Date.now;

@@ -54,6 +54,7 @@ class _CurrencyInNaraCardState extends State<CurrencyInNaraCard> {
                     SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
                           widget.currency['name'],
@@ -83,6 +84,7 @@ class _CurrencyInNaraCardState extends State<CurrencyInNaraCard> {
                   ],
                 ),
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
                       // 'sdsd',

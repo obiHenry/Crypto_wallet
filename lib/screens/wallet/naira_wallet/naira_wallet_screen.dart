@@ -4,7 +4,6 @@ import 'package:Crypto_wallet/screens/wallet/naira_wallet/deposit_naira-screen.d
 import 'package:Crypto_wallet/screens/wallet/naira_wallet/transfer_naira_screen.dart';
 import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/shared/app_colors.dart';
-import 'package:Crypto_wallet/shared/bottom_navigation_view.dart';
 import 'package:Crypto_wallet/shared/transaction_item_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -406,10 +405,7 @@ class _NairaWalletScreenState extends State<NairaWalletScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigation(
-        pageIndex: _selectedPageIndex,
-        selectPage: _selectPage,
-      ),
+     
     );
   }
 }

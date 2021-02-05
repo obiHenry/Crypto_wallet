@@ -22,6 +22,7 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
     dynamic nairaEqui = naira.toStringAsFixed(2);
     String coinAmount = widget.transaction['coinEquivalance'];
     print(' come and eat ${coinAmount.toString()}');
+    
 
     if (coinAmount.isEmpty) {
       setState(() {
@@ -35,6 +36,8 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
       coinEqui = coin.toStringAsFixed(7);
     }
 
+    String nairaAmount = !coinisnull?'(₦$nairaEqui)':'₦$nairaEqui';
+
     return Container(
         // width: MediaQuery.of(context).size.width*0.5,
         padding: EdgeInsets.all(10),
@@ -43,7 +46,7 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        height: 105,
+        height: 125,
         // color: Colors.white,
         // child: Center(
         child: Row(
@@ -75,11 +78,14 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
                 FittedBox(
                   child: createRow(
                       widget.transaction['TransactionType'],
-                      coinEqui,
-                      widget.transaction['currency'],
-                      '(₦$nairaEqui)',
+                      
                       Colors.black),
                 ),
+
+                 SizedBox(
+                  height: 3,
+                ),
+                createItem('Amount:', ' ${!coinisnull?coinEqui:''}${ widget.transaction['currency'] == null?'': widget.transaction['currency']} $nairaAmount', Colors.black),
 
                 //  Text(
                 //   '${widget.transaction['TransactionType']} $coinEqui(NGN$nairaEqui)'),
@@ -162,7 +168,7 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
     );
   }
 
-  createRow(String key, value, value1, value2, Color color) {
+  createRow(String key,  Color color) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       // crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,42 +180,42 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
                 .copyWith(color: color, fontSize: 17),
           ),
         ),
-        SizedBox(
-          width: 2,
-        ),
-        Container(
-          child: !coinisnull
-              ? Text(
-                  value,
-                  // '₦ $total',
-                  style: CustomTextStyle.textFormFieldSemiBold.copyWith(
-                    // height: 1.5,
-                    // color: Colors.grey,
-                    fontSize: 14,
-                  ),
-                )
-              : Container(),
-        ),
-        value1 != null
-            ? Text(
-                value1,
-                // '₦ $total',
-                style: CustomTextStyle.textFormFieldSemiBold.copyWith(
-                  // height: 1.5,
-                  // color: Colors.grey,
-                  fontSize: 14,
-                ),
-              )
-            : Container(),
-        Text(
-          value2,
-          // '₦ $total',
-          style: CustomTextStyle.textFormFieldSemiBold.copyWith(
-            // height: 1.5,
-            // color: Colors.grey,
-            fontSize: 14,
-          ),
-        ),
+        // SizedBox(
+        //   width: 2,
+        // ),
+        // Container(
+        //   child: !coinisnull
+        //       ? Text(
+        //           value,
+        //           // '₦ $total',
+        //           style: CustomTextStyle.textFormFieldSemiBold.copyWith(
+        //             // height: 1.5,
+        //             // color: Colors.grey,
+        //             fontSize: 14,
+        //           ),
+        //         )
+        //       : Container(),
+        // ),
+        // value1 != null
+        //     ? Text(
+        //         value1,
+        //         // '₦ $total',
+        //         style: CustomTextStyle.textFormFieldSemiBold.copyWith(
+        //           // height: 1.5,
+        //           // color: Colors.grey,
+        //           fontSize: 14,
+        //         ),
+        //       )
+        //     : Container(),
+        // Text(
+        //   value2,
+        //   // '₦ $total',
+        //   style: CustomTextStyle.textFormFieldSemiBold.copyWith(
+        //     // height: 1.5,
+        //     // color: Colors.grey,
+        //     fontSize: 14,
+        //   ),
+        // ),
       ],
     );
   }

@@ -8,11 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/api_services.dart';
-import 'package:Crypto_wallet/screens/vtu_services/components/outLined_box.dart';
-import 'package:Crypto_wallet/screens/vtu_services/components/bills_check_out_screen.dart';
+import 'package:Crypto_wallet/shared/outLined_box.dart';
+import 'package:Crypto_wallet/shared/bills_check_out_screen.dart';
 import 'dart:convert';
 
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/account_pin_code_setup/confirm_pin_code_screen.dart';
 
 class Body extends StatefulWidget {
   final List walletList;
@@ -42,9 +43,8 @@ class _BodyState extends State<Body> {
   dynamic symbol1;
   dynamic meterToken;
   dynamic shortName, electricityCode, productType, meterType, meterNumber;
-  // dynamic packageName, packageId;
-  //  String smartCardNumber;
   bool accountSelected = false;
+  dynamic transactionpin;
 
   // @override
   // void initState() {
@@ -724,96 +724,144 @@ class _BodyState extends State<Body> {
                                 },
                               ));
                             } else {
-                              _progressDialog.show();
-                              dynamic result = await ApiServices()
-                                  .payElectricityBill(electricityCode,
-                                      meterType, meterNumber, nairaAmount.text);
+                              if (user.containsKey('transactionPin')) {
+                                transactionpin = user['transactionPin'];
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ConfirmPinCodeScreen(
+                                        initailCode: transactionpin,
+                                        fromTransaction: true,
+                                        doSuccessMethod: () async {
+                                          print('is a success');
 
-                              if (result['status'] = true) {
-                                dynamic rep = result['message'].toString();
-                                dynamic name = json.decode(rep);
+                                          _progressDialog.show();
+                                          dynamic result = await ApiServices()
+                                              .payElectricityBill(
+                                                  electricityCode,
+                                                  meterType,
+                                                  meterNumber,
+                                                  nairaAmount.text);
 
-                                if (name['status'] == 'ORDER_RECEIVED') {
-                                  print(name['status'].toString());
-                                  meterToken = name['metertoken'];
+                                          if (result['status'] = true) {
+                                            dynamic rep =
+                                                result['message'].toString();
+                                            dynamic name = json.decode(rep);
 
-                                  dynamic nairaBalance =
-                                      double.parse(balance) - naira;
-                                  dynamic result1 = await AuthService()
-                                      .updateWallet(
-                                          nairaBalance.toString(), 'naira');
-                                  if (result1['status']) {
-                                    dynamic result2 = await AuthService()
-                                        .updateTransactionList(
-                                            "Utility payment",
-                                            'Naira Wallet',
-                                            'Meter number: $meterNumber Type: $shortName $productType',
-                                            currencyAmount.text,
-                                            nairaAmount.text,
-                                            'nairaWalletTransactionList',
-                                            symbol,
-                                            true);
-                                    if (result2['status']) {
-                                      _progressDialog.hide();
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                SuccessfulPage(
-                                              text:
-                                                  'Utility  payment was successful',
-                                              text1:
-                                                  'You\'ve successfully payed for your $biller  with  \₦${nairaAmount.text}',
-                                              text2:
-                                                  '(Your MeterToken: $meterToken)',
-                                              press: () {
-                                                Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    MaterialPageRoute(
+                                            if (name['status'] ==
+                                                'ORDER_RECEIVED') {
+                                              print(name['status'].toString());
+                                              meterToken = name['metertoken'];
+
+                                              dynamic nairaBalance =
+                                                  double.parse(balance) - naira;
+                                              dynamic result1 =
+                                                  await AuthService()
+                                                      .updateWallet(
+                                                          nairaBalance
+                                                              .toString(),
+                                                          'naira');
+                                              if (result1['status']) {
+                                                dynamic result2 = await AuthService()
+                                                    .updateTransactionList(
+                                                        "Utility payment",
+                                                        'Naira Wallet',
+                                                        'Meter number: $meterNumber Type: $shortName $productType',
+                                                        currencyAmount.text,
+                                                        nairaAmount.text,
+                                                        'nairaWalletTransactionList',
+                                                        symbol,
+                                                        true);
+                                                if (result2['status']) {
+                                                  _progressDialog.hide();
+                                                  Navigator.pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
                                                         builder: (context) =>
-                                                            TabScreen()),
-                                                    (route) => false);
-                                              },
-                                            ),
-                                          ),
-                                          (route) => false);
-                                    } else {
-                                      _progressDialog.hide();
-                                      Fluttertoast.showToast(
-                                          msg: result2['message'].toString(),
-                                          toastLength: Toast.LENGTH_LONG,
-                                          gravity: ToastGravity.BOTTOM,
-                                          backgroundColor: Colors.black,
-                                          textColor: Colors.white);
-                                    }
-                                  } else {
-                                    _progressDialog.hide();
-                                    Fluttertoast.showToast(
-                                        msg: result1['message'].toString(),
-                                        toastLength: Toast.LENGTH_LONG,
-                                        gravity: ToastGravity.BOTTOM,
-                                        backgroundColor: Colors.black,
-                                        textColor: Colors.white);
-                                  }
-                                } else {
-                                  _progressDialog.hide();
-                                  print(name['status'].toString());
-                                  Fluttertoast.showToast(
-                                      msg: 'error occurred try again',
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.BOTTOM,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.white);
-                                }
+                                                            SuccessfulPage(
+                                                          text:
+                                                              'Utility  payment was successful',
+                                                          text1:
+                                                              'You\'ve successfully payed for your $biller  with  \₦${nairaAmount.text}',
+                                                          text2:
+                                                              '(Your MeterToken: $meterToken)',
+                                                          press: () {
+                                                            Navigator.pushAndRemoveUntil(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            TabScreen()),
+                                                                (route) =>
+                                                                    false);
+                                                          },
+                                                        ),
+                                                      ),
+                                                      (route) => false);
+                                                } else {
+                                                  _progressDialog.hide();
+                                                  Fluttertoast.showToast(
+                                                      msg: result2['message']
+                                                          .toString(),
+                                                      toastLength:
+                                                          Toast.LENGTH_LONG,
+                                                      gravity:
+                                                          ToastGravity.BOTTOM,
+                                                      backgroundColor:
+                                                          Colors.black,
+                                                      textColor: Colors.white);
+                                                }
+                                              } else {
+                                                _progressDialog.hide();
+                                                Fluttertoast.showToast(
+                                                    msg: result1['message']
+                                                        .toString(),
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                    gravity:
+                                                        ToastGravity.BOTTOM,
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    textColor: Colors.white);
+                                              }
+                                            } else {
+                                              _progressDialog.hide();
+                                              print(name['status'].toString());
+                                              Fluttertoast.showToast(
+                                                  msg:
+                                                      'error occurred try again',
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  backgroundColor: Colors.black,
+                                                  textColor: Colors.white);
+                                            }
+                                          } else {
+                                            _progressDialog.hide();
+                                            print(result['message'].toString());
+                                            Fluttertoast.showToast(
+                                                msg: result['message']
+                                                    .toString(),
+                                                toastLength: Toast.LENGTH_LONG,
+                                                gravity: ToastGravity.BOTTOM,
+                                                backgroundColor: Colors.black,
+                                                textColor: Colors.white);
+                                          }
+                                        }),
+                                  ),
+                                );
                               } else {
-                                _progressDialog.hide();
-                                print(result['message'].toString());
-                                Fluttertoast.showToast(
-                                    msg: result['message'].toString(),
-                                    toastLength: Toast.LENGTH_LONG,
-                                    gravity: ToastGravity.BOTTOM,
-                                    backgroundColor: Colors.black,
-                                    textColor: Colors.white);
+                                _showBottomSheet(AlertSheet(
+                                  text1:
+                                      'We noticed you don\'t have a transaction pin yet',
+                                  text2:
+                                      'you can create one in your settings to be able to transact ',
+                                  text3: 'Create one now',
+                                  press: () {
+                                    Navigator.pushNamed(
+                                        context, 'user_profile');
+                                  },
+                                ));
                               }
                             }
                           } else {
@@ -835,7 +883,21 @@ class _BodyState extends State<Body> {
                                 },
                               ));
                             } else {
-                              _progressDialog.show();
+
+
+                              if (user.containsKey('transactionPin')) {
+                                transactionpin = user['transactionPin'];
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ConfirmPinCodeScreen(
+                                                initailCode: transactionpin.toString(),
+                                                fromTransaction: true,
+                                                doSuccessMethod: () async {
+                                                  print('is a success');
+
+                                                _progressDialog.show();
                               dynamic result = await ApiServices()
                                   .payElectricityBill(electricityCode,
                                       meterType, meterNumber, nairaAmount.text);
@@ -924,6 +986,23 @@ class _BodyState extends State<Body> {
                                     backgroundColor: Colors.black,
                                     textColor: Colors.white);
                               }
+
+
+                                                }),),);
+                              }else{
+                                _showBottomSheet(AlertSheet(
+                                  text1:
+                                      'We noticed you don\'t have a transaction pin yet',
+                                  text2:
+                                      'you can create one in your settings to be able to transact ',
+                                  text3: 'Create one now',
+                                  press: () {
+                                    Navigator.pushNamed(context, 'user_profile');
+                                  },
+                                ));
+                              }
+
+                              
                             }
                           }
                         },

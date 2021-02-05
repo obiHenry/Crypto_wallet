@@ -38,11 +38,11 @@ class RoundedButton extends StatelessWidget {
         child: RaisedButton(
           // disabledColor: Colors.grey,
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-          color: Colors.lightGreen,
+          color: navyBlue2,
           onPressed: press,
           child: Text(
             text,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.white),
           ),
         ),
       ),

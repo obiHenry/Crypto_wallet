@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:Crypto_wallet/shared/logout_alert_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:Crypto_wallet/screens/settings/user_profile_screen.dart';
 
 class UsersSettingsScreen extends StatefulWidget {
   @override
@@ -29,16 +29,19 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
     }
     super.initState();
   }
-  void _showDialogueBox({yesPressed}) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-              // padding: EdgeInsets.symmetric(vertical: 20, horizontal: 60),
-              child: LogoutAlertDialog(yesPressed: yesPressed,));
-        },
-      );
-    }
+
+  void _showDialogueBox() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+            // padding: EdgeInsets.symmetric(vertical: 20, horizontal: 60),
+            child: LogoutAlertDialog(
+          // yesPressed: yesPressed,
+        ));
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +180,10 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
             ),
             InkWell(
               onTap: () async {
-                Navigator.pushNamed(context, 'user_profile');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => UserProfileScreen()));
               },
               child: Container(
                 height: 85,
@@ -229,7 +235,7 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
             ),
             InkWell(
               onTap: () async {
-                Navigator.pushNamed(context, 'pin_code_screen');
+                // Navigator.pushNamed(context, 'navigation');
               },
               child: Container(
                 height: 85,
@@ -275,36 +281,39 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
             ),
             SizedBox(height: 15),
             Visibility(
-              visible: userIsNull ? false : true,
+              visible: user == null ? false : true,
               child: InkWell(
-                onTap: ()  {
-                 _showDialogueBox(yesPressed: ()async{
-                    Map res = await _auth.signOut();
+                onTap: () {
+                  _showDialogueBox(
 
-              if (res['status']) {
-                Fluttertoast.showToast(
-                    msg: 'You are logged out',
-                    toastLength: Toast.LENGTH_LONG,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: Colors.black,
-                    textColor: Colors.white);
-                setState(() {
-                  userIsNull = true;
-                });
-                Navigator.of(context).pop();
-              } else {
-                Fluttertoast.showToast(
-                    msg: res['message'].toString(),
-                    toastLength: Toast.LENGTH_LONG,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: Colors.black,
-                    textColor: Colors.white);
-                setState(() {
-                  userIsNull = false;
-                });
-                Navigator.of(context).pop();
-              }
-                 });
+                  //   yesPressed: () async {
+                  //   Map res = await _auth.signOut();
+
+                  //   if (res['status']) {
+                  //     Fluttertoast.showToast(
+                  //         msg: 'You are logged out',
+                  //         toastLength: Toast.LENGTH_LONG,
+                  //         gravity: ToastGravity.BOTTOM,
+                  //         backgroundColor: Colors.black,
+                  //         textColor: Colors.white);
+                  //     setState(() {
+                  //       userIsNull = true;
+                  //     });
+                  //     Navigator.of(context).pop();
+                  //   } else {
+                  //     Fluttertoast.showToast(
+                  //         msg: res['message'].toString(),
+                  //         toastLength: Toast.LENGTH_LONG,
+                  //         gravity: ToastGravity.BOTTOM,
+                  //         backgroundColor: Colors.black,
+                  //         textColor: Colors.white);
+                  //     setState(() {
+                  //       userIsNull = false;
+                  //     });
+                  //     Navigator.of(context).pop();
+                  //   }
+                  // }
+                  );
                 },
                 child: Container(
                   height: 85,
@@ -343,7 +352,7 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
                             ),
                           ),
                           // AlertDialog(
-                            
+
                           // )
                         ],
                       ),

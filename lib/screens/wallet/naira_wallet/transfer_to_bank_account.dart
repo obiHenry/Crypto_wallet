@@ -10,7 +10,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Crypto_wallet/shared/succesful_page.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/account_pin_code_setup/confirm_pin_code_screen.dart';
-import 'package:Crypto_wallet/screens/settings/users_settings_screen.dart';
 
 class TransferToBankAccount extends StatefulWidget {
   final currency;
@@ -182,7 +181,7 @@ class _TransferToBankAccountState extends State<TransferToBankAccount> {
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           ConfirmPinCodeScreen(
-                                        initailCode: transactionpin,
+                                        initailCode: transactionpin.toString(),
                                         fromTransaction: true,
                                         doSuccessMethod: () async {
                                           print('is a success');
@@ -217,7 +216,7 @@ class _TransferToBankAccountState extends State<TransferToBankAccount> {
                                             if (result1['status']) {
                                               dynamic result2 = await AuthService()
                                                   .updateTransactionList(
-                                                      'withdrawal',
+                                                      'Withdrawal',
                                                       'Naira Wallet',
                                                       'Bank Account',
                                                       '',
@@ -299,102 +298,11 @@ class _TransferToBankAccountState extends State<TransferToBankAccount> {
                                       'you can create one in your settings to be able to transact ',
                                   text3: 'Create one now',
                                   press: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                UsersSettingsScreen()));
+                                    Navigator.pushNamed(context, 'user_profile');
                                   },
                                 ));
                               }
 
-                              // _progressDialog.show();
-                              // dynamic result = await AuthService().updateOrder(
-                              //   'naira',
-                              //   '',
-                              //   nairaMoney.toString(),
-                              //   widget.user['userName'].toString(),
-                              //   widget.user['email'].toString(),
-                              //   'withdrawOrder',
-                              //   widget.user['mobile'].toString(),
-                              //   false,
-                              //   widget.user['bankAccountName'],
-                              //   widget.user['bankName'],
-                              //   widget.user['bankAccountNumber'].toString(),
-                              // );
-
-                              // if (result['status']) {
-                              //   dynamic remainedNairaBalance =
-                              //       balance - totalInNaira;
-
-                              //   dynamic result1 = await AuthService()
-                              //       .updateWallet(
-                              //           remainedNairaBalance.toString(),
-                              //           'naira');
-                              //   if (result1['status']) {
-                              //     dynamic result2 = await AuthService()
-                              //         .updateTransactionList(
-                              //             'withdraw',
-                              //             'Naira Wallet',
-                              //             'Bank Account',
-                              //             '',
-                              //             nairaMoney.toString(),
-                              //             'nairaWalletTransactionList',
-                              //             '',
-                              //             false);
-
-                              //     if (result2['status']) {
-                              //       _progressDialog.hide();
-                              //       Navigator.pushAndRemoveUntil(
-                              //           context,
-                              //           MaterialPageRoute(
-                              //             builder: (context) => SuccessfulPage(
-                              //               text:
-                              //                   'money is  successfully transferred, you will receive your money in the next 24 hours',
-                              //               text1:
-                              //                   'You\'ve successfully deposited  \₦${formatPrice(nairaMoney)}',
-                              //               press: () {
-                              //                 Navigator.pushAndRemoveUntil(
-                              //                     context,
-                              //                     MaterialPageRoute(
-                              //                         builder: (context) =>
-                              //                             TabScreen()),
-                              //                     (route) => false);
-                              //               },
-                              //             ),
-                              //           ),
-                              //           (route) => false);
-                              //     } else {
-                              //       _progressDialog.hide();
-                              //       Fluttertoast.showToast(
-                              //           msg: result2['message'],
-                              //           toastLength: Toast.LENGTH_SHORT,
-                              //           gravity: ToastGravity.BOTTOM,
-                              //           backgroundColor: Colors.black,
-                              //           textColor: Colors.white);
-                              //     }
-                              //   } else {
-                              //     _progressDialog.hide();
-                              //     Fluttertoast.showToast(
-                              //         msg: result1['message'],
-                              //         toastLength: Toast.LENGTH_SHORT,
-                              //         gravity: ToastGravity.BOTTOM,
-                              //         backgroundColor: Colors.black,
-                              //         textColor: Colors.white);
-                              //   }
-                              // } else {
-                              //   _progressDialog.hide();
-                              //   String msg = (result['message'] != null &&
-                              //           result['message'].isNotEmpty)
-                              //       ? result['message']
-                              //       : 'An unknown error occured; retry';
-                              //   Fluttertoast.showToast(
-                              //       msg: msg,
-                              //       toastLength: Toast.LENGTH_SHORT,
-                              //       gravity: ToastGravity.BOTTOM,
-                              //       backgroundColor: Colors.black,
-                              //       textColor: Colors.white);
-                              // }
                             }
                           }),
                     );
@@ -417,3 +325,33 @@ class _TransferToBankAccountState extends State<TransferToBankAccount> {
     );
   }
 }
+
+
+    //  if (user.containsKey('transactionPin')) {
+    //                             transactionpin = user['transactionPin'];
+    //                             Navigator.push(
+    //                                 context,
+    //                                 MaterialPageRoute(
+    //                                     builder: (context) =>
+    //                                         ConfirmPinCodeScreen(
+    //                                             initailCode: transactionpin,
+    //                                             fromTransaction: true,
+    //                                             title: 'verify Transaction pin',
+    //                                             subtitle:
+    //                                                 'Enter your transaction pin ',
+    //                                             doSuccessMethod: () async {
+    //                                               print('is a success');
+    //                                             },),),);
+    //                           } else {
+    //                             _showBottomSheet(AlertSheet(
+    //                               text1:
+    //                                   'We noticed you don\'t have a transaction pin yet',
+    //                               text2:
+    //                                   'you can create one in your settings to be able to transact ',
+    //                               text3: 'Create one now',
+    //                               press: () {
+    //                                 Navigator.pushNamed(
+    //                                     context, 'user_profile');
+    //                               },
+    //                             ));
+    //                           }

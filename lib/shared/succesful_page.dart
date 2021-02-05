@@ -74,7 +74,7 @@ class _SuccessfulPageState extends State<SuccessfulPage> {
                             '${widget.text} ',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 15,
                               // fontWeight: FontWeight.bold
                             ),
                           ),

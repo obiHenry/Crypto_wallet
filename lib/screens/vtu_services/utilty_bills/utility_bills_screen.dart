@@ -2,6 +2,7 @@
 import 'package:Crypto_wallet/screens/vtu_services/utilty_bills/body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:Crypto_wallet/shared/app_colors.dart';
 
 class UtilityBillsScreen extends StatefulWidget {
   final walletList;
@@ -15,6 +16,7 @@ class _UtilityBillsScreenState extends State<UtilityBillsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          // elevation: 0,
           leading: IconButton(
         icon: SvgPicture.asset('assets/images/back.svg'),
         onPressed: () => Navigator.pop(context),
@@ -26,11 +28,11 @@ class _UtilityBillsScreenState extends State<UtilityBillsScreen> {
             'Utility Bills',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 18,
+              fontSize: 20,
               fontWeight: FontWeight.w500,
             ),
           ),
-          backgroundColor: Colors.lightGreen,
+          backgroundColor: blueMain,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
           ),

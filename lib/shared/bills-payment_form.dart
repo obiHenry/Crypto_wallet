@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:Crypto_wallet/screens/vtu_services/components/billers/billers_or_products_drop_down.dart';
-import 'package:Crypto_wallet/screens/vtu_services/components/outLined_box.dart';
+import 'package:Crypto_wallet/shared/billers_or_products_drop_down.dart';
+import 'package:Crypto_wallet/shared/outLined_box.dart';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/api_services.dart';
 import 'package:Crypto_wallet/shared/wallet_drop_down.dart';

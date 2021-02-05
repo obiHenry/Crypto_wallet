@@ -41,13 +41,13 @@ class OutLinedBox extends StatelessWidget {
           labelText: label,
           disabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.purple,
+              color: Colors.grey,
               width: 1.0,
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.purple,
+              color: Colors.grey,
               width: 1.0,
             ),
           ),

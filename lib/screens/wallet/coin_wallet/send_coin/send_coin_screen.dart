@@ -7,6 +7,12 @@ import 'package:Crypto_wallet/shared/send_textField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/account_pin_code_setup/confirm_pin_code_screen.dart';
+import 'package:Crypto_wallet/shared/alert_sheet.dart';
+
+import 'package:Crypto_wallet/shared/succesful_page.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 
 class SendCoinScreen extends StatefulWidget {
@@ -27,6 +33,8 @@ final currencyAmount = TextEditingController();
 final address = TextEditingController();
 bool isUsd = false;
 bool isCurrency = false;
+dynamic transactionpin;
+ProgressDialog _progressDialog;
 
 class _SendCoinScreenState extends State<SendCoinScreen> {
   void _showBottomSheet(Widget widget) {
@@ -62,7 +70,7 @@ class _SendCoinScreenState extends State<SendCoinScreen> {
       } else {
         setState(() => address.text = 'Unknown error: $e');
       }
-    // ignore: dead_code_catch_following_catch
+      // ignore: dead_code_catch_following_catch
     } on FormatException {
       setState(() => address.text =
           'null (User returned using the "back"-button before scanning anything. Result)');
@@ -81,6 +89,27 @@ class _SendCoinScreenState extends State<SendCoinScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _progressDialog = ProgressDialog(
+      context,
+      type: ProgressDialogType.Normal,
+      textDirection: TextDirection.rtl,
+      isDismissible: true,
+    );
+
+    _progressDialog.style(
+      message: 'wait while we process your transaction',
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 10.0,
+      insetAnimCurve: Curves.easeInOut,
+      progress: 0.0,
+      progressWidgetAlignment: Alignment.center,
+      maxProgress: 100,
+      progressTextStyle: TextStyle(
+          color: Colors.purple, fontSize: 13.0, fontWeight: FontWeight.w400),
+      messageTextStyle: TextStyle(
+          color: Colors.purple, fontSize: 19.0, fontWeight: FontWeight.w600),
+    );
     return SingleChildScrollView(
       padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom + 20),
@@ -251,39 +280,93 @@ class _SendCoinScreenState extends State<SendCoinScreen> {
                         chargeInCoin: coinCharge.toString(),
                         chargeInOtherCurrency: usdCharge.toString(),
                         coinTotalAmountToSend: totalAmountInCoin.toString(),
-                        otherCurrencyTotalAmountToSend: totalAmountInUsd.toString(),
-                        text: 'you are about to send $coinAmount${widget.currency['currency']} for \$${formatPrice(dollarAmount)}',
+                        otherCurrencyTotalAmountToSend:
+                            totalAmountInUsd.toString(),
+                        text:
+                            'you are about to send $coinAmount${widget.currency['currency']} for \$${formatPrice(dollarAmount)}',
                         symbol: '\$',
-                         text1:
-                              'Exchange rate: 1 ${widget.currency['currency']} \=  \$${formatPrice(widget.currency['price'])} ',
+                        text1:
+                            'Exchange rate: 1 ${widget.currency['currency']} \=  \$${formatPrice(widget.currency['price'])} ',
                         press: () async {
-                          print('come');
-                          dynamic userId =
-                              FirebaseAuth.instance.currentUser.uid;
-                          dynamic apiKey = '8293ui423kjsadhas9oujwasd';
-                          Map result = await ApiServices().sendCoin(
-                            apiKey,
-                            widget.currency['currency'],
-                            userId,
-                            currencyAmount.text,
-                            address.text,
-                            chargeInCoin.toString(),
-                          );
-                          // print(result.toString());
+                          if (widget.user.containsKey('transactionPin')) {
+                            transactionpin = widget.user['transactionPin'];
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ConfirmPinCodeScreen(
+                                    initailCode: transactionpin.toString(),
+                                    fromTransaction: true,
+                                    title: 'verify Transaction pin',
+                                    subtitle: 'Enter your transaction pin ',
+                                    doSuccessMethod: () async {
+                                      _progressDialog.show();
+                                      print('is a success');
+                                      print('come');
+                                      dynamic userId =
+                                          FirebaseAuth.instance.currentUser.uid;
+                                      dynamic apiKey =
+                                          '8293ui423kjsadhas9oujwasd';
+                                      Map result = await ApiServices().sendCoin(
+                                        apiKey,
+                                        widget.currency['currency'],
+                                        userId,
+                                        currencyAmount.text,
+                                        address.text,
+                                        chargeInCoin.toString(),
+                                      );
+                                      // print(result.toString());
 
-                          if (result['status']) {
-                            print('success');
+                                      if (result['status']) {
+                                        _progressDialog.hide();
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SuccessfulPage(
+                                                text:
+                                                    'Order recieved , you transaction will be completed in the next 1 hours',
+                                                text1:
+                                                    'You\'ve successfully placed order to send $coinAmount${widget.currency['currency']} for \$${formatPrice(dollarAmount)}',
+                                                press: () {
+                                                  Navigator.pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              TabScreen()),
+                                                      (route) => false);
+                                                },
+                                              ),
+                                            ),
+                                            (route) => false);
+
+                                        print('success');
+                                      } else {
+                                        String msg = (result['message'] !=
+                                                    null &&
+                                                result['message'].isNotEmpty)
+                                            ? result['message']
+                                            : 'An unknown error occured; retry';
+                                        Fluttertoast.showToast(
+                                            msg: msg,
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.BOTTOM,
+                                            backgroundColor: Colors.black,
+                                            textColor: Colors.white);
+                                      }
+                                    }),
+                              ),
+                            );
                           } else {
-                            String msg = (result['message'] != null &&
-                                    result['message'].isNotEmpty)
-                                ? result['message']
-                                : 'An unknown error occured; retry';
-                            Fluttertoast.showToast(
-                                msg: msg,
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                backgroundColor: Colors.black,
-                                textColor: Colors.white);
+                            _showBottomSheet(AlertSheet(
+                              text1:
+                                  'We noticed you don\'t have a transaction pin yet',
+                              text2:
+                                  'you can create one in your settings to be able to transact ',
+                              text3: 'Create one now',
+                              press: () {
+                                Navigator.pushNamed(context, 'user_profile');
+                              },
+                            ));
                           }
                         },
                       ));

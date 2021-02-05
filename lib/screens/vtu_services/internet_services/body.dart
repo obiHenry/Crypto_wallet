@@ -8,10 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/api_services.dart';
-import 'package:Crypto_wallet/screens/vtu_services/components/outLined_box.dart';
-import 'package:Crypto_wallet/screens/vtu_services/components/bills_check_out_screen.dart';
+import 'package:Crypto_wallet/shared/outLined_box.dart';
+import 'package:Crypto_wallet/shared/bills_check_out_screen.dart';
 import 'dart:convert';
 import 'package:Crypto_wallet/services/price_formatter.dart';
+import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/account_pin_code_setup/confirm_pin_code_screen.dart';
 
 import 'package:progress_dialog/progress_dialog.dart';
 
@@ -46,14 +47,20 @@ class _BodyState extends State<Body> {
   dynamic symbol1;
   bool accountSelected = false;
   String packageName;
-  dynamic dataPlan;
-  dynamic code;
+  dynamic networkId;
+  dynamic uniqueId;
   String dropDownValue;
-  dynamic productCode;
+  dynamic planId;
   bool isSmileAndSpectranet = false;
   bool isSmile = false;
   bool isSpectranet = false;
   dynamic serialNumber, pin, expiaryDate;
+  dynamic transactionpin;
+  ProgressDialog _progressDialog;
+  dynamic dataBundles;
+  dynamic smileDataBundles;
+  dynamic spectranetDataBundles;
+  List bundles = [];
   // @override
   // void initState() {
   //   setState(() {
@@ -133,9 +140,6 @@ class _BodyState extends State<Body> {
     );
   }
 
-  ProgressDialog _progressDialog;
-  dynamic dataBundles;
-  List bundles = [];
   // bool _loading = false;
   @override
   void didChangeDependencies() {
@@ -146,9 +150,43 @@ class _BodyState extends State<Body> {
           // currencies = nairaWallet;
           dynamic data = json.decode(value['message']);
           print(data.toString());
-          dataBundles = data['MOBILE_NETWORK'];
+          dataBundles = data['data']['variations'];
           print('anytime am ready');
           print(dataBundles.toString());
+
+          // _loading = false;
+        });
+
+        // print(_loaders.toString());
+      }
+    });
+
+    ApiServices().getSmileBundles().then((value) {
+      if (mounted) {
+        setState(() {
+          // currencies = nairaWallet;
+          dynamic data = json.decode(value['message']);
+          print(data.toString());
+          smileDataBundles = data;
+          print('anytime am ready');
+          print(smileDataBundles.toString());
+
+          // _loading = false;
+        });
+
+        // print(_loaders.toString());
+      }
+    });
+
+    ApiServices().getSpectranetBundles().then((value) {
+      if (mounted) {
+        setState(() {
+          // currencies = nairaWallet;
+          dynamic data = json.decode(value['message']);
+          print(data.toString());
+          spectranetDataBundles = data;
+          print('anytime am ready');
+          print(smileDataBundles.toString());
 
           // _loading = false;
         });
@@ -165,192 +203,192 @@ class _BodyState extends State<Body> {
     //  isNairaWallet = true;
 
     final List billers = [
-      {'network': 'MTN', 'code': '01'},
-      {'network': 'GLO', 'code': '02'},
-      {'network': 'AIRTEL', 'code': '04'},
+      {'network': 'MTN', 'code': '1'},
+      {'network': 'GLO', 'code': '4'},
+      {'network': 'AIRTEL', 'code': '2'},
       {'network': '9 MOBILE', 'code': '03'},
       {'network': 'SMILE', 'code': '05'},
       {'network': 'SPECTRANET', 'code': '06'},
     ];
-    final List products1 = [
-      {
-        'network': '1000 Spectranet Pin',
-        'package_code': 'SPEC10',
-        'price': '1000'
-      },
-      {
-        'network': '2000 Spectranet Pin',
-        'package_code': 'SPEC20',
-        'price': '2000'
-      },
-      {
-        'network': '5000 Spectranet Pin',
-        'package_code': 'SPEC50',
-        'price': '5000'
-      },
-      {
-        'network': '7000 Spectranet Pin',
-        'package_code': 'SPEC70',
-        'price': '7000'
-      },
-      {
-        'network': '10000 Spectranet Pin',
-        'package_code': 'SPEC100',
-        'price': '10000',
-      }
-    ];
+    // final List products1 = [
+    //   {
+    //     'network': '1000 Spectranet Pin',
+    //     'package_code': 'SPEC10',
+    //     'price': '1000'
+    //   },
+    //   {
+    //     'network': '2000 Spectranet Pin',
+    //     'package_code': 'SPEC20',
+    //     'price': '2000'
+    //   },
+    //   {
+    //     'network': '5000 Spectranet Pin',
+    //     'package_code': 'SPEC50',
+    //     'price': '5000'
+    //   },
+    //   {
+    //     'network': '7000 Spectranet Pin',
+    //     'package_code': 'SPEC70',
+    //     'price': '7000'
+    //   },
+    //   {
+    //     'network': '10000 Spectranet Pin',
+    //     'package_code': 'SPEC100',
+    //     'price': '10000',
+    //   }
+    // ];
 
-    final List products = [
-      {
-        'network':
-            'FlexiDaily plan - Diverse Validity (\₦${formatPrice(500.toString())})',
-        'package_code': 'FPDV356',
-        'price': '500'
-      },
-      {
-        'network':
-            'FlexiWeekly plan - Diverse Validity (\₦${formatPrice(1200.toString())})',
-        'package_code': 'FPDV357',
-        'price': '1200'
-      },
-      {
-        'network':
-            'SmileVoice ONLY 75 - 30days Validity (\₦${formatPrice(500.toString())})',
-        'package_code': 'SOV495',
-        'price': '500'
-      },
-      {
-        'network':
-            'SmileVoice ONLY 500 - 30days Validity (\₦${formatPrice(3000.toString())})',
-        'package_code': 'SOV497',
-        'price': '3000'
-      },
-      {
-        'network':
-            'SmileVoice ONLY 165 - 30days Validity (\₦${formatPrice(1000.toString())})',
-        'package_code': 'SOV496',
-        'price': '1000'
-      },
-      {
-        'network':
-            '1GB SmileLite plan - 30days Validity (\₦${formatPrice(1000.toString())})',
-        'package_code': 'SPV220',
-        'price': '1000'
-      },
-      {
-        'network':
-            '2GB SmileLite plan - 30days Validity (\₦${formatPrice(2000.toString())})',
-        'package_code': 'SPV280',
-        'price': '2000'
-      },
-      {
-        'network': '2GB MidNite Plan - 7days Validity (\₦${formatPrice(1000)})',
-        'package_code': 'MPV413',
-        'price': '1000'
-      },
-      {
-        'network':
-            '3GB MidNite Plan - 7days Validity (\₦${formatPrice(1500.toString())})',
-        'package_code': 'MPV414',
-        'price': '1500'
-      },
-      {
-        'network':
-            '3GB Weekend Only Plan - 3days Validity (\₦${formatPrice(1500.toString())})',
-        'package_code': 'WOPV415',
-        'price': '1500'
-      },
-      {
-        'network':
-            '3GB Anytime plan - 7days Validity (\₦${formatPrice(3000.toString())})',
-        'package_code': 'APV102',
-        'price': '3000'
-      },
-      {
-        'network':
-            '5GB Anytime plan - 7days Validity (\₦${formatPrice(4000.toString())})',
-        'package_code': 'APV150',
-        'price': '4000'
-      },
-      {
-        'network':
-            '7GB Anytime plan - 7days Validity (\₦${formatPrice(5000.toString())})',
-        'package_code': 'APV274',
-        'price': '5000'
-      },
-      {
-        'network':
-            '10GB 30 Days Anytime plan - 7days Validity (\₦${formatPrice(7500.toString())})',
-        'package_code': 'DAPV404',
-        'price': '7500'
-      },
-      {
-        'network':
-            'Unlimited Lite Plan - 30days Validity (\₦${formatPrice(10000.toString())})',
-        'package_code': 'ULPV476',
-        'price': '10000'
-      },
-      {
-        'network':
-            'Unlimited Premium Plan - 30days Validity (\₦${formatPrice(19800.toString())})',
-        'package_code': 'UPPV475',
-        'price': '19800'
-      },
-      {
-        'network':
-            '30GB BumpaValue plan - Diverse Validity (\₦${formatPrice(15000.toString())})',
-        'package_code': 'BPDV358',
-        'price': '15000'
-      },
-      {
-        'network':
-            '60GB BumpaValue plan - Diverse Validity (\₦${formatPrice(30000.toString())})',
-        'package_code': 'BPDV359',
-        'price': '30000'
-      },
-      {
-        'network':
-            '80GB BumpaValue plan - Diverse Validity (\₦${formatPrice(50000.toString())})',
-        'package_code': 'BPDV360',
-        'price': '50000'
-      },
-      {
-        'network':
-            '10GB Anytime plan - 365days Validity (\₦${formatPrice(9000.toString())})',
-        'package_code': 'APV103',
-        'price': '9000'
-      },
-      {
-        'network':
-            '15GB Anytime plan - 365days Validity (\₦${formatPrice(10000.toString())})',
-        'package_code': 'APV273',
-        'price': '10000'
-      },
-      {
-        'network':
-            '20GB Anytime plan - 365days Validity (\₦${formatPrice(17000.toString())})',
-        'package_code': 'APV104',
-        'price': '17000'
-      },
-      {
-        'network':
-            '50GB Anytime plan - 365days Validity (\₦${formatPrice(36000.toString())})',
-        'package_code': 'APV105',
-        'price': '36000'
-      },
-      {
-        'network':
-            '100GB Anytime plan - 365days Validity (\₦${formatPrice(70000.toString())})',
-        'package_code': 'APV128',
-        'price': '70000'
-      },
-      {
-        'network':
-            '200GB Anytime plan - 365days Validity (\₦${formatPrice(135000.toString())})',
-        'package_code': 'APV129',
-        'price': '135000'
-      },
-    ];
+    // final List products = [
+    //   {
+    //     'network':
+    //         'FlexiDaily plan - Diverse Validity (\₦${formatPrice(500.toString())})',
+    //     'package_code': 'FPDV356',
+    //     'price': '500'
+    //   },
+    //   {
+    //     'network':
+    //         'FlexiWeekly plan - Diverse Validity (\₦${formatPrice(1200.toString())})',
+    //     'package_code': 'FPDV357',
+    //     'price': '1200'
+    //   },
+    //   {
+    //     'network':
+    //         'SmileVoice ONLY 75 - 30days Validity (\₦${formatPrice(500.toString())})',
+    //     'package_code': 'SOV495',
+    //     'price': '500'
+    //   },
+    //   {
+    //     'network':
+    //         'SmileVoice ONLY 500 - 30days Validity (\₦${formatPrice(3000.toString())})',
+    //     'package_code': 'SOV497',
+    //     'price': '3000'
+    //   },
+    //   {
+    //     'network':
+    //         'SmileVoice ONLY 165 - 30days Validity (\₦${formatPrice(1000.toString())})',
+    //     'package_code': 'SOV496',
+    //     'price': '1000'
+    //   },
+    //   {
+    //     'network':
+    //         '1GB SmileLite plan - 30days Validity (\₦${formatPrice(1000.toString())})',
+    //     'package_code': 'SPV220',
+    //     'price': '1000'
+    //   },
+    //   {
+    //     'network':
+    //         '2GB SmileLite plan - 30days Validity (\₦${formatPrice(2000.toString())})',
+    //     'package_code': 'SPV280',
+    //     'price': '2000'
+    //   },
+    //   {
+    //     'network': '2GB MidNite Plan - 7days Validity (\₦${formatPrice(1000)})',
+    //     'package_code': 'MPV413',
+    //     'price': '1000'
+    //   },
+    //   {
+    //     'network':
+    //         '3GB MidNite Plan - 7days Validity (\₦${formatPrice(1500.toString())})',
+    //     'package_code': 'MPV414',
+    //     'price': '1500'
+    //   },
+    //   {
+    //     'network':
+    //         '3GB Weekend Only Plan - 3days Validity (\₦${formatPrice(1500.toString())})',
+    //     'package_code': 'WOPV415',
+    //     'price': '1500'
+    //   },
+    //   {
+    //     'network':
+    //         '3GB Anytime plan - 7days Validity (\₦${formatPrice(3000.toString())})',
+    //     'package_code': 'APV102',
+    //     'price': '3000'
+    //   },
+    //   {
+    //     'network':
+    //         '5GB Anytime plan - 7days Validity (\₦${formatPrice(4000.toString())})',
+    //     'package_code': 'APV150',
+    //     'price': '4000'
+    //   },
+    //   {
+    //     'network':
+    //         '7GB Anytime plan - 7days Validity (\₦${formatPrice(5000.toString())})',
+    //     'package_code': 'APV274',
+    //     'price': '5000'
+    //   },
+    //   {
+    //     'network':
+    //         '10GB 30 Days Anytime plan - 7days Validity (\₦${formatPrice(7500.toString())})',
+    //     'package_code': 'DAPV404',
+    //     'price': '7500'
+    //   },
+    //   {
+    //     'network':
+    //         'Unlimited Lite Plan - 30days Validity (\₦${formatPrice(10000.toString())})',
+    //     'package_code': 'ULPV476',
+    //     'price': '10000'
+    //   },
+    //   {
+    //     'network':
+    //         'Unlimited Premium Plan - 30days Validity (\₦${formatPrice(19800.toString())})',
+    //     'package_code': 'UPPV475',
+    //     'price': '19800'
+    //   },
+    //   {
+    //     'network':
+    //         '30GB BumpaValue plan - Diverse Validity (\₦${formatPrice(15000.toString())})',
+    //     'package_code': 'BPDV358',
+    //     'price': '15000'
+    //   },
+    //   {
+    //     'network':
+    //         '60GB BumpaValue plan - Diverse Validity (\₦${formatPrice(30000.toString())})',
+    //     'package_code': 'BPDV359',
+    //     'price': '30000'
+    //   },
+    //   {
+    //     'network':
+    //         '80GB BumpaValue plan - Diverse Validity (\₦${formatPrice(50000.toString())})',
+    //     'package_code': 'BPDV360',
+    //     'price': '50000'
+    //   },
+    //   {
+    //     'network':
+    //         '10GB Anytime plan - 365days Validity (\₦${formatPrice(9000.toString())})',
+    //     'package_code': 'APV103',
+    //     'price': '9000'
+    //   },
+    //   {
+    //     'network':
+    //         '15GB Anytime plan - 365days Validity (\₦${formatPrice(10000.toString())})',
+    //     'package_code': 'APV273',
+    //     'price': '10000'
+    //   },
+    //   {
+    //     'network':
+    //         '20GB Anytime plan - 365days Validity (\₦${formatPrice(17000.toString())})',
+    //     'package_code': 'APV104',
+    //     'price': '17000'
+    //   },
+    //   {
+    //     'network':
+    //         '50GB Anytime plan - 365days Validity (\₦${formatPrice(36000.toString())})',
+    //     'package_code': 'APV105',
+    //     'price': '36000'
+    //   },
+    //   {
+    //     'network':
+    //         '100GB Anytime plan - 365days Validity (\₦${formatPrice(70000.toString())})',
+    //     'package_code': 'APV128',
+    //     'price': '70000'
+    //   },
+    //   {
+    //     'network':
+    //         '200GB Anytime plan - 365days Validity (\₦${formatPrice(135000.toString())})',
+    //     'package_code': 'APV129',
+    //     'price': '135000'
+    //   },
+    // ];
     _progressDialog = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
@@ -591,45 +629,6 @@ class _BodyState extends State<Body> {
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                   ),
-                  // press: (value) {
-                  //   setState(() {
-                  //     enableButton = false;
-                  //   });
-                  //   if (value.isEmpty) {
-                  //     setState(() {
-                  //       enableButton = false;
-                  //     });
-
-                  //     Future.value(Duration(seconds: 1)).whenComplete(() {
-                  //       nairaAmount.text = "0.0";
-                  //     });
-                  //     // return null;
-                  //     return 'Please enter value';
-                  //   } else {
-                  //     enableSubmitButton();
-                  //     if (isNairaWallet) {
-                  //       Future.value(Duration(seconds: 1)).whenComplete(() {
-                  //         dynamic cal =
-                  //             double.parse(price) * double.parse(value);
-                  //         dynamic naira = cal;
-
-                  //         nairaAmount.text = naira.toStringAsFixed(4);
-                  //       });
-                  //     } else {
-                  //       dynamic nairaPrice =
-                  //           double.parse(price1) * double.parse(nairaRate1);
-                  //       Future.value(Duration(seconds: 1)).whenComplete(() {
-                  //         dynamic cal = ((nairaPrice * double.parse(value)));
-                  //         dynamic naira = cal;
-
-                  //         nairaAmount.text = naira.toStringAsFixed(8);
-                  //       });
-                  //     }
-                  //     // var price = double.parse(widget.currency['price']);
-
-                  //     return null;
-                  //   }
-                  // },
                 ),
               ),
 
@@ -650,107 +649,103 @@ class _BodyState extends State<Body> {
                   });
                   billers.forEach((element) async {
                     if (value == element['network'].toString()) {
+                      // code = element['code'];
                       if (dataBundles != null) {
                         if (element['network'] == 'MTN') {
                           setState(() {
                             dropDownValue = null;
+                            nairaAmount.clear();
                             isSmileAndSpectranet = false;
                             isSmile = false;
                             isSpectranet = false;
                           });
 
-                          List data = dataBundles['MTN'];
+                          List data = dataBundles['1'];
                           print(data.toString());
-                          data.forEach((element) {
-                            print(element['PRODUCT'].toString());
-                            bundles = element['PRODUCT'];
-                          });
-                          code = '01';
-                          // bundles = data['PRODUCT'];
+                          bundles = data;
                           print('anything');
 
                           print(bundles);
                         } else if (element['network'] == 'GLO') {
                           setState(() {
                             dropDownValue = null;
+                            nairaAmount.clear();
                             isSmileAndSpectranet = false;
                             isSmile = false;
                             isSpectranet = false;
                           });
-                          List data = dataBundles['Glo'];
+                          List data = dataBundles['4'];
                           print(data.toString());
-                          data.forEach((element) {
-                            bundles = element['PRODUCT'];
-                          });
-                          code = '02';
+                          bundles = data;
                           print('anything');
 
                           print(bundles);
                         } else if (element['network'] == 'AIRTEL') {
                           setState(() {
                             dropDownValue = null;
+                            nairaAmount.clear();
                             isSmileAndSpectranet = false;
                             isSmile = false;
                             isSpectranet = false;
                           });
 
-                          List data = dataBundles['Airtel'];
+                          List data = dataBundles['2'];
                           print(data.toString());
-                          data.forEach((element) {
-                            bundles = element['PRODUCT'];
-                          });
-                          code = '04';
+                          bundles = data;
+                          print('anything');
+                          // code = '04';
                           print(bundles);
                         } else if (element['network'] == '9 MOBILE') {
-                          dropDownValue = null;
                           setState(() {
+                            dropDownValue = null;
+                            nairaAmount.clear();
                             isSmileAndSpectranet = false;
                             isSmile = false;
                             isSpectranet = false;
                           });
-                          List data = dataBundles['9mobile'];
+                          List data = dataBundles['3'];
                           print(data.toString());
-                          data.forEach((element) {
-                            bundles = element['PRODUCT'];
-                          });
-                          code = '03';
+                          bundles = data;
+                          print('anything');
+                          // code = '03';
 
                           print(bundles);
                         } else if (element['network'] == 'SMILE') {
-                          dropDownValue = null;
                           setState(() {
+                            dropDownValue = null;
+                            nairaAmount.clear();
                             isSmile = true;
                             isSpectranet = false;
-                          });
-                          if (isSmile || isSpectranet) {
                             isSmileAndSpectranet = true;
-                            // reference = 'Smart Number';
-                          }
+                          });
+                          // if (isSmile || isSpectranet) {
 
-                          // List data = dataBundles['9mobile'];
-                          // print(data.toString());
-                          // data.forEach((element) {
-                          bundles = products;
+                          //   // reference = 'Smart Number';
+                          // }
+
+                          List data = smileDataBundles;
+                          print(data.toString());
+                          bundles = data;
+                          print('anything');
                           // });
                           // code = '0';
 
                           print(bundles);
                         } else if (element['network'] == 'SPECTRANET') {
-                          dropDownValue = null;
                           setState(() {
+                            dropDownValue = null;
+                            dropDownValue = null;
+                            nairaAmount.clear();
                             isSpectranet = true;
-                          });
-                          if (isSmile || isSpectranet) {
                             isSmileAndSpectranet = true;
-                            // reference = 'Smart Number';
-                          } else {
-                            // reference = 'Mobile';
-                          }
+                          });
+                          // if (isSmile || isSpectranet) {
+                          //
+                          //   // reference = 'Smart Number';
+                          // } else {
+                          // }
 
-                          // List data = dataBundles['9mobile'];
-                          // print(data.toString());
-                          // data.forEach((element) {
-                          bundles = products1;
+                          bundles = spectranetDataBundles;
                           // });
                           // code = '0';
 
@@ -769,7 +764,7 @@ class _BodyState extends State<Body> {
                   );
                 }
               },
-              valueText: dropDownValue,
+
               productOnChanged: (value) {
                 packageName = value.toLowerCase();
                 String isValid = Validators.product(value);
@@ -784,17 +779,19 @@ class _BodyState extends State<Body> {
                   });
 
                   bundles.forEach((element) {
-                    if (value == element['PRODUCT_NAME']) {
-                      dataPlan = element['PRODUCT_ID'];
+                    if (value == element['name']) {
+                      dropDownValue = element['name'];
 
-                      dynamic charge =
-                          double.parse(element['PRODUCT_AMOUNT']) * 0.066;
-                      dynamic amount =
-                          double.parse(element['PRODUCT_AMOUNT']) + charge;
+                      uniqueId = element['uniq_id'];
+                      networkId = element['network_id'];
+
+                      dynamic charge = double.parse(element['price']) * 0.06;
+                      dynamic amount = double.parse(element['price']) + charge;
                       nairaAmount.text = amount.toStringAsFixed(0);
                       // print(product);
-                    } else if (value == element['network']) {
-                      productCode = element['package_code'];
+                    } else if (value == element['title']) {
+                      dropDownValue = element['title'];
+                      planId = element['name'];
                       // dynamic charge =
                       //     double.parse(element['price']) * 0.066;
                       dynamic amount = double.parse(element['price']);
@@ -812,6 +809,7 @@ class _BodyState extends State<Body> {
                   );
                 }
               },
+              valueText: dropDownValue,
 
               walletList: widget.walletList,
               numberOrReferenceText:
@@ -824,8 +822,8 @@ class _BodyState extends State<Body> {
                 });
                 if (isValid == 'valid') {
                   setState(() {
-                    DialogService()
-                        .getSnackBar(context, ' valid ', Colors.lightGreen);
+                    // DialogService()
+                    //     .getSnackBar(context, ' valid ', Colors.lightGreen);
                     enableSubmitButton();
                   });
                 } else {
@@ -837,70 +835,17 @@ class _BodyState extends State<Body> {
                 }
               },
 
-              // widget: Container(
-              //   width: MediaQuery.of(context).size.width * 0.9,
-              //   child:
-
-              //    InternationalPhoneNumberInput(
-              //     // CustomDecoration()
-
-              //     onInputChanged: (PhoneNumber number) {
-              //       print(number.phoneNumber);
-              //       mobile = number.phoneNumber;
-              //       print(number);
-              //     },
-              //     onInputValidated: (bool value) {
-              //       phoneValue = value;
-              //       String isValid = Validators.mobileNumber(value);
-              //       setState(() {
-              //         enableButton = false;
-              //       });
-              //       if (isValid == 'valid') {
-              //         setState(() {
-              //           DialogService()
-              //               .getSnackBar(context, ' valid ', Colors.lightGreen);
-              //           enableSubmitButton();
-              //         });
-              //       } else {
-              //         DialogService().getSnackBar(
-              //           context,
-              //           isValid,
-              //           Colors.red,
-              //         );
-              //       }
-              //       print(value);
-              //     },
-              //     selectorConfig: SelectorConfig(
-              //       selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-              //       backgroundColor: Colors.white,
-              //     ),
-
-              //     ignoreBlank: false,
-              //     autoValidateMode: AutovalidateMode.disabled,
-              //     selectorTextStyle: TextStyle(color: Colors.black),
-              //     initialValue: number,
-              //     textFieldController: mobileNumber,
-              //     inputBorder: OutlineInputBorder(),
-              //   ),
-              // ),
+             
               continuePressed: !enableButton
                   ? null
                   : () async {
-                      // dynamic nairaCharge =
-                      //     double.parse(nairaAmount.text) / 100;
-                      // dynamic nairaTotalAmount =
-                      //     nairaCharge + double.parse(nairaAmount.text);
-                      // dynamic coinCharge =
-                      //     double.parse(currencyAmount.text) / 100;
-                      // dynamic coinTotalAmount =
-                      //     coinCharge + double.parse(currencyAmount.text);
                       dynamic coin = double.parse(currencyAmount.text);
 
                       dynamic naira = double.parse(nairaAmount.text);
                       dynamic user = await AuthService().getUserDataById();
                       _showBottomSheet(BillsCheckOutScreen(
-                        text:
-                            'You are about to Sub $phoneNumber with $packageName for ${nairaAmount.text}',
+                        text:isSpectranet? 'You are about to Subscribe your spectranet with $packageName package  for \₦${nairaAmount.text}':
+                            'You are about to Sub $phoneNumber with $packageName for \₦${nairaAmount.text}',
                         text1: !isNairaWallet
                             ? 'Exchange rate \$1 \~ $nairaRate1'
                             : 'Exchange rate \$1 \~ $nairaRate',
@@ -940,307 +885,438 @@ class _BodyState extends State<Body> {
                               ));
                             } else {
                               if (isSmile) {
-                                _progressDialog.show();
-                                dynamic result =
-                                    await ApiServices()
-                                        .sendSmileData(phoneNumber,
-                                            nairaAmount.text, productCode);
-                                if (result['status'] = true) {
-                                  dynamic rep = result['message'].toString();
-                                  print(rep.toString());
-                                  dynamic name = json.decode(rep);
-                                  dynamic me = name['description'];
-                                  print(me);
+                                if (user.containsKey('transactionPin')) {
+                                  transactionpin = user['transactionPin'];
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ConfirmPinCodeScreen(
+                                        initailCode: transactionpin,
+                                        fromTransaction: true,
+                                        title: 'verify Transaction pin',
+                                        subtitle: 'Enter your transaction pin ',
+                                        doSuccessMethod: () async {
+                                          print('is a success');
+                                          _progressDialog.show();
+                                          dynamic result = await ApiServices()
+                                              .sendSmileData(
+                                                  phoneNumber,
+                                                  planId,
+                                                  user['email'],
+                                                  user['mobile']);
+                                          if (result['status'] = true) {
+                                            dynamic rep =
+                                                result['message'].toString();
+                                            print(rep.toString());
+                                            dynamic name = json.decode(rep);
+                                            dynamic me = name['msg'];
+                                            print(me);
 
-                                  if (name['code'] != 'ERR101' &&
-                                      name['code'] != 'ERR102' &&
-                                      name['code'] != 'ERR103' &&
-                                      name['code'] != 'ERR104' &&
-                                      name['code'] != 'ERR105' &&
-                                      name['code'] != 'ERR106' &&
-                                      name['code'] != 'ERR107' &&
-                                      name['code'] != 'ERR202' &&
-                                      name['code'] != 'ERR206' &&
-                                      name['code'] != 'ERR208') {
-                                    dynamic response = name['details'];
-                                    // serialNumber = response['serial_number'];
-                                    // pin = response['pin'];
-                                    // expiaryDate = response['expiresOn'];
-                                    // print(name['status'].toString());
-                                    print(response);
+                                            if (name['status'] == 'ok') {
+                                              dynamic response = name['data'];
+                                              dynamic tx_ref = response['ref'];
+                                              print(response);
 
-                                    dynamic nairaBalance =
-                                        double.parse(balance) - naira;
-                                    dynamic result1 = await AuthService()
-                                        .updateWallet(
-                                            nairaBalance.toString(), 'naira');
-                                    if (result1['status']) {
-                                      dynamic result2 = await AuthService()
-                                          .updateTransactionList(
-                                              "Smile data purchase",
-                                              'Naira Wallet',
-                                              '$packageName smartno: $phoneNumber',
-                                              currencyAmount.text,
-                                              nairaAmount.text,
-                                              'nairaWalletTransactionList',
-                                              symbol,
-                                              true);
-                                      if (result2['status']) {
-                                        _progressDialog.hide();
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SuccessfulPage(
-                                                text:
-                                                    ' Smile data purchase was successful',
-                                                text1:
-                                                    'You\'ve successfully Subscribed your $biller $phoneNumber  with  \₦${nairaAmount.text}',
-                                                press: () {
+                                              dynamic nairaBalance =
+                                                  double.parse(balance) - naira;
+                                              dynamic result1 =
+                                                  await AuthService()
+                                                      .updateWallet(
+                                                          nairaBalance
+                                                              .toString(),
+                                                          'naira');
+                                              if (result1['status']) {
+                                                dynamic result2 = await AuthService()
+                                                    .updateTransactionList(
+                                                        "Smile data purchase",
+                                                        'Naira Wallet',
+                                                        'Smartno: $phoneNumber $packageName',
+                                                        currencyAmount.text,
+                                                        nairaAmount.text,
+                                                        'nairaWalletTransactionList',
+                                                        symbol,
+                                                        true);
+                                                if (result2['status']) {
+                                                  _progressDialog.hide();
                                                   Navigator.pushAndRemoveUntil(
                                                       context,
                                                       MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              TabScreen()),
+                                                        builder: (context) =>
+                                                            SuccessfulPage(
+                                                          text:
+                                                              ' Smile data purchase was successful',
+                                                          text1:
+                                                              'You\'ve successfully Subscribed your $biller $phoneNumber  with  \₦${nairaAmount.text}',
+                                                          press: () {
+                                                            Navigator.pushAndRemoveUntil(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            TabScreen()),
+                                                                (route) =>
+                                                                    false);
+                                                          },
+                                                        ),
+                                                      ),
                                                       (route) => false);
-                                                },
-                                              ),
-                                            ),
-                                            (route) => false);
-                                      } else {
-                                        _progressDialog.hide();
-                                        Fluttertoast.showToast(
-                                            msg: result2['message'].toString(),
-                                            toastLength: Toast.LENGTH_LONG,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.black,
-                                            textColor: Colors.white);
-                                      }
-                                    } else {
-                                      _progressDialog.hide();
-                                      Fluttertoast.showToast(
-                                          msg: result1['message'].toString(),
-                                          toastLength: Toast.LENGTH_LONG,
-                                          gravity: ToastGravity.BOTTOM,
-                                          backgroundColor: Colors.black,
-                                          textColor: Colors.white);
-                                    }
-                                  } else {
-                                    _progressDialog.hide();
-                                    print(name['description'].toString());
-                                    Fluttertoast.showToast(
-                                        msg: 'error occurred try again',
-                                        toastLength: Toast.LENGTH_LONG,
-                                        gravity: ToastGravity.BOTTOM,
-                                        backgroundColor: Colors.black,
-                                        textColor: Colors.white);
-                                  }
+                                                } else {
+                                                  _progressDialog.hide();
+                                                  Fluttertoast.showToast(
+                                                      msg: result2['message']
+                                                          .toString(),
+                                                      toastLength:
+                                                          Toast.LENGTH_LONG,
+                                                      gravity:
+                                                          ToastGravity.BOTTOM,
+                                                      backgroundColor:
+                                                          Colors.black,
+                                                      textColor: Colors.white);
+                                                }
+                                              } else {
+                                                _progressDialog.hide();
+                                                Fluttertoast.showToast(
+                                                    msg: result1['message']
+                                                        .toString(),
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                    gravity:
+                                                        ToastGravity.BOTTOM,
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    textColor: Colors.white);
+                                              }
+                                            } else {
+                                              _progressDialog.hide();
+                                              print(name['msg'].toString());
+                                              Fluttertoast.showToast(
+                                                  msg:
+                                                      'Error Occurred, try again',
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  backgroundColor: Colors.black,
+                                                  textColor: Colors.white);
+                                            }
+                                          } else {
+                                            _progressDialog.hide();
+                                            print(result['message'].toString());
+                                            Fluttertoast.showToast(
+                                                msg: result['message']
+                                                    .toString(),
+                                                toastLength: Toast.LENGTH_LONG,
+                                                gravity: ToastGravity.BOTTOM,
+                                                backgroundColor: Colors.black,
+                                                textColor: Colors.white);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  );
                                 } else {
-                                  _progressDialog.hide();
-                                  print(result['message'].toString());
-                                  Fluttertoast.showToast(
-                                      msg: result['message'].toString(),
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.BOTTOM,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.white);
+                                  _showBottomSheet(AlertSheet(
+                                    text1:
+                                        'We noticed you don\'t have a transaction pin yet',
+                                    text2:
+                                        'you can create one in your settings to be able to transact ',
+                                    text3: 'Create one now',
+                                    press: () {
+                                      Navigator.pushNamed(
+                                          context, 'user_profile');
+                                    },
+                                  ));
                                 }
                               } else if (isSpectranet) {
-                                _progressDialog.show();
-                                dynamic result =
-                                    await ApiServices()
-                                        .sendSpectranetData(
-                                            nairaAmount.text, productCode);
+                                if (user.containsKey('transactionPin')) {
+                                  transactionpin = user['transactionPin'];
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ConfirmPinCodeScreen(
+                                        initailCode: transactionpin,
+                                        fromTransaction: true,
+                                        title: 'verify Transaction pin',
+                                        subtitle: 'Enter your transaction pin ',
+                                        doSuccessMethod: () async {
+                                          print('is a success');
 
-                                if (result['status'] = true) {
-                                  dynamic rep = result['message'].toString();
-                                  print(rep.toString());
-                                  dynamic name = json.decode(rep);
-                                  dynamic me = name['description'];
-                                  print(me);
+                                          _progressDialog.show();
+                                          dynamic result = await ApiServices()
+                                              .sendSpectranetData(
+                                                  planId,
+                                                  user['email'],
+                                                  user['mobile']);
 
-                                  if (name['code'] != 'ERR101' &&
-                                      name['code'] != 'ERR102' &&
-                                      name['code'] != 'ERR103' &&
-                                      name['code'] != 'ERR104' &&
-                                      name['code'] != 'ERR105' &&
-                                      name['code'] != 'ERR106' &&
-                                      name['code'] != 'ERR107' &&
-                                      name['code'] != 'ERR202' &&
-                                      name['code'] != 'ERR206' &&
-                                      name['code'] != 'ERR208') {
-                                    dynamic response = name['details']['pins'];
-                                    serialNumber = response['serial_number'];
-                                    pin = response['pin'];
-                                    expiaryDate = response['expiresOn'];
-                                    // print(name['status'].toString());
-                                    print(response);
+                                          if (result['status'] = true) {
+                                            dynamic rep =
+                                                result['message'].toString();
+                                            print(rep.toString());
+                                            dynamic name = json.decode(rep);
+                                            dynamic me = name['msg'];
+                                            print(me);
 
-                                    dynamic nairaBalance =
-                                        double.parse(balance) - naira;
-                                    dynamic result1 = await AuthService()
-                                        .updateWallet(
-                                            nairaBalance.toString(), 'naira');
-                                    if (result1['status']) {
-                                      dynamic result2 = await AuthService()
-                                          .updateTransactionList(
-                                              "Spectranet data purchase",
-                                              'Naira Wallet',
-                                              '$biller package: $packageName pin: $pin',
-                                              currencyAmount.text,
-                                              nairaAmount.text,
-                                              'nairaWalletTransactionList',
-                                              symbol,
-                                              true);
-                                      if (result2['status']) {
-                                        _progressDialog.hide();
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SuccessfulPage(
-                                                text:
-                                                    'Spectranet data purchase was successful',
-                                                text1:
-                                                    'You\'ve successfully payed for  $packageName  with  \₦${nairaAmount.text}',
-                                                text2:
-                                                    '( serial_number: $serialNumber, pin: $pin, expiresOn: $expiaryDate) ',
-                                                press: () {
+                                            if (name['status'] == 'ok') {
+                                              dynamic response = name['data'];
+                                              serialNumber =
+                                                  response['reference_code'];
+                                              pin = response['pin'];
+                                              expiaryDate =
+                                                  response['expiresOn'];
+                                              // print(name['status'].toString());
+                                              print(response.toString());
+
+                                              dynamic nairaBalance =
+                                                  double.parse(balance) - naira;
+                                              dynamic result1 =
+                                                  await AuthService()
+                                                      .updateWallet(
+                                                          nairaBalance
+                                                              .toString(),
+                                                          'naira');
+                                              if (result1['status']) {
+                                                dynamic result2 = await AuthService()
+                                                    .updateTransactionList(
+                                                        "Spectranet data purchase",
+                                                        'Naira Wallet',
+                                                        '$biller package: $packageName pin: $pin',
+                                                        currencyAmount.text,
+                                                        nairaAmount.text,
+                                                        'nairaWalletTransactionList',
+                                                        symbol,
+                                                        true);
+                                                if (result2['status']) {
+                                                  _progressDialog.hide();
                                                   Navigator.pushAndRemoveUntil(
                                                       context,
                                                       MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              TabScreen()),
+                                                        builder: (context) =>
+                                                            SuccessfulPage(
+                                                          text:
+                                                              'Spectranet data purchase was successful',
+                                                          text1:
+                                                              'You\'ve successfully payed for  $packageName  with  \₦${nairaAmount.text}',
+                                                          text2:
+                                                              '( serial_number: $serialNumber, pin: $pin, expiresOn: $expiaryDate) ',
+                                                          press: () {
+                                                            Navigator.pushAndRemoveUntil(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            TabScreen()),
+                                                                (route) =>
+                                                                    false);
+                                                          },
+                                                        ),
+                                                      ),
                                                       (route) => false);
-                                                },
-                                              ),
-                                            ),
-                                            (route) => false);
-                                      } else {
-                                        _progressDialog.hide();
-                                        Fluttertoast.showToast(
-                                            msg: result2['message'].toString(),
-                                            toastLength: Toast.LENGTH_LONG,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.black,
-                                            textColor: Colors.white);
-                                      }
-                                    } else {
-                                      _progressDialog.hide();
-                                      Fluttertoast.showToast(
-                                          msg: result1['message'].toString(),
-                                          toastLength: Toast.LENGTH_LONG,
-                                          gravity: ToastGravity.BOTTOM,
-                                          backgroundColor: Colors.black,
-                                          textColor: Colors.white);
-                                    }
-                                  } else {
-                                    _progressDialog.hide();
-                                    print(name['description'].toString());
-                                    Fluttertoast.showToast(
-                                        msg:'error occurred try again',
-                                        toastLength: Toast.LENGTH_LONG,
-                                        gravity: ToastGravity.BOTTOM,
-                                        backgroundColor: Colors.black,
-                                        textColor: Colors.white);
-                                  }
+                                                } else {
+                                                  _progressDialog.hide();
+                                                  Fluttertoast.showToast(
+                                                      msg: result2['message']
+                                                          .toString(),
+                                                      toastLength:
+                                                          Toast.LENGTH_LONG,
+                                                      gravity:
+                                                          ToastGravity.BOTTOM,
+                                                      backgroundColor:
+                                                          Colors.black,
+                                                      textColor: Colors.white);
+                                                }
+                                              } else {
+                                                _progressDialog.hide();
+                                                Fluttertoast.showToast(
+                                                    msg: result1['message']
+                                                        .toString(),
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                    gravity:
+                                                        ToastGravity.BOTTOM,
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    textColor: Colors.white);
+                                              }
+                                            } else {
+                                              _progressDialog.hide();
+                                              print(name['msg'].toString());
+                                              Fluttertoast.showToast(
+                                                  msg:
+                                                      'Error Occurred, try again',
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  backgroundColor: Colors.black,
+                                                  textColor: Colors.white);
+                                            }
+                                          } else {
+                                            _progressDialog.hide();
+                                            print(result['message'].toString());
+                                            Fluttertoast.showToast(
+                                                msg: result['message']
+                                                    .toString(),
+                                                toastLength: Toast.LENGTH_LONG,
+                                                gravity: ToastGravity.BOTTOM,
+                                                backgroundColor: Colors.black,
+                                                textColor: Colors.white);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  );
                                 } else {
-                                  _progressDialog.hide();
-                                  print(result['message'].toString());
-                                  Fluttertoast.showToast(
-                                      msg: result['message'].toString(),
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.BOTTOM,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.white);
+                                  _showBottomSheet(AlertSheet(
+                                    text1:
+                                        'We noticed you don\'t have a transaction pin yet',
+                                    text2:
+                                        'you can create one in your settings to be able to transact ',
+                                    text3: 'Create one now',
+                                    press: () {
+                                      Navigator.pushNamed(
+                                          context, 'user_profile');
+                                    },
+                                  ));
                                 }
                               } else {
-                                _progressDialog.show();
-                                dynamic result = await ApiServices()
-                                    .sendData(dataPlan, phoneNumber, code);
+                                if (user.containsKey('transactionPin')) {
+                                  transactionpin = user['transactionPin'];
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ConfirmPinCodeScreen(
+                                        initailCode: transactionpin.toString(),
+                                        fromTransaction: true,
+                                        title: 'verify Transaction pin',
+                                        subtitle: 'Enter your transaction pin ',
+                                        doSuccessMethod: () async {
+                                          print('is a success');
 
-                                if (result['status'] = true) {
-                                  dynamic rep = result['message'].toString();
-                                  dynamic name = json.decode(rep);
+                                          _progressDialog.show();
+                                          dynamic result = await ApiServices()
+                                              .sendData(uniqueId, phoneNumber,
+                                                  networkId);
 
-                                  if (name['status'] == 'ORDER_RECEIVED') {
-                                    print(name['status'].toString());
+                                          if (result['status'] = true) {
+                                            dynamic rep =
+                                                result['message'].toString();
+                                            dynamic name = json.decode(rep);
+                                            print(name.toString());
 
-                                    dynamic nairaBalance =
-                                        double.parse(balance) - naira;
-                                    dynamic result1 = await AuthService()
-                                        .updateWallet(
-                                            nairaBalance.toString(), 'naira');
-                                    if (result1['status']) {
-                                      dynamic result2 = await AuthService()
-                                          .updateTransactionList(
-                                              "Data purchase",
-                                              'Naira Wallet',
-                                              '$biller mobile: $phoneNumber',
-                                              currencyAmount.text,
-                                              nairaAmount.text,
-                                              'nairaWalletTransactionList',
-                                              symbol,
-                                              true);
-                                      if (result2['status']) {
-                                        _progressDialog.hide();
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SuccessfulPage(
-                                                text:
-                                                    'Data purchase was successful',
-                                                text1:
-                                                    'You\'ve successfully Subscribed $phoneNumber  with  \₦${nairaAmount.text}',
-                                                press: () {
+                                            if (name['status'] == 'ok') {
+                                              dynamic data =
+                                                  json.decode(name['data']);
+                                              dynamic tx_ref = data['ref'];
+
+                                              dynamic nairaBalance =
+                                                  double.parse(balance) - naira;
+                                              dynamic result1 =
+                                                  await AuthService()
+                                                      .updateWallet(
+                                                          nairaBalance
+                                                              .toString(),
+                                                          'naira');
+                                              if (result1['status']) {
+                                                dynamic result2 = await AuthService()
+                                                    .updateTransactionList(
+                                                        "Data purchase",
+                                                        'Naira Wallet',
+                                                        '$packageName mobile: $phoneNumber',
+                                                        currencyAmount.text,
+                                                        nairaAmount.text,
+                                                        'nairaWalletTransactionList',
+                                                        symbol,
+                                                        true);
+                                                if (result2['status']) {
+                                                  _progressDialog.hide();
                                                   Navigator.pushAndRemoveUntil(
                                                       context,
                                                       MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              TabScreen()),
+                                                        builder: (context) =>
+                                                            SuccessfulPage(
+                                                          text:
+                                                              'Data purchase was successful',
+                                                          text1:
+                                                              'You\'ve successfully Subscribed $phoneNumber  with  \₦${nairaAmount.text}',
+                                                          press: () {
+                                                            Navigator.pushAndRemoveUntil(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            TabScreen()),
+                                                                (route) =>
+                                                                    false);
+                                                          },
+                                                        ),
+                                                      ),
                                                       (route) => false);
-                                                },
-                                              ),
-                                            ),
-                                            (route) => false);
-                                      } else {
-                                        _progressDialog.hide();
-                                        Fluttertoast.showToast(
-                                            msg: result2['message'].toString(),
-                                            toastLength: Toast.LENGTH_LONG,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.black,
-                                            textColor: Colors.white);
-                                      }
-                                    } else {
-                                      _progressDialog.hide();
-                                      Fluttertoast.showToast(
-                                          msg: result1['message'].toString(),
-                                          toastLength: Toast.LENGTH_LONG,
-                                          gravity: ToastGravity.BOTTOM,
-                                          backgroundColor: Colors.black,
-                                          textColor: Colors.white);
-                                    }
-                                  } else {
-                                    _progressDialog.hide();
-                                    print(name['status'].toString());
-                                    Fluttertoast.showToast(
-                                        msg: 'error occurred try again',
-                                        toastLength: Toast.LENGTH_LONG,
-                                        gravity: ToastGravity.BOTTOM,
-                                        backgroundColor: Colors.black,
-                                        textColor: Colors.white);
-                                  }
+                                                } else {
+                                                  _progressDialog.hide();
+                                                  Fluttertoast.showToast(
+                                                      msg: result2['message']
+                                                          .toString(),
+                                                      toastLength:
+                                                          Toast.LENGTH_LONG,
+                                                      gravity:
+                                                          ToastGravity.BOTTOM,
+                                                      backgroundColor:
+                                                          Colors.black,
+                                                      textColor: Colors.white);
+                                                }
+                                              } else {
+                                                _progressDialog.hide();
+                                                Fluttertoast.showToast(
+                                                    msg: result1['message']
+                                                        .toString(),
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                    gravity:
+                                                        ToastGravity.BOTTOM,
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    textColor: Colors.white);
+                                              }
+                                            } else {
+                                              _progressDialog.hide();
+                                              print(name['msg'].toString());
+                                              Fluttertoast.showToast(
+                                                  msg:
+                                                      'Error Occurred, try again',
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  backgroundColor: Colors.black,
+                                                  textColor: Colors.white);
+                                            }
+                                          } else {
+                                            _progressDialog.hide();
+                                            print(result['msg'].toString());
+                                            Fluttertoast.showToast(
+                                                msg: result['message']
+                                                    .toString(),
+                                                toastLength: Toast.LENGTH_LONG,
+                                                gravity: ToastGravity.BOTTOM,
+                                                backgroundColor: Colors.black,
+                                                textColor: Colors.white);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  );
                                 } else {
-                                  _progressDialog.hide();
-                                  print(result['message'].toString());
-                                  Fluttertoast.showToast(
-                                      msg: result['message'].toString(),
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.BOTTOM,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.white);
+                                  _showBottomSheet(AlertSheet(
+                                    text1:
+                                        'We noticed you don\'t have a transaction pin yet',
+                                    text2:
+                                        'you can create one in your settings to be able to transact ',
+                                    text3: 'Create one now',
+                                    press: () {
+                                      Navigator.pushNamed(
+                                          context, 'user_profile');
+                                    },
+                                  ));
                                 }
                               }
                             }
@@ -1263,314 +1339,477 @@ class _BodyState extends State<Body> {
                                 },
                               ));
                             } else {
+                              if (isSmile) {
+                                if (user.containsKey('transactionPin')) {
+                                  transactionpin = user['transactionPin'];
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ConfirmPinCodeScreen(
+                                        initailCode: transactionpin,
+                                        fromTransaction: true,
+                                        title: 'verify Transaction pin',
+                                        subtitle: 'Enter your transaction pin ',
+                                        doSuccessMethod: () async {
+                                          print('is a success');
 
+                                          _progressDialog.show();
+                                          dynamic result = await ApiServices()
+                                              .sendSmileData(
+                                                  phoneNumber,
+                                                  planId,
+                                                  user['email'],
+                                                  user['mobile']);
+                                          if (result['status'] = true) {
+                                            dynamic rep =
+                                                result['message'].toString();
+                                            print(rep.toString());
+                                            dynamic name = json.decode(rep);
+                                            dynamic me = name['msg'];
+                                            print(me);
 
+                                            if (name['status'] == 'ok') {
+                                              dynamic response = name['data'];
+                                              dynamic tx_fee = response['ref'];
 
+                                              print(response);
 
-
-
-                               if (isSmile) {
-                                _progressDialog.show();
-                                dynamic result =
-                                    await ApiServices()
-                                        .sendSmileData(phoneNumber,
-                                            nairaAmount.text, productCode);
-                                if (result['status'] = true) {
-                                  dynamic rep = result['message'].toString();
-                                  print(rep.toString());
-                                  dynamic name = json.decode(rep);
-                                  dynamic me = name['description'];
-                                  print(me);
-
-                                  if (name['code'] != 'ERR101' &&
-                                      name['code'] != 'ERR102' &&
-                                      name['code'] != 'ERR103' &&
-                                      name['code'] != 'ERR104' &&
-                                      name['code'] != 'ERR105' &&
-                                      name['code'] != 'ERR106' &&
-                                      name['code'] != 'ERR107' &&
-                                      name['code'] != 'ERR202' &&
-                                      name['code'] != 'ERR206' &&
-                                      name['code'] != 'ERR208') {
-                                    dynamic response = name['details'];
-                                    // serialNumber = response['serial_number'];
-                                    // pin = response['pin'];
-                                    // expiaryDate = response['expiresOn'];
-                                    // print(name['status'].toString());
-                                    print(response);
-
-                                    dynamic nairaBalance =
-                                        double.parse(balance) - naira;
-                                    dynamic result1 = await AuthService()
-                                        .updateWallet(
-                                            nairaBalance.toString(), 'naira');
-                                    if (result1['status']) {
-                                      dynamic result2 = await AuthService()
-                                          .updateTransactionList(
-                                              "Smile data purchase",
-                                              'Naira Wallet',
-                                              '$packageName smartno: $phoneNumber',
-                                              currencyAmount.text,
-                                              nairaAmount.text,
-                                              'nairaWalletTransactionList',
-                                              symbol,
-                                              true);
-                                      if (result2['status']) {
-                                        _progressDialog.hide();
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SuccessfulPage(
-                                                text:
-                                                    ' Smile data purchase was successful',
-                                                text1:
-                                                    'You\'ve successfully Subscribed your $biller $phoneNumber  with  \₦${nairaAmount.text}',
-                                                press: () {
+                                              dynamic nairaBalance =
+                                                  double.parse(balance) - naira;
+                                              dynamic result1 =
+                                                  await AuthService()
+                                                      .updateWallet(
+                                                          nairaBalance
+                                                              .toString(),
+                                                          'naira');
+                                              if (result1['status']) {
+                                                dynamic result2 = await AuthService()
+                                                    .updateTransactionList(
+                                                        "Smile data purchase",
+                                                        'Naira Wallet',
+                                                        '$packageName smartno: $phoneNumber',
+                                                        currencyAmount.text,
+                                                        nairaAmount.text,
+                                                        'nairaWalletTransactionList',
+                                                        symbol,
+                                                        true);
+                                                if (result2['status']) {
+                                                  _progressDialog.hide();
                                                   Navigator.pushAndRemoveUntil(
                                                       context,
                                                       MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              TabScreen()),
+                                                        builder: (context) =>
+                                                            SuccessfulPage(
+                                                          text:
+                                                              ' Smile data purchase was successful',
+                                                          text1:
+                                                              'You\'ve successfully Subscribed your $biller $phoneNumber  with  \₦${nairaAmount.text}',
+                                                          press: () {
+                                                            Navigator.pushAndRemoveUntil(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            TabScreen()),
+                                                                (route) =>
+                                                                    false);
+                                                          },
+                                                        ),
+                                                      ),
                                                       (route) => false);
-                                                },
-                                              ),
-                                            ),
-                                            (route) => false);
-                                      } else {
-                                        _progressDialog.hide();
-                                        Fluttertoast.showToast(
-                                            msg: result2['message'].toString(),
-                                            toastLength: Toast.LENGTH_LONG,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.black,
-                                            textColor: Colors.white);
-                                      }
-                                    } else {
-                                      _progressDialog.hide();
-                                      Fluttertoast.showToast(
-                                          msg: result1['message'].toString(),
-                                          toastLength: Toast.LENGTH_LONG,
-                                          gravity: ToastGravity.BOTTOM,
-                                          backgroundColor: Colors.black,
-                                          textColor: Colors.white);
-                                    }
-                                  } else {
-                                    _progressDialog.hide();
-                                    print(name['description'].toString());
-                                    Fluttertoast.showToast(
-                                        msg: 'error occurred try again ',
-                                        toastLength: Toast.LENGTH_LONG,
-                                        gravity: ToastGravity.BOTTOM,
-                                        backgroundColor: Colors.black,
-                                        textColor: Colors.white);
-                                  }
+                                                } else {
+                                                  _progressDialog.hide();
+                                                  Fluttertoast.showToast(
+                                                      msg: result2['message']
+                                                          .toString(),
+                                                      toastLength:
+                                                          Toast.LENGTH_LONG,
+                                                      gravity:
+                                                          ToastGravity.BOTTOM,
+                                                      backgroundColor:
+                                                          Colors.black,
+                                                      textColor: Colors.white);
+                                                }
+                                              } else {
+                                                _progressDialog.hide();
+                                                Fluttertoast.showToast(
+                                                    msg: result1['message']
+                                                        .toString(),
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                    gravity:
+                                                        ToastGravity.BOTTOM,
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    textColor: Colors.white);
+                                              }
+                                            } else {
+                                              _progressDialog.hide();
+                                              print(name['msg'].toString());
+                                              Fluttertoast.showToast(
+                                                  msg:
+                                                      'Error Occurred, try again ',
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  backgroundColor: Colors.black,
+                                                  textColor: Colors.white);
+                                            }
+                                          } else {
+                                            _progressDialog.hide();
+                                            print(result['message'].toString());
+                                            Fluttertoast.showToast(
+                                                msg: result['message']
+                                                    .toString(),
+                                                toastLength: Toast.LENGTH_LONG,
+                                                gravity: ToastGravity.BOTTOM,
+                                                backgroundColor: Colors.black,
+                                                textColor: Colors.white);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  );
                                 } else {
-                                  _progressDialog.hide();
-                                  print(result['message'].toString());
-                                  Fluttertoast.showToast(
-                                      msg: result['message'].toString(),
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.BOTTOM,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.white);
+                                  _showBottomSheet(AlertSheet(
+                                    text1:
+                                        'We noticed you don\'t have a transaction pin yet',
+                                    text2:
+                                        'you can create one in your settings to be able to transact ',
+                                    text3: 'Create one now',
+                                    press: () {
+                                      Navigator.pushNamed(
+                                          context, 'user_profile');
+                                    },
+                                  ));
                                 }
                               } else if (isSpectranet) {
-                                _progressDialog.show();
-                                dynamic result =
-                                    await ApiServices()
-                                        .sendSpectranetData(
-                                            nairaAmount.text, productCode);
+                                if (user.containsKey('transactionPin')) {
+                                  transactionpin = user['transactionPin'];
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ConfirmPinCodeScreen(
+                                        initailCode: transactionpin,
+                                        fromTransaction: true,
+                                        title: 'verify Transaction pin',
+                                        subtitle: 'Enter your transaction pin ',
+                                        doSuccessMethod: () async {
+                                          print('is a success');
 
-                                if (result['status'] = true) {
-                                  dynamic rep = result['message'].toString();
-                                  print(rep.toString());
-                                  dynamic name = json.decode(rep);
-                                  dynamic me = name['description'];
-                                  print(me);
+                                          _progressDialog.show();
+                                          dynamic result = await ApiServices()
+                                              .sendSpectranetData(
+                                                  planId,
+                                                  user['email'],
+                                                  user['mobile']);
 
-                                  if (name['code'] != 'ERR101' &&
-                                      name['code'] != 'ERR102' &&
-                                      name['code'] != 'ERR103' &&
-                                      name['code'] != 'ERR104' &&
-                                      name['code'] != 'ERR105' &&
-                                      name['code'] != 'ERR106' &&
-                                      name['code'] != 'ERR107' &&
-                                      name['code'] != 'ERR202' &&
-                                      name['code'] != 'ERR206' &&
-                                      name['code'] != 'ERR208') {
-                                    dynamic response = name['details']['pins'];
-                                    serialNumber = response['serial_number'];
-                                    pin = response['pin'];
-                                    expiaryDate = response['expiresOn'];
-                                    // print(name['status'].toString());
-                                    print(response);
+                                          if (result['status'] = true) {
+                                            dynamic rep =
+                                                result['message'].toString();
+                                            print(rep.toString());
+                                            dynamic name = json.decode(rep);
+                                            dynamic me = name['msg'];
+                                            print(me);
 
-                                    dynamic nairaBalance =
-                                        double.parse(balance) - naira;
-                                    dynamic result1 = await AuthService()
-                                        .updateWallet(
-                                            nairaBalance.toString(), 'naira');
-                                    if (result1['status']) {
-                                      dynamic result2 = await AuthService()
-                                          .updateTransactionList(
-                                              "Spectranet data purchase",
-                                              'Naira Wallet',
-                                              '$biller, package: $packageName pin: $pin',
-                                              currencyAmount.text,
-                                              nairaAmount.text,
-                                              'nairaWalletTransactionList',
-                                              symbol,
-                                              true);
-                                      if (result2['status']) {
-                                        _progressDialog.hide();
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SuccessfulPage(
-                                                text:
-                                                    'Spectranet data purchase was successful',
-                                                text1:
-                                                    'You\'ve successfully payed for  $packageName  with  \₦${nairaAmount.text}',
-                                                text2:
-                                                    '( serial_number: $serialNumber, pin: $pin, expiresOn: $expiaryDate) ',
-                                                press: () {
+                                            if (name['status'] == 'ok') {
+                                              dynamic response = name['data'];
+                                              serialNumber =
+                                                  response['reference_code'];
+                                              pin = response['pin'];
+                                              expiaryDate =
+                                                  response['expiresOn'];
+                                              // print(name['status'].toString());
+                                              print(response);
+
+                                              dynamic nairaBalance =
+                                                  double.parse(balance) - naira;
+                                              dynamic result1 =
+                                                  await AuthService()
+                                                      .updateWallet(
+                                                          nairaBalance
+                                                              .toString(),
+                                                          'naira');
+                                              if (result1['status']) {
+                                                dynamic result2 = await AuthService()
+                                                    .updateTransactionList(
+                                                        "Spectranet data purchase",
+                                                        'Naira Wallet',
+                                                        '$biller, package: $packageName pin: $pin',
+                                                        currencyAmount.text,
+                                                        nairaAmount.text,
+                                                        'nairaWalletTransactionList',
+                                                        symbol,
+                                                        true);
+                                                if (result2['status']) {
+                                                  _progressDialog.hide();
                                                   Navigator.pushAndRemoveUntil(
                                                       context,
                                                       MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              TabScreen()),
+                                                        builder: (context) =>
+                                                            SuccessfulPage(
+                                                          text:
+                                                              'Spectranet data purchase was successful',
+                                                          text1:
+                                                              'You\'ve successfully payed for  $packageName  with  \₦${nairaAmount.text}',
+                                                          text2:
+                                                              '( serial_number: $serialNumber, pin: $pin, expiresOn: $expiaryDate) ',
+                                                          press: () {
+                                                            Navigator.pushAndRemoveUntil(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            TabScreen()),
+                                                                (route) =>
+                                                                    false);
+                                                          },
+                                                        ),
+                                                      ),
                                                       (route) => false);
-                                                },
-                                              ),
-                                            ),
-                                            (route) => false);
-                                      } else {
-                                        _progressDialog.hide();
-                                        Fluttertoast.showToast(
-                                            msg: result2['message'].toString(),
-                                            toastLength: Toast.LENGTH_LONG,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.black,
-                                            textColor: Colors.white);
-                                      }
-                                    } else {
-                                      _progressDialog.hide();
-                                      Fluttertoast.showToast(
-                                          msg: result1['message'].toString(),
-                                          toastLength: Toast.LENGTH_LONG,
-                                          gravity: ToastGravity.BOTTOM,
-                                          backgroundColor: Colors.black,
-                                          textColor: Colors.white);
-                                    }
-                                  } else {
-                                    _progressDialog.hide();
-                                    print(name['description'].toString());
-                                    Fluttertoast.showToast(
-                                        msg: 'error occcurred try again',
-                                        toastLength: Toast.LENGTH_LONG,
-                                        gravity: ToastGravity.BOTTOM,
-                                        backgroundColor: Colors.black,
-                                        textColor: Colors.white);
-                                  }
+                                                } else {
+                                                  _progressDialog.hide();
+                                                  Fluttertoast.showToast(
+                                                      msg: result2['message']
+                                                          .toString(),
+                                                      toastLength:
+                                                          Toast.LENGTH_LONG,
+                                                      gravity:
+                                                          ToastGravity.BOTTOM,
+                                                      backgroundColor:
+                                                          Colors.black,
+                                                      textColor: Colors.white);
+                                                }
+                                              } else {
+                                                _progressDialog.hide();
+                                                Fluttertoast.showToast(
+                                                    msg: result1['message']
+                                                        .toString(),
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                    gravity:
+                                                        ToastGravity.BOTTOM,
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    textColor: Colors.white);
+                                              }
+                                            } else {
+                                              _progressDialog.hide();
+                                              print(name['msg'].toString());
+                                              Fluttertoast.showToast(
+                                                  msg:
+                                                      'Error occcurred try again',
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  backgroundColor: Colors.black,
+                                                  textColor: Colors.white);
+                                            }
+                                          } else {
+                                            _progressDialog.hide();
+                                            print(result['message'].toString());
+                                            Fluttertoast.showToast(
+                                                msg: result['message']
+                                                    .toString(),
+                                                toastLength: Toast.LENGTH_LONG,
+                                                gravity: ToastGravity.BOTTOM,
+                                                backgroundColor: Colors.black,
+                                                textColor: Colors.white);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  );
                                 } else {
-                                  _progressDialog.hide();
-                                  print(result['message'].toString());
-                                  Fluttertoast.showToast(
-                                      msg: result['message'].toString(),
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.BOTTOM,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.white);
+                                  _showBottomSheet(AlertSheet(
+                                    text1:
+                                        'We noticed you don\'t have a transaction pin yet',
+                                    text2:
+                                        'you can create one in your settings to be able to transact ',
+                                    text3: 'Create one now',
+                                    press: () {
+                                      Navigator.pushNamed(
+                                          context, 'user_profile');
+                                    },
+                                  ));
                                 }
                               } else {
-                                _progressDialog.show();
-                                dynamic result = await ApiServices()
-                                    .sendData(dataPlan, phoneNumber, code);
+                                if (user.containsKey('transactionPin')) {
+                                  transactionpin = user['transactionPin'];
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ConfirmPinCodeScreen(
+                                                  initailCode:
+                                                      transactionpin.toString(),
+                                                  fromTransaction: true,
+                                                  title:
+                                                      'verify Transaction pin',
+                                                  subtitle:
+                                                      'Enter your transaction pin ',
+                                                  doSuccessMethod: () async {
+                                                    print('is a success');
 
-                                if (result['status'] = true) {
-                                  dynamic rep = result['message'].toString();
-                                  dynamic name = json.decode(rep);
+                                                    _progressDialog.show();
+                                                    dynamic result =
+                                                        await ApiServices()
+                                                            .sendData(
+                                                                uniqueId,
+                                                                phoneNumber,
+                                                                networkId);
 
-                                  if (name['status'] == 'ORDER_COMPLETED') {
-                                    print(name['status'].toString());
-                                    dynamic coinBalance =
-                                        double.parse(balance) - coin;
-                                    dynamic response = await AuthService()
-                                        .updateWallet(
-                                            coinBalance.toString(), symbol1);
-                                    if (response['status']) {
-                                      dynamic response1 = await AuthService()
-                                          .updateTransactionList(
-                                              'Data purchase',
-                                              '$symbol1 Wallet',
-                                              '$biller mobile: $phoneNumber',
-                                              currencyAmount.text,
-                                              nairaAmount.text,
-                                              "${symbol1}WalletTransactionList",
-                                              symbol1,
-                                              true);
-                                      if (response1['status']) {
-                                        _progressDialog.hide();
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SuccessfulPage(
-                                                text:
-                                                    'Data purchase was successful',
-                                                text1:
-                                                    'You\'ve successfully Subscribed $phoneNumber  with  \₦${nairaAmount.text}',
-                                                press: () {
-                                                  Navigator.pushAndRemoveUntil(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              TabScreen()),
-                                                      (route) => false);
-                                                },
-                                              ),
-                                            ),
-                                            (route) => false);
-                                      } else {
-                                        _progressDialog.hide();
-                                        Fluttertoast.showToast(
-                                            msg:
-                                                response1['message'].toString(),
-                                            toastLength: Toast.LENGTH_LONG,
-                                            gravity: ToastGravity.BOTTOM,
-                                            backgroundColor: Colors.black,
-                                            textColor: Colors.white);
-                                      }
-                                    } else {
-                                      _progressDialog.hide();
-                                      Fluttertoast.showToast(
-                                          msg: response['message'].toString(),
-                                          toastLength: Toast.LENGTH_LONG,
-                                          gravity: ToastGravity.BOTTOM,
-                                          backgroundColor: Colors.black,
-                                          textColor: Colors.white);
-                                    }
-                                  } else {
-                                    _progressDialog.hide();
-                                    print(name['status'].toString());
-                                    Fluttertoast.showToast(
-                                        msg: 'error occurred try again',
-                                        toastLength: Toast.LENGTH_LONG,
-                                        gravity: ToastGravity.BOTTOM,
-                                        backgroundColor: Colors.black,
-                                        textColor: Colors.white);
-                                  }
+                                                    if (result['status'] =
+                                                        true) {
+                                                      dynamic rep =
+                                                          result['message']
+                                                              .toString();
+                                                      dynamic name =
+                                                          json.decode(rep);
+                                                      print(name.toString());
+
+                                                      if (name['status'] ==
+                                                          'ok') {
+                                                        dynamic data =
+                                                            json.decode(
+                                                                name['data']);
+                                                        dynamic tx_ref =
+                                                            data['ref'];
+                                                        // print(name['status'].toString());
+                                                        dynamic coinBalance =
+                                                            double.parse(
+                                                                    balance) -
+                                                                coin;
+                                                        dynamic response =
+                                                            await AuthService()
+                                                                .updateWallet(
+                                                                    coinBalance
+                                                                        .toString(),
+                                                                    symbol1);
+                                                        if (response[
+                                                            'status']) {
+                                                          dynamic response1 = await AuthService()
+                                                              .updateTransactionList(
+                                                                  'Data purchase',
+                                                                  '$symbol1 Wallet',
+                                                                  '$packageName mobile: $phoneNumber',
+                                                                  currencyAmount
+                                                                      .text,
+                                                                  nairaAmount
+                                                                      .text,
+                                                                  "${symbol1}WalletTransactionList",
+                                                                  symbol1,
+                                                                  true);
+                                                          if (response1[
+                                                              'status']) {
+                                                            _progressDialog
+                                                                .hide();
+                                                            Navigator
+                                                                .pushAndRemoveUntil(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              SuccessfulPage(
+                                                                        text:
+                                                                            'Data purchase was successful',
+                                                                        text1:
+                                                                            'You\'ve successfully Subscribed $phoneNumber  with  \₦${nairaAmount.text}',
+                                                                        press:
+                                                                            () {
+                                                                          Navigator.pushAndRemoveUntil(
+                                                                              context,
+                                                                              MaterialPageRoute(builder: (context) => TabScreen()),
+                                                                              (route) => false);
+                                                                        },
+                                                                      ),
+                                                                    ),
+                                                                    (route) =>
+                                                                        false);
+                                                          } else {
+                                                            _progressDialog
+                                                                .hide();
+                                                            Fluttertoast.showToast(
+                                                                msg: response1[
+                                                                        'message']
+                                                                    .toString(),
+                                                                toastLength: Toast
+                                                                    .LENGTH_LONG,
+                                                                gravity:
+                                                                    ToastGravity
+                                                                        .BOTTOM,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .black,
+                                                                textColor:
+                                                                    Colors
+                                                                        .white);
+                                                          }
+                                                        } else {
+                                                          _progressDialog
+                                                              .hide();
+                                                          Fluttertoast.showToast(
+                                                              msg: response[
+                                                                      'message']
+                                                                  .toString(),
+                                                              toastLength: Toast
+                                                                  .LENGTH_LONG,
+                                                              gravity:
+                                                                  ToastGravity
+                                                                      .BOTTOM,
+                                                              backgroundColor:
+                                                                  Colors.black,
+                                                              textColor:
+                                                                  Colors.white);
+                                                        }
+                                                      } else {
+                                                        _progressDialog.hide();
+                                                        print(name['msg']
+                                                            .toString());
+                                                        Fluttertoast.showToast(
+                                                            msg:
+                                                                'Error Occurred, try again',
+                                                            toastLength: Toast
+                                                                .LENGTH_LONG,
+                                                            gravity:
+                                                                ToastGravity
+                                                                    .BOTTOM,
+                                                            backgroundColor:
+                                                                Colors.black,
+                                                            textColor:
+                                                                Colors.white);
+                                                      }
+                                                    } else {
+                                                      _progressDialog.hide();
+                                                      print(result['message']
+                                                          .toString());
+                                                      Fluttertoast.showToast(
+                                                          msg: result['message']
+                                                              .toString(),
+                                                          toastLength:
+                                                              Toast.LENGTH_LONG,
+                                                          gravity: ToastGravity
+                                                              .BOTTOM,
+                                                          backgroundColor:
+                                                              Colors.black,
+                                                          textColor:
+                                                              Colors.white);
+                                                    }
+                                                  })));
                                 } else {
-                                  _progressDialog.hide();
-                                  print(result['message'].toString());
-                                  Fluttertoast.showToast(
-                                      msg: result['message'].toString(),
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.BOTTOM,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.white);
+                                  _showBottomSheet(AlertSheet(
+                                    text1:
+                                        'We noticed you don\'t have a transaction pin yet',
+                                    text2:
+                                        'you can create one in your settings to be able to transact ',
+                                    text3: 'Create one now',
+                                    press: () {
+                                      Navigator.pushNamed(
+                                          context, 'user_profile');
+                                    },
+                                  ));
                                 }
                               }
                             }

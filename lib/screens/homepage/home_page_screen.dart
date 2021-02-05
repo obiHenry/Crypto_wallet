@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:Crypto_wallet/screens/wallet/naira_wallet/deposit_naira-screen.dart';
 import 'package:Crypto_wallet/services/api_services.dart';
@@ -7,7 +6,6 @@ import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/theme/light_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../../shared/shared.dart';
 import 'currencies/currencies_list.dart';
 
@@ -37,7 +35,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
           naira1 = value;
           nairaRate = (naira1['buy_rate'].toString());
           if (user.containsKey('naira')) {
-            naira = user['naira'];
+            if(mounted){
+               naira = user['naira'];
 
             rate = double.parse(nairaRate);
             balance = double.parse(naira);
@@ -50,6 +49,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
             print('anyting$usdEqui');
             print(nairaBalance);
+            }
+           
           }
         });
       }
@@ -347,7 +348,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => DepositMoney(
-                                            balance: nairaBalance)));
+                                            balance: nairaBalance,
+                                            user: user,)));
                               },
                               child: Container(
                                 width: 50,

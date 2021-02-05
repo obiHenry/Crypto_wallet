@@ -10,10 +10,8 @@ import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/services/api_services.dart';
 import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
 import 'package:Crypto_wallet/screens/settings/users_settings_screen.dart';
-import 'package:Crypto_wallet/screens/transactions/transaction_list_screen.dart';
 import 'package:Crypto_wallet/screens/vtu_services/vtu_services_screen.dart';
 import 'package:Crypto_wallet/shared/alert_sheet.dart';
-import 'package:Crypto_wallet/shared/bottom_navigation_view.dart';
 import 'package:Crypto_wallet/shared/transaction_item_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -59,10 +57,7 @@ class _WalletState extends State<Wallet> {
       'page': VtuServicesScreen(),
       'title': 'wallets',
     },
-    {
-      'page': TransactionListScreen(),
-      'title': 'News',
-    },
+   
     {
       'page': UsersSettingsScreen(),
       'title': 'Profile',
@@ -151,6 +146,7 @@ class _WalletState extends State<Wallet> {
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
@@ -417,209 +413,6 @@ class _WalletState extends State<Wallet> {
                         ],
                       ),
 
-                      // Container(
-                      //   height: 60,
-                      //   width: MediaQuery.of(context).size.width * 0.9,
-                      //   decoration: BoxDecoration(
-                      //     color: Colors.white24,
-                      //     borderRadius: BorderRadius.all(
-                      //       Radius.circular(10),
-                      //     ),
-                      //   ),
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.center,
-                      //     children: [
-                      //       // !_loader1
-                      //       //     ? InkWell(
-                      //       //         onTap: () {
-
-                      //       //         child: Container(
-                      //       //           // width: MediaQuery.of(context).size.width *
-                      //       //           //     0.35,
-                      //       //           height: 50,
-                      //       //           alignment: Alignment.center,
-                      //       //           // decoration: BoxDecoration(
-                      //       //           //   color: Colors.white24,
-                      //       //           //   borderRadius: BorderRadius.all(
-                      //       //           //     Radius.circular(10),
-                      //       //           //   ),
-                      //       //           // ),
-                      //       //           child: Column(
-                      //       //             mainAxisAlignment:
-                      //       //                 MainAxisAlignment.center,
-                      //       //             children: <Widget>[
-                      //       //               SvgPicture.asset(
-                      //       //                   'assets/images/send.svg'),
-                      //       //               SizedBox(
-                      //       //                 width: 5,
-                      //       //               ),
-                      //       //               Container(
-                      //       //                 child: Text(
-                      //       //                   'Send',
-                      //       //                   style: TextStyle(
-                      //       //                       color: Colors.white,
-                      //       //                       fontSize: 17,
-                      //       //                       fontWeight: FontWeight.w500),
-                      //       //                 ),
-                      //       //               ),
-                      //       //             ],
-                      //       //           ),
-                      //       //         ),
-                      //       //       )
-                      //       //     : CircularProgressIndicator(),
-                      //       // SizedBox(width: 30),
-                      //       // !_loader
-                      //       //     ? InkWell(
-                      //       //         splashColor: yellowEnd,
-                      //       //         onTap: () async {
-                      //       //           setState(() {
-                      //       //             _loader = true;
-                      //       //           });
-
-                      //       //           dynamic userId =
-                      //       //               FirebaseAuth.instance.currentUser.uid;
-                      //       //           print(widget.currency['currency']);
-                      //       //           dynamic value =
-                      //       //               await ApiServices().recieveCoin(
-                      //       //             widget.currency['currency'],
-                      //       //             userId,
-                      //       //             widget.user['email'],
-                      //       //           );
-
-                      //       //           if (value['status']) {
-                      //       //             _showBottomSheet(RecieveCoinScreen(
-                      //       //                 currency: widget.currency,
-                      //       //                 value: value));
-                      //       //           } else {
-                      //       //             String msg = (value['message'] !=
-                      //       //                         null &&
-                      //       //                     value['message'].isNotEmpty)
-                      //       //                 ? value['message']
-                      //       //                 : 'An unknown error occured; retry';
-                      //       //             DialogService().getSnackBar(
-                      //       //               context,
-                      //       //               msg,
-                      //       //               Colors.red,
-                      //       //             );
-                      //       //           }
-                      //       //           setState(() {
-                      //       //             _loader = false;
-                      //       //           });
-
-                      //       //           // print('dkjfkz$value');
-                      //       //         },
-                      //       //         child: Container(
-                      //       //           // width: MediaQuery.of(context).size.width *
-                      //       //           //     0.35,
-                      //       //           height: 50,
-                      //       //           alignment: Alignment.center,
-
-                      //       //           child: Column(
-                      //       //             mainAxisAlignment:
-                      //       //                 MainAxisAlignment.center,
-                      //       //             children: <Widget>[
-                      //       //               SvgPicture.asset(
-                      //       //                   'assets/images/receive.svg'),
-                      //       //               Container(
-                      //       //                 child: Text(
-                      //       //                   'Receive',
-                      //       //                   style: TextStyle(
-                      //       //                       color: Colors.white,
-                      //       //                       fontSize: 17,
-                      //       //                       fontWeight: FontWeight.w500),
-                      //       //                 ),
-                      //       //               ),
-                      //       //             ],
-                      //       //           ),
-                      //       //         ),
-                      //       //       )
-                      //       //     : CircularProgressIndicator(),
-                      //       // SizedBox(
-                      //       //   width: 30,
-                      //       // ),
-                      //       // InkWell(
-                      //       //   onTap: () {
-                      //       //     _showBottomSheet(BuyCoinScreen(
-                      //       //       currency: widget.currency,
-                      //       //       balance: widget.balance,
-                      //       //       user: widget.user,
-                      //       //       nairaRate: widget.nairaVeloceSellRate,
-                      //       //     ));
-                      //       //   },
-                      //       //   child: Container(
-                      //       //     // width: MediaQuery.of(context).size.width *
-                      //       //     //     0.35,
-                      //       //     height: 50,
-                      //       //     alignment: Alignment.center,
-
-                      //       //     child: Column(
-                      //       //       mainAxisAlignment: MainAxisAlignment.center,
-                      //       //       children: <Widget>[
-                      //       //         Container(
-                      //       //           width: 50,
-                      //       //           height: 30,
-                      //       //           child:
-                      //       //               Image.asset('assets/images/buy.png'),
-                      //       //         ),
-                      //       //         // SizedBox(
-                      //       //         //   width: 5,
-                      //       //         // ),
-                      //       //         Container(
-                      //       //           child: Text(
-                      //       //             'Buy',
-                      //       //             style: TextStyle(
-                      //       //                 color: Colors.white,
-                      //       //                 fontSize: 17,
-                      //       //                 fontWeight: FontWeight.w500),
-                      //       //           ),
-                      //       //         ),
-                      //       //       ],
-                      //       //     ),
-                      //       //   ),
-                      //       // ),
-                      //       // SizedBox(
-                      //       //   width: 30,
-                      //       // ),
-                      //       // InkWell(
-                      //       //   onTap: () {
-                      //       //     _showBottomSheet(SellCoinScreen(
-                      //       //       currency: widget.currency,
-                      //       //       balance: widget.balance,
-                      //       //       user: widget.user,
-                      //       //       nairaRate: widget.nairaVeloceBuyRate,
-                      //       //     ));
-                      //       //   },
-                      //       //   child: Container(
-                      //       //     height: 50,
-                      //       //     alignment: Alignment.center,
-                      //       //     child: Column(
-                      //       //       mainAxisAlignment: MainAxisAlignment.center,
-                      //       //       children: <Widget>[
-                      //       //         Container(
-                      //       //           width: 40,
-                      //       //           height: 30,
-                      //       //           child: Image.asset(
-                      //       //               'assets/images/selling.png'),
-                      //       //         ),
-                      //       //         SizedBox(
-                      //       //           width: 5,
-                      //       //         ),
-                      //       //         Container(
-                      //       //           child: Text(
-                      //       //             'Sell',
-                      //       //             style: TextStyle(
-                      //       //                 color: Colors.white,
-                      //       //                 fontSize: 17,
-                      //       //                 fontWeight: FontWeight.w500),
-                      //       //           ),
-                      //       //         ),
-                      //       //       ],
-                      //       //     ),
-                      //       //   ),
-                      //       // )
-                      //     ],
-                      //   ),
-                      // ),
                       SizedBox(
                         height: 20,
                       ),
@@ -709,7 +502,7 @@ class _WalletState extends State<Wallet> {
               ),
             ),
             Container(
-              height: MediaQuery.of(context).size.height * 0.5,
+              height: MediaQuery.of(context).size.height * 0.47,
               child: RefreshIndicator(
                 child: !_loading
                     ?
@@ -764,10 +557,7 @@ class _WalletState extends State<Wallet> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigation(
-        pageIndex: _selectedPageIndex,
-        selectPage: _selectPage,
-      ),
+     
     );
   }
 }

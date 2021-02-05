@@ -13,7 +13,7 @@ class VerifyEmailAddress extends StatelessWidget {
         backgroundColor: Colors.blue.shade50,
         elevation: 0,
       ),
-      body: PinCodeVerificationScreen(email: user['email'], token: user['token'].toString(),),
+      body: PinCodeVerificationScreen(email: user['email'], token: user['token'].toString(),fromExternal: user['fromExternal'],onVerifySuccess: user['onVerifySuccess'],mailContent: user['mailContent'],mailSubject: user['mailSubject'],),
     );
   }
 }

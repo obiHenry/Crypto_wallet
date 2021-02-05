@@ -11,7 +11,9 @@ import 'package:Crypto_wallet/shared/constants.dart';
 import 'package:Crypto_wallet/services/aaccount_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:math';
 import 'dart:convert';
+import 'package:Crypto_wallet/services/api_services.dart';
 
 class UserProfileBody extends StatefulWidget {
   @override
@@ -24,14 +26,19 @@ class _UserProfileBodyState extends State<UserProfileBody> {
   final DialogService dialog = DialogService();
   bool _loader = false;
   bool _passwordLoader = false;
+  bool _pinLoader = false;
   bool _loading = true;
   bool _isConnected = true;
   bool enableButton = false;
   bool enablePasswordButton = false;
   bool enableBankAccountButton = false;
+  bool enableTransactionPinButton = false;
   String currentPassword = '';
+  String currentPin = '';
   String newPassword = '';
+  String newPin = '';
   String confirmPassword = '';
+  String confirmPin = '';
   String type = 'alnum';
   bool isValidating = false;
   bool isAccountNumber = false;
@@ -40,6 +47,8 @@ class _UserProfileBodyState extends State<UserProfileBody> {
   dynamic code, accountname;
   String bankName;
   bool isChanged = false;
+  dynamic transactionpin;
+  bool _newPinLoader = false;
   // accountName;
   final accountName = TextEditingController();
 
@@ -108,8 +117,11 @@ class _UserProfileBodyState extends State<UserProfileBody> {
       } else {
         if (mounted) {
           setState(() {
-            user = _auth.userData;
+            user =    _auth.userData;
             _loading = false;
+             accountName.text = user['bankAccountName'] != null
+                      ? user['bankAccountName']
+                      : '';
           });
           enableSubmitButton();
         }
@@ -157,6 +169,20 @@ class _UserProfileBodyState extends State<UserProfileBody> {
       } else {
         setState(() {
           enableBankAccountButton = false;
+        });
+      }
+    } else if (from == 'pin') {
+      String currPin = Validators.pin(currentPin);
+      String newPn = Validators.pin(newPin);
+      String cfmPin = Validators.pin(confirmPin);
+
+      if ((currPin == null) && (newPn == null) && (cfmPin == null)) {
+        setState(() {
+          enableTransactionPinButton = true;
+        });
+      } else {
+        setState(() {
+          enableTransactionPinButton = false;
         });
       }
     }
@@ -233,6 +259,21 @@ class _UserProfileBodyState extends State<UserProfileBody> {
                   ),
                   SizedBox(height: 20),
                   bankAccountSettings(),
+                  Divider(
+                    color: kPrimaryColor,
+                    indent: size.width * 0.3 - 80,
+                    endIndent: size.width * 0.3 - 80,
+                  ),
+                  SizedBox(height: 20),
+                  changeTransactionPin(),
+                  Divider(
+                    color: kPrimaryColor,
+                    indent: size.width * 0.3 - 80,
+                    endIndent: size.width * 0.3 - 80,
+                  ),
+                  SizedBox(height: 10),
+                  createNewTransactionPin(),
+                  SizedBox(height: 20),
                 ],
               ),
             ),
@@ -433,52 +474,50 @@ class _UserProfileBodyState extends State<UserProfileBody> {
     );
   }
 
-  Widget passwordSettings() {
+  Widget changeTransactionPin() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         SizedBox(height: 20),
         Text(
-          "Change your password",
+          "Change your Transaction Pin",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 20),
         RoundedPasswordField(
-          hintText: "Current Password",
+          hintText: "Current Pin",
           onChanged: (value) {
-            currentPassword = value;
-            String isValid = Validators.password(value);
+            currentPin = value;
+            String isValid = Validators.pin(value);
             setState(() {
-              enablePasswordButton = false;
+              enableTransactionPinButton = false;
             });
             if (isValid == null) {
-              enableSubmitButton(from: 'password');
-              dialog.getSnackBar(
-                  context, 'This is a valid password', Colors.green);
+              enableSubmitButton(from: 'pin');
+              dialog.getSnackBar(context, 'This is a valid pin', Colors.green);
             } else {
               dialog.getSnackBar(context, isValid, Colors.red);
             }
           },
         ),
         RoundedPasswordField(
-          hintText: "New Password",
+          hintText: "New pin",
           onChanged: (value) {
-            newPassword = value;
-            String isValid = Validators.password(value);
+            newPin = value;
+            String isValid = Validators.pin(value);
             setState(() {
-              enablePasswordButton = false;
+              enableTransactionPinButton = false;
             });
             if (isValid == null) {
-              if (newPassword == confirmPassword) {
-                enableSubmitButton(from: 'password');
-                dialog.getSnackBar(context, 'Passwords okay', Colors.green);
+              if (newPin == confirmPin) {
+                enableSubmitButton(from: 'pin');
+                dialog.getSnackBar(context, 'pin match', Colors.green);
               } else {
-                if (confirmPassword.isNotEmpty) {
-                  dialog.getSnackBar(
-                      context, 'Passwords do not match', Colors.red);
+                if (confirmPin.isNotEmpty) {
+                  dialog.getSnackBar(context, 'Pin do not match', Colors.red);
                 } else {
                   dialog.getSnackBar(
-                      context, 'This is a valid password', Colors.green);
+                      context, 'This is a valid pin', Colors.green);
                 }
               }
             } else {
@@ -487,24 +526,23 @@ class _UserProfileBodyState extends State<UserProfileBody> {
           },
         ),
         RoundedPasswordField(
-          hintText: "Confirm Password",
+          hintText: "Confirm pin",
           onChanged: (value) {
-            confirmPassword = value;
-            String isValid = Validators.password(value);
+            confirmPin = value;
+            String isValid = Validators.pin(value);
             setState(() {
-              enablePasswordButton = false;
+              enableTransactionPinButton = false;
             });
             if (isValid == null) {
-              if (newPassword == confirmPassword) {
-                enableSubmitButton(from: 'password');
-                dialog.getSnackBar(context, 'Passwords okay', Colors.green);
+              if (newPin == confirmPin) {
+                enableSubmitButton(from: 'pin');
+                dialog.getSnackBar(context, 'Pin match', Colors.green);
               } else {
-                if (newPassword.isNotEmpty) {
-                  dialog.getSnackBar(
-                      context, 'Passwords do not match', Colors.red);
+                if (newPin.isNotEmpty) {
+                  dialog.getSnackBar(context, 'Pin do not match', Colors.red);
                 } else {
                   dialog.getSnackBar(
-                      context, 'This is a valid password', Colors.green);
+                      context, 'This is a valid pin', Colors.green);
                 }
               }
             } else {
@@ -512,30 +550,123 @@ class _UserProfileBodyState extends State<UserProfileBody> {
             }
           },
         ),
-        !_passwordLoader
+        !_pinLoader
             ? RoundedButton(
-                text: "CHANGE PASSWORD",
-                press: !enablePasswordButton
+                text: "CHANGE TRANSACTION PIN",
+                press: !enableTransactionPinButton
                     ? null
                     : () async {
                         setState(() {
-                          _passwordLoader = true;
+                          _pinLoader = true;
                         });
-                        dynamic result = await _auth.changePassword(
-                            user['email'],
-                            currentPassword,
-                            newPassword,
-                            confirmPassword);
-                        setState(() {
-                          _passwordLoader = false;
-                        });
-                        if (result['status']) {
-                          dialog.getSnackBar(
-                              context, result['message'], Colors.green);
+
+                        if (user.containsKey('transactionPin')) {
+                          transactionpin = user['transactionPin'];
+                          print('pin $transactionpin');
+                          if (transactionpin == currentPin) {
+                            var rnd = new Random();
+                            var next = rnd.nextDouble() * 1000000;
+                            while (next < 100000) {
+                              next *= 10;
+                            }
+                            print('rndomnumber ${next.toInt()}');
+                            dynamic token = next.toInt();
+                            // dynamic userName = users['userName'].toString();
+                            String email = user['email'].toString();
+                            var userName = email.split('@').take(1);
+                            print(userName.toString());
+                            dynamic result1 = await ApiServices()
+                                .sendEmailVerificationToken(
+                                    userEmail: user['email'],
+                                    subject: 'Transaction pin Reset ',
+                                    content:
+                                        'You requested to change  your transaction pin ,    Use the code below to to change a new transaction pin .   $token ',
+                                    userName: userName);
+                            if (result1['status']) {
+                              dynamic result2 = json.decode(result1['message']);
+
+                              if (result2['status'] == '1') {
+                                print(
+                                    'this is the email result ${result1['message'].toString()}');
+
+                                Navigator.of(context).pushNamed(
+                                    'verification_screen',
+                                    arguments: {
+                                      'email': user['email'],
+                                      'token': token.toString(),
+                                      'fromExternal': true,
+                                      'mailContent':
+                                          'You requested to change  your transaction pin ,    Use the code below to to change a new transaction pin .  ',
+                                      'mailSubject': 'Transaction pin Reset',
+                                      'onVerifySuccess': () async {
+                                        print('success');
+
+                                        dynamic result3 = await AuthService()
+                                            .setTransactionPin(newPin);
+                                        if (result3['status']) {
+                                          Navigator.of(context)
+                                              .pushNamedAndRemoveUntil(
+                                                  'tab_screen',
+                                                  (route) => false);
+                                          dialog.getSnackBar(context,
+                                              result3['message'], Colors.green);
+                                        } else {
+                                          dialog.getSnackBar(context,
+                                              result3['message'], Colors.red);
+                                        }
+                                      },
+                                    });
+                                setState(() {
+                                  _pinLoader = false;
+                                });
+                              } else {
+                                print(result2['response'].toString());
+                                dialog.getSnackBar(context,
+                                    result2['response'].toString(), Colors.red);
+                                setState(() {
+                                  _pinLoader = false;
+                                });
+                              }
+                            } else {
+                              print(result1['message'].toString());
+                              dialog.getSnackBar(
+                                  context, result1['message'], Colors.red);
+                              setState(() {
+                                _pinLoader = false;
+                              });
+                            }
+                          } else {
+                            dialog.getSnackBar(context,
+                                'current pin is not correct', Colors.red);
+                            setState(() {
+                              _pinLoader = false;
+                            });
+                          }
                         } else {
                           dialog.getSnackBar(
-                              context, result['message'], Colors.red);
+                              context,
+                              'you don\'t have any transaction pin set yet',
+                              Colors.red);
+                          setState(() {
+                            _pinLoader = false;
+                          });
                         }
+
+                        // dynamic result = await _auth.changePassword(
+                        //     user['email'],
+                        //     currentPassword,
+                        //     newPassword,
+                        //     confirmPassword);
+                        // setState(() {
+                        //   _pinLoader = false;
+                        // });
+                        // if (result['status']) {
+                        //   dialog.getSnackBar(
+                        //       context, result['message'], Colors.green);
+                        // } else {
+                        //   dialog.getSnackBar(
+                        //       context, result['message'], Colors.red);
+                        // }
                       },
               )
             : Center(
@@ -676,29 +807,286 @@ class _UserProfileBodyState extends State<UserProfileBody> {
         SizedBox(
           height: 10,
         ),
-       !_loader
-            ?  RoundedButton(
-          press: !enableBankAccountButton
-              ? null
-              : () async {
+        !_loader
+            ? RoundedButton(
+                press: !enableBankAccountButton
+                    ? null
+                    : () async {
+                        setState(() {
+                          _loader = true;
+                        });
+
+                        var rnd = new Random();
+                        var next = rnd.nextDouble() * 1000000;
+                        while (next < 100000) {
+                          next *= 10;
+                        }
+                        print('rndomnumber ${next.toInt()}');
+                        dynamic token = next.toInt();
+                        // dynamic userName = users['userName'].toString();
+                        String email = user['email'].toString();
+                        var userName = email.split('@').take(1);
+                        print(userName.toString());
+                        dynamic result1 = await ApiServices()
+                            .sendEmailVerificationToken(
+                                userEmail: user['email'],
+                                subject: 'Bank account detials Reset',
+                                content:
+                                    'You requested to change  your bank account details ,    Use the code below to to change your baank account details .   $token ',
+                                userName: userName);
+                        if (result1['status']) {
+                          dynamic result2 = json.decode(result1['message']);
+
+                          if (result2['status'] == '1') {
+                            print(
+                                'this is the email result ${result1['message'].toString()}');
+
+                            Navigator.of(context)
+                                .pushNamed('verification_screen', arguments: {
+                              'email': user['email'],
+                              'token': token.toString(),
+                              'fromExternal': true,
+                              'mailContent':
+                                  'You requested to change  your bank account details ,    Use the code below to to change your baank account details .    ',
+                              'mailSubject': 'Bank account detials Reset',
+                              'onVerifySuccess': () async {
+                                print('success');
+
+                                dynamic result = await _auth.saveDetails(user);
+                                setState(() {
+                                  _loader = false;
+                                });
+                                if (result['status']) {
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                      'tab_screen', (route) => false);
+                                  dialog.getSnackBar(
+                                      context, result['message'], Colors.green);
+                                  dialog.getSnackBar(context,
+                                      'User data updated', Colors.green);
+                                } else {
+                                  dialog.getSnackBar(
+                                      context, result['message'], Colors.red);
+                                }
+                              }
+                            });
+                          } else {
+                            print(result2['response'].toString());
+                            dialog.getSnackBar(context,
+                                result2['response'].toString(), Colors.red);
+                            setState(() {
+                              _loader = false;
+                            });
+                          }
+                        } else {
+                          print(result1['message'].toString());
+                          dialog.getSnackBar(
+                              context, result1['message'], Colors.red);
+                          setState(() {
+                            _loader = false;
+                          });
+                        }
+                      },
+                text: 'UPDATE ACCOUNT DETAILS',
+              )
+            : Center(
+                child: CircularProgressIndicator(),
+              ),
+      ],
+    );
+  }
+
+  Widget passwordSettings() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        SizedBox(height: 20),
+        Text(
+          "Change Your Password",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 20),
+        RoundedPasswordField(
+          hintText: "Current Password",
+          onChanged: (value) {
+            currentPassword = value;
+            String isValid = Validators.password(value);
+            setState(() {
+              enablePasswordButton = false;
+            });
+            if (isValid == null) {
+              enableSubmitButton(from: 'password');
+              dialog.getSnackBar(
+                  context, 'This is a valid password', Colors.green);
+            } else {
+              dialog.getSnackBar(context, isValid, Colors.red);
+            }
+          },
+        ),
+        RoundedPasswordField(
+          hintText: "New Password",
+          onChanged: (value) {
+            newPassword = value;
+            String isValid = Validators.password(value);
+            setState(() {
+              enablePasswordButton = false;
+            });
+            if (isValid == null) {
+              if (newPassword == confirmPassword) {
+                enableSubmitButton(from: 'password');
+                dialog.getSnackBar(context, 'Passwords okay', Colors.green);
+              } else {
+                if (confirmPassword.isNotEmpty) {
+                  dialog.getSnackBar(
+                      context, 'Passwords do not match', Colors.red);
+                } else {
+                  dialog.getSnackBar(
+                      context, 'This is a valid password', Colors.green);
+                }
+              }
+            } else {
+              dialog.getSnackBar(context, isValid, Colors.red);
+            }
+          },
+        ),
+        RoundedPasswordField(
+          hintText: "Confirm Password",
+          onChanged: (value) {
+            confirmPassword = value;
+            String isValid = Validators.password(value);
+            setState(() {
+              enablePasswordButton = false;
+            });
+            if (isValid == null) {
+              if (newPassword == confirmPassword) {
+                enableSubmitButton(from: 'password');
+                dialog.getSnackBar(context, 'Passwords okay', Colors.green);
+              } else {
+                if (newPassword.isNotEmpty) {
+                  dialog.getSnackBar(
+                      context, 'Passwords do not match', Colors.red);
+                } else {
+                  dialog.getSnackBar(
+                      context, 'This is a valid password', Colors.green);
+                }
+              }
+            } else {
+              dialog.getSnackBar(context, isValid, Colors.red);
+            }
+          },
+        ),
+        !_passwordLoader
+            ? RoundedButton(
+                text: "CHANGE PASSWORD",
+                press: !enablePasswordButton
+                    ? null
+                    : () async {
+                        setState(() {
+                          _passwordLoader = true;
+                        });
+                        dynamic result = await _auth.changePassword(
+                            user['email'],
+                            currentPassword,
+                            newPassword,
+                            confirmPassword);
+                        setState(() {
+                          _passwordLoader = false;
+                        });
+                        if (result['status']) {
+                          dialog.getSnackBar(
+                              context, result['message'], Colors.green);
+                        } else {
+                          dialog.getSnackBar(
+                              context, result['message'], Colors.red);
+                        }
+                      },
+              )
+            : Center(
+                child: CircularProgressIndicator(),
+              ),
+        SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget createNewTransactionPin() {
+    return Column(
+
+      children: [
+         Text(
+          "Create New Transaction Pin",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 10,),
+        !_newPinLoader
+            ? RoundedButton(
+                text: "CREATE NEW PIN",
+                press: () async {
                   setState(() {
-                    _loader = true;
+                    _newPinLoader = true;
                   });
-                  dynamic result = await _auth.saveDetails(user);
-                  setState(() {
-                    _loader = false;
-                  });
-                  if (result['status']) {
-                    dialog.getSnackBar(
-                        context, 'User data updated', Colors.green);
+                  var rnd = new Random();
+                  var next = rnd.nextDouble() * 1000000;
+                  while (next < 100000) {
+                    next *= 10;
+                  }
+                  print('rndomnumber ${next.toInt()}');
+                  dynamic token = next.toInt();
+                  // dynamic userName = users['userName'].toString();
+                  String email = user['email'].toString();
+                  var userName = email.split('@').take(1);
+                  print(userName.toString());
+                  dynamic result1 = await ApiServices().sendEmailVerificationToken(
+                      userEmail: user['email'],
+                      subject: 'Transaction pin Reset ',
+                      content:
+                          'You requested to create  new transaction pin ,    Use the code below  to create a new transaction pin .   $token ',
+                      userName: userName);
+                  if (result1['status']) {
+                    dynamic result2 = json.decode(result1['message']);
+
+                    if (result2['status'] == '1') {
+                      print(
+                          'this is the email result ${result1['message'].toString()}');
+                      setState(() {
+                        _newPinLoader = false;
+                      });
+                      Navigator.of(context)
+                          .pushNamed('verification_screen', arguments: {
+                        'email': user['email'],
+                        'token': token.toString(),
+                        'fromExternal': true,
+                        'mailContent':
+                            'You requested to create  new transaction pin ,    Use the code below to create a new transaction pin . ',
+                        'mailSubject': 'Transaction pin Reset',
+                        'onVerifySuccess': () async {
+                          setState(() {
+                            _newPinLoader = false;
+                          });
+                          print('success');
+
+                          Navigator.pushNamed(context, 'pin_code_screen');
+                        }
+                      });
+                    } else {
+                      print(result2['response'].toString());
+                      dialog.getSnackBar(
+                          context, result2['response'].toString(), Colors.red);
+                      setState(() {
+                        _newPinLoader = false;
+                      });
+                    }
                   } else {
-                    dialog.getSnackBar(context, result['message'], Colors.red);
+                    print(result1['message'].toString());
+                    dialog.getSnackBar(context, result1['message'], Colors.red);
+                    setState(() {
+                      _newPinLoader = false;
+                    });
                   }
                 },
-          text: 'UPDATE ACCOUNT DETAILS',
-        ): Center(
-          child:  CircularProgressIndicator(),
-        ),
+              )
+            : Center(
+                child: CircularProgressIndicator(),
+              ),
       ],
     );
   }

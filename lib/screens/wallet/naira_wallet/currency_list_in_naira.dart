@@ -28,13 +28,25 @@ class _CurrenciesListInNairaState extends State<CurrenciesListInNaira> {
   ApiServices getCurrencies;
   Map<String, bool> loaders = {};
   dynamic naira1, nairaRate;
+  dynamic btcBalance;
+  dynamic ethBalance;
+  dynamic xrpBalance;
+  dynamic bchBalance;
+  dynamic ltcBalance;
+  dynamic trxBalance;
+  dynamic btcBal;
+  dynamic ethBal;
+  dynamic xrpBal;
+  dynamic bchBal;
+  dynamic ltcBal;
+  dynamic trxBal;
 
   final imageList = [
     'assets/images/btc.png',
     'assets/images/etherium.jpg',
     'assets/images/ripple.png',
-    'assets/images/bitcoin_cash.png',
     'assets/images/litcoin.jpg',
+    'assets/images/bitcoin_cash.png',
     'assets/images/tron.jpg',
   ];
 
@@ -64,7 +76,7 @@ class _CurrenciesListInNairaState extends State<CurrenciesListInNaira> {
   @override
   void didChangeDependencies() {
     getCurrencies = Provider.of<ApiServices>(context);
-
+    
     _checkInternet().then((value) {
       if (value) {
         getCurrencies.refreshCurrencies().then((value) async {
@@ -178,6 +190,7 @@ class _CurrenciesListInNairaState extends State<CurrenciesListInNaira> {
                                         arguments: {
                                           'email': users['email'],
                                           'token': token.toString(),
+                                          'fromExternal': false,
                                         });
                                     setState(() {
                                       loaders[index.toString()] = false;
@@ -191,13 +204,32 @@ class _CurrenciesListInNairaState extends State<CurrenciesListInNaira> {
                                 }
                               } else {
                                 if (users.containsKey('userName')) {
+                                  btcBalance = double.parse(users['BTC']);
+                                  ethBalance = double.parse(users['ETH']);
+                                  xrpBalance = double.parse(users['XRP']);
+                                  bchBalance = double.parse(users['BCH']);
+                                  ltcBalance = double.parse(users['LTC']);
+                                  trxBalance = double.parse(users['TRX']);
+                                  btcBal = btcBalance.toStringAsFixed(7);
+                                  ethBal = ethBalance.toStringAsFixed(7);
+                                  xrpBal = xrpBalance.toStringAsFixed(7);
+                                  bchBal = bchBalance.toStringAsFixed(7);
+                                  ltcBal = ltcBalance.toStringAsFixed(7);
+                                  trxBal = trxBalance.toStringAsFixed(7);
+
                                   dynamic balanceList = [
-                                    users['BTC'].toString(),
-                                    users['ETH'].toString(),
-                                    users['XRP'].toString(),
-                                    users['BCH'].toString(),
-                                    users['LTC'].toString(),
-                                    users['TRX'].toString(),
+                                    btcBal ,
+                                    ethBal ,
+                                    xrpBal ,
+                                    bchBal ,
+                                    ltcBal ,
+                                    trxBal ,
+                                    // users['BTC'].toString(),
+                                    // users['ETH'].toString(),
+                                    // users['XRP'].toString(),
+                                    // users['BCH'].toString(),
+                                    // users['LTC'].toString(),
+                                    // users['TRX'].toString(),
                                   ];
 
                                   final balance =
@@ -212,7 +244,6 @@ class _CurrenciesListInNairaState extends State<CurrenciesListInNaira> {
                                         coinBalance: balance,
                                         user: users,
                                         nairaRate: nairaRate,
-                                        
                                       ),
                                     ),
                                   );

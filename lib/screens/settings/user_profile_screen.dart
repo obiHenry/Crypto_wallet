@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:Crypto_wallet/shared/app_colors.dart';
 
 import 'user_profile_body.dart';
 
@@ -28,7 +29,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          backgroundColor: Colors.lightGreen,
+          backgroundColor: blueMain,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
           ),

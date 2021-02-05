@@ -42,31 +42,7 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
   bool isNaira = false;
   bool isCurrency = false;
 
-  // final List<Map<String, Object>> _pages = [
-  //   {
-  //     'page': HomePageScreen(),
-  //     'title': 'HomePage',
-  //   },
-  //   {
-  //     'page': VtuServicesScreen(),
-  //     'title': 'CoinDepositWallets',
-  //   },
-  //   {
-  //     'page': TransactionListScreen(),
-  //     'title': 'News',
-  //   },
-  //   {
-  //     'page': ProfileScreen(),
-  //     'title': 'Profile',
-  //   },
-  // ];
-  int _selectedPageIndex = 0;
 
-  void _selectPage(int index) {
-    setState(() {
-      _selectedPageIndex = index;
-    });
-  }
 
   void _showBottomSheet(Widget widget) {
     showModalBottomSheet(

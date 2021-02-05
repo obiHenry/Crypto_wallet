@@ -7,6 +7,8 @@ import 'package:Crypto_wallet/shared/app_colors.dart';
 import 'package:Crypto_wallet/shared/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:Crypto_wallet/screens/logins_and_signUp/sign_in/login.dart';
+
 import 'dart:math';
 import 'dart:convert';
 
@@ -414,6 +416,7 @@ class _BodyState extends State<Body> {
                                             arguments: {
                                               'email': user['email'],
                                               'token': token.toString(),
+                                              'fromExternal': false,
                                             });
                                         setState(() {
                                           _loader = false;
@@ -491,7 +494,7 @@ class _BodyState extends State<Body> {
                       ),
                       FlatButton(
                           onPressed: () {
-                            Navigator.pushReplacementNamed(context, 'login');
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));
                           },
                           child: Text(
                             'Login',

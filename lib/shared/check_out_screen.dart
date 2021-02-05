@@ -1,4 +1,3 @@
-
 import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/shared/CustomTextStyle.dart';
 import 'package:flutter/material.dart';
@@ -20,24 +19,27 @@ class CheckOutScreen extends StatefulWidget {
   final bankName;
   final accountName;
   final accountNumber;
+  final Function onEditClicked;
 
-  CheckOutScreen(
-      {this.currency,
-      this.address,
-      this.user,
-      this.coinAmount,
-      this.press,
-      this.otherCurrencyAmount,
-      this.chargeInCoin,
-      this.chargeInOtherCurrency,
-      this.coinTotalAmountToSend,
-      this.otherCurrencyTotalAmountToSend,
-      this.symbol,
-      this.text,
-      this.text1,
-      this.bankName,
-      this.accountName,
-      this.accountNumber});
+  CheckOutScreen({
+    this.currency,
+    this.address,
+    this.user,
+    this.coinAmount,
+    this.press,
+    this.otherCurrencyAmount,
+    this.chargeInCoin,
+    this.chargeInOtherCurrency,
+    this.coinTotalAmountToSend,
+    this.otherCurrencyTotalAmountToSend,
+    this.symbol,
+    this.text,
+    this.text1,
+    this.bankName,
+    this.accountName,
+    this.accountNumber,
+    this.onEditClicked,
+  });
   @override
   _CheckOutScreenState createState() => _CheckOutScreenState();
 }
@@ -256,17 +258,22 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Account Details',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.black,
-                        )),
-                    FlatButton(
-                        onPressed: () {},
-                        child: Text(
-                          'Edit/change',
-                          style: TextStyle(color: Colors.purple, fontSize: 17),
-                        ))
+                    widget.accountName != null
+                        ? Text('Account Details',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                            ))
+                        : Container(),
+                    widget.accountName != null
+                        ? FlatButton(
+                            onPressed: widget.onEditClicked,
+                            child: Text(
+                              'Edit/change',
+                              style:
+                                  TextStyle(color: Colors.purple, fontSize: 17),
+                            ))
+                        : Container(),
                   ],
                 ),
               ),
@@ -379,11 +386,33 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           style: CustomTextStyle.textFormFieldSemiBold
               .copyWith(color: Colors.black, fontSize: 12),
         ),
-        Text(
-          value,
-          // '₦ $total',
-          style: CustomTextStyle.textFormFieldMedium
-              .copyWith(color: color, fontSize: 15),
+        Container(
+          width: 190,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: value,
+                    // '₦ $total',
+                    style: CustomTextStyle.textFormFieldMedium.copyWith(
+                      // height: 1.5,
+                      color: color,
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            //                              Text(
+            //   value,
+            //   // '₦ $total',
+            //   style: CustomTextStyle.textFormFieldMedium
+            //       .copyWith(color: color, fontSize: 15),
+            // ),
+          ),
         ),
       ],
     );
