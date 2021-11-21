@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
+import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
+
 class DepositFromBankAccount extends StatefulWidget {
   final currency;
   final nairaBalance;
@@ -51,8 +53,13 @@ class _DepositFromBankAccountState extends State<DepositFromBankAccount> {
   bool isNaira = false;
   bool isCurrency = false;
   ProgressDialog _progressDialog;
+  
+  dynamic date = DateTime.now().millisecondsSinceEpoch;
   @override
   Widget build(BuildContext context) {
+    String oid = date.toString();
+
+
      _progressDialog = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
@@ -190,7 +197,9 @@ class _DepositFromBankAccountState extends State<DepositFromBankAccount> {
                                         nairaMoney.toString(),
                                         'nairaWalletTransactionList',
                                         '',
-                                        true);
+                                        true,
+                                        oid,
+                                        'nairaWalletTransactionList',);
 
                                 if (result2['status']) {
                                   _progressDialog.hide();
@@ -206,7 +215,7 @@ class _DepositFromBankAccountState extends State<DepositFromBankAccount> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        TabScreen()),
+                                                        HomePageScreen()),
                                                 (route) => false);
                                           },
                                         ),

@@ -103,7 +103,7 @@ class _TransactionItemCardState extends State<TransactionItemCard> {
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     color: !widget.transaction['completed']
-                        ? Colors.red
+                        ? Colors.grey
                         : chipColorGreen,
                     borderRadius: BorderRadius.all(
                       Radius.circular(50),

@@ -7,9 +7,14 @@ class ApiServices with ChangeNotifier {
   // List naira = [];
   // List naira = [];
   List currencies = [];
+  List currency = [];
   ApiServices() {
     getCurrency();
   }
+
+
+
+  
 
   Future sendAirtime(mobileNumber, amount, code) async {
     print('this is the$code');
@@ -90,10 +95,16 @@ class ApiServices with ChangeNotifier {
       // Await basically pauses execution until the get() function returns a Response
       http.Response response = await http.get(apiUrl);
       // Using the JSON class to decode the JSON String
-      dynamic currency = await json.decode(response.body);
-      // currencies.add(nairaWallet);
 
-      currencies = currency;
+      currency = await json.decode(response.body);
+      // currencies.add(nairaWallet);
+      currencies.clear();
+      currency.forEach((element) {
+        currencies.add(element);
+      });
+
+      // currencies = currency;
+      print(currencies);
 
       return currencies;
     } catch (e) {
@@ -149,7 +160,7 @@ class ApiServices with ChangeNotifier {
     }
   }
 
-   Future getSpectranetBundles() async {
+  Future getSpectranetBundles() async {
     List bundles = [];
     try {
       var apiUrl =
@@ -220,16 +231,17 @@ class ApiServices with ChangeNotifier {
     }
   }
 
-  Future sendCableSub(biller, packageId, smartCardNumber) async {
+  Future sendCableSub(
+      biller, smartCardNumber, userEmail, userPhoneNumber, amount) async {
     print('this is the account number$biller');
-    print('this is the bank$packageId');
+    print('this is the bank$amount');
     print('this is th smart no $smartCardNumber');
     print('this is cable');
     dynamic txRef = DateTime.now().millisecondsSinceEpoch;
     print(txRef);
     try {
       var apiUrl =
-          'https://api.skyinvest.io/cable/cablesubscription?apiKey=8293ui423kjsadhas9oujwasd&cabletv=$biller&package=$packageId&smartno=$smartCardNumber';
+          'https://api.skyinvest.io/cable/cablesubscription?cable=$biller&customer_id=234463452342&apiKey=8293ui423kjsadhas9oujwasd&amount=$amount&smartcard_no=$smartCardNumber&email=$userEmail&phone=$userPhoneNumber';
 
       http.Response response = await http.get(apiUrl);
 

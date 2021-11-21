@@ -11,8 +11,10 @@ import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/shared/outLined_box.dart';
 import 'package:Crypto_wallet/shared/bills_check_out_screen.dart';
 import 'dart:convert';
-
+import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+
+import '../vtu_services_screen.dart';
 
 class Body extends StatefulWidget {
   final List walletList;
@@ -640,14 +642,16 @@ class _BodyState extends State<Body> {
                             } else {
                               _progressDialog.show();
                               dynamic result = await ApiServices().sendCableSub(
-                                  biller, packageCode, smartCardNumber);
+                                   biller,  smartCardNumber,user['email'], user['mobile'], amount);
 
                               if (result['status'] = true) {
                                 dynamic rep = result['message'].toString();
                                 dynamic name = json.decode(rep);
 
-                                if (name['status'] == 'ORDER_RECEIVED') {
-                                  print(name['status'].toString());
+                                if (name['status'] == 'ok') {
+                                              dynamic response = name['data'];
+                                              dynamic tx_ref = response['ref'];
+                                              print(response);
 
                                   dynamic nairaBalance =
                                       double.parse(balance) - naira;
@@ -664,7 +668,9 @@ class _BodyState extends State<Body> {
                                             nairaAmount.text,
                                             'nairaWalletTransactionList',
                                             symbol,
-                                            true);
+                                            true,
+                                            tx_ref,
+                                            'nairaWalletTransactionList',);
                                     if (result2['status']) {
                                       _progressDialog.hide();
                                       Navigator.pushAndRemoveUntil(
@@ -681,7 +687,7 @@ class _BodyState extends State<Body> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            TabScreen()),
+                                                            VtuServicesScreen()),
                                                     (route) => false);
                                               },
                                             ),
@@ -747,14 +753,16 @@ class _BodyState extends State<Body> {
                             } else {
                               _progressDialog.show();
                               dynamic result = await ApiServices().sendCableSub(
-                                  biller, packageCode, smartCardNumber);
+                                  biller,  smartCardNumber,user['email'], user['mobile'], amount);
 
                               if (result['status'] = true) {
                                 dynamic rep = result['message'].toString();
                                 dynamic name = json.decode(rep);
 
-                                if (name['status'] == 'ORDER_RECEIVED') {
-                                  print(name['status'].toString());
+                                 if (name['status'] == 'ok') {
+                                              dynamic response1 = name['data'];
+                                              dynamic tx_ref = response1['ref'];
+                                              print(response1);
                                   dynamic coinBalance =
                                       double.parse(balance) - coin;
                                   dynamic response = await AuthService()
@@ -770,7 +778,9 @@ class _BodyState extends State<Body> {
                                             nairaAmount.text,
                                             "${symbol1}WalletTransactionList",
                                             symbol1,
-                                            true);
+                                            true,
+                                            tx_ref,
+                                            "${symbol1}WalletTransactionList",);
                                     if (response1['status']) {
                                       _progressDialog.hide();
                                       Navigator.pushAndRemoveUntil(
@@ -787,7 +797,7 @@ class _BodyState extends State<Body> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            TabScreen()),
+                                                            VtuServicesScreen()),
                                                     (route) => false);
                                               },
                                             ),

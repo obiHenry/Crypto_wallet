@@ -12,6 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import '../../../shared/shared.dart';
 import 'naira_deposit_check_out.dart';
+import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
 
 class CoinDepositWallet extends StatefulWidget {
   final currency;
@@ -72,8 +73,11 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
 
   ProgressDialog _progressDialog;
 
+  dynamic date = DateTime.now().millisecondsSinceEpoch;
+
   @override
   Widget build(BuildContext context) {
+    String oid = date.toString();
     _progressDialog = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
@@ -114,7 +118,7 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
               decoration: BoxDecoration(
                 color: yellowEndWallet,
                 gradient: LinearGradient(
-                  colors: [yellowStartWallet, yellowEndWallet],
+                  colors: [blueMain, blueMain],
                   begin: Alignment.bottomCenter,
                   end: Alignment(0.6, 0.3),
                 ),
@@ -515,7 +519,7 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
                                   dynamic remainedCoinBalance =
                                       coinBalance - (coinToSend + chargeInCoin);
                                   String remainedCoinWalletBalance =
-                                      remainedCoinBalance.toStringAsFixed(2);
+                                      remainedCoinBalance.toStringAsFixed(7);
                                   print(remainedCoinWalletBalance);
                                   dynamic users =
                                       await AuthService().getUserDataById();
@@ -547,6 +551,8 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
                                       '${widget.currency['currency']}WalletTransactionList',
                                       '${widget.currency['currency']}',
                                       true,
+                                      oid,
+                                      '${widget.currency['currency']}WalletTransactionList'
                                     );
                                     if (result1['status']) {
                                       dynamic result2 = await AuthService()
@@ -558,7 +564,9 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
                                               nairaToSend.toString(),
                                               'nairaWalletTransactionList',
                                               '${widget.currency['currency']}',
-                                              true);
+                                              true,
+                                              oid,
+                                              'nairaWalletTransactionList',);
                                       if (result2['status']) {
                                         _progressDialog.hide();
                                         Navigator.pushAndRemoveUntil(
@@ -575,7 +583,7 @@ class _CoinDepositWalletState extends State<CoinDepositWallet> {
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>
-                                                              TabScreen()),
+                                                              HomePageScreen()),
                                                       (route) => false);
                                                 },
                                               ),

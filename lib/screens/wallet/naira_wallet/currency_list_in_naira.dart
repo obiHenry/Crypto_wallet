@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:Crypto_wallet/shared/app_colors.dart';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/api_services.dart';
 import 'package:Crypto_wallet/screens/wallet/naira_wallet/currencies_in_naira_card_item.dart';
@@ -82,8 +83,9 @@ class _CurrenciesListInNairaState extends State<CurrenciesListInNaira> {
         getCurrencies.refreshCurrencies().then((value) async {
           if (mounted) {
             naira1 = await AuthService().getNairaRate();
+            dynamic rate = double.parse(naira1['buyRate']);
 
-            nairaRate = (naira1['buy_rate']).toStringAsFixed(1);
+            nairaRate = (rate).toStringAsFixed(1);
             print(nairaRate);
             setState(() {
               // currencies = nairaWallet;

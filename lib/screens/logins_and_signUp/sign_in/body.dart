@@ -1,8 +1,10 @@
+import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:Crypto_wallet/services/api_services.dart';
 import 'package:Crypto_wallet/Screens/logins_and_signUp/password_reset/pass_reset_screen.dart';
+import 'package:Crypto_wallet/screens/logins_and_signUp/set_up/set_up_screen.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../shared/shared.dart';
@@ -283,73 +285,95 @@ class _BodyState extends State<Body> {
                                   if (result['status']) {
                                     dynamic user =
                                         await _auth.getUserDataById();
-                                    var rnd = new Random();
-                                    var next = rnd.nextDouble() * 1000000;
-                                    while (next < 100000) {
-                                      next *= 10;
-                                    }
-                                    print('rndomnumber ${next.toInt()}');
-                                    dynamic token = next.toInt();
-                                    // dynamic userName = user['userName'].toString();
-                                    // String email = user['email'].toString();
-                                    var userName = email.split('@').take(1);
-                                    // print(userName.toString());
-                                    dynamic result1 = await ApiServices()
-                                        .sendEmailVerificationToken(
-                                            userEmail: user['email'],
-                                            subject:
-                                                'Email address verification',
-                                            content:
-                                                'Verify your email for Veloce,    Use the code below to verify  your email.   $token ',
-                                            userName: userName);
-                                    if (result1['status']) {
-                                      dynamic result2 =
-                                          json.decode(result1['message']);
 
-                                      if (result2['status'] == '1') {
-                                        print(
-                                            'this is the email result ${result1['message'].toString()}');
+                                    // if (user.containsKey('verified')) {
+                                    bool verified = user['verified'];
+                                    if (!verified) {
+                                      var rnd = new Random();
+                                      var next = rnd.nextDouble() * 1000000;
+                                      while (next < 100000) {
+                                        next *= 10;
+                                      }
+                                      print('rndomnumber ${next.toInt()}');
+                                      dynamic token = next.toInt();
+                                      // dynamic userName = users['userName'].toString();
+                                      String email = user['email'].toString();
+                                      var userName = email.split('@').take(1);
+                                      print(userName.toString());
+                                      dynamic result1 = await ApiServices()
+                                          .sendEmailVerificationToken(
+                                              userEmail: user['email'],
+                                              subject:
+                                                  'Email address verification',
+                                              content:
+                                                  'Verify your email for Veloce,    Use the code below to verify  your email.   $token ',
+                                              userName: userName);
+                                      if (result1['status']) {
+                                        dynamic result2 =
+                                            json.decode(result1['message']);
 
-                                        Navigator.of(context).pushNamed(
-                                            'verification_screen',
-                                            arguments: {
-                                              'email': user['email'],
-                                              'token': token.toString(),
-                                            });
+                                        if (result2['status'] == '1') {
+                                          print(
+                                              'this is the email result ${result1['message'].toString()}');
+
+                                          Navigator.of(context).pushNamed(
+                                              'verification_screen',
+                                              arguments: {
+                                                'email': user['email'],
+                                                'token': token.toString(),
+                                                'fromExternal': false,
+                                              });
+                                          setState(() {
+                                            _loader = false;
+                                          });
+                                        } else {
+                                          print(result2['response'].toString());
+                                          getSnackBar(
+                                              result2['response'].toString(),
+                                              Colors.red);
+                                          setState(() {
+                                            _loader = false;
+                                          });
+                                        }
+                                      } else {
+                                        print(result1['message'].toString());
+                                        getSnackBar(
+                                            result1['message'], Colors.red);
                                         setState(() {
                                           _loader = false;
                                         });
-                                      } else {
-                                        getSnackBar(
-                                          result2['response'].toString(),
-                                          Colors.red,
+                                      }
+                                    } else {
+                                      if (user.containsKey('userName')) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => TabScreen(),
+                                          ),
                                         );
                                         setState(() {
                                           _loader = false;
                                         });
-                                        print(result2['response'].toString());
+                                      } else {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SetUpScreen()));
+                                        // Navigator.pushNamed(context, 'set_up');
+                                        setState(() {
+                                          _loader = false;
+                                        });
                                       }
-                                    } else {
-                                      getSnackBar(
-                                          result1['message'], Colors.red);
-                                      print(result1['message'].toString());
-                                      setState(() {
-                                        _loader = false;
-                                      });
                                     }
+                                    // }
                                   } else {
-                                    String msg = (result['message'] != null &&
-                                            result['message'].isNotEmpty)
-                                        ? result['message']
-                                        : 'An unknown error occured; retry';
-                                    getSnackBar(
-                                      msg,
-                                      Colors.red,
-                                    );
+                                     setState(() {
+                                          _loader = false;
+                                        });
+                                    print(result['message'].toString());
+                                    getSnackBar(result['message'], Colors.red);
                                   }
-
-                                  // Navigator.pushNamedAndRemoveUntil(context, 'bitcoin',
-                                  //     (Route<dynamic> route) => false);
                                 },
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
@@ -403,7 +427,10 @@ class _BodyState extends State<Body> {
                 Container(
                   child: InkWell(
                       onTap: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => PassReset()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PassReset()));
                       },
                       child:
                           Text('Forgot your password?', style: forgotPassword)),

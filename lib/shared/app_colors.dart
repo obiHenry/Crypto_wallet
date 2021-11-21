@@ -40,7 +40,8 @@ const lightBlue1 = const Color(0xffcee7c9);
 // #e2f4e2
 const lightgreen = const Color(0xffe2f4e2);
 const buttonColor = const Color(0xff0e7a0d);
-const textFieldBackground = const Color(0xffe2f4e2);
+const textFieldBackground =  Color(0xffD3D3D3);
+
 
 
  const Color background = Color(0XFFFFFFFF);

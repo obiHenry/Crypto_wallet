@@ -152,7 +152,7 @@ class _WalletState extends State<Wallet> {
               decoration: BoxDecoration(
                 color: yellowEndWallet,
                 gradient: LinearGradient(
-                  colors: [yellowStartWallet, yellowEndWallet],
+                  colors: [blueMain, blueMain],
                   begin: Alignment.bottomCenter,
                   end: Alignment(0.6, 0.3),
                 ),
@@ -369,7 +369,7 @@ class _WalletState extends State<Wallet> {
                             height: 35,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                color: blueMain,
+                                color: Colors.white,
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(50),
                                 ),
@@ -377,7 +377,7 @@ class _WalletState extends State<Wallet> {
                             child: Text(
                               'Buy',
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: blueMain,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500),
                             ),

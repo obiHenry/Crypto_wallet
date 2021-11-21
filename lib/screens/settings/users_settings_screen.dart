@@ -37,8 +37,8 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
         return Container(
             // padding: EdgeInsets.symmetric(vertical: 20, horizontal: 60),
             child: LogoutAlertDialog(
-          // yesPressed: yesPressed,
-        ));
+                // yesPressed: yesPressed,
+                ));
       },
     );
   }
@@ -186,13 +186,17 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
                         builder: (context) => UserProfileScreen()));
               },
               child: Container(
-                height: 85,
-                child: Card(
-                  elevation: 0,
-                  // decoration: ,
+                
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                height: 80,
+                // child: Card(
+                //   elevation: 0,
+                //   // decoration: ,
                   margin: EdgeInsets.symmetric(horizontal: 15),
                   // height: 80,
-                  color: Colors.white,
+                  // color: Colors.white,
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -227,7 +231,7 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
                       ],
                     ),
                   ),
-                ),
+                // ),
               ),
             ),
             SizedBox(
@@ -238,13 +242,13 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
                 // Navigator.pushNamed(context, 'navigation');
               },
               child: Container(
-                height: 85,
-                child: Card(
-                  elevation: 0,
-                  // decoration: ,
+                 decoration: BoxDecoration(
+                  color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                height: 80,
                   margin: EdgeInsets.symmetric(horizontal: 15),
                   // height: 80,
-                  color: Colors.white,
+                  // color: Colors.white,
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -278,7 +282,7 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
                   ),
                 ),
               ),
-            ),
+            // ),
             SizedBox(height: 15),
             Visibility(
               visible: user == null ? false : true,
@@ -286,43 +290,43 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
                 onTap: () {
                   _showDialogueBox(
 
-                  //   yesPressed: () async {
-                  //   Map res = await _auth.signOut();
+                      //   yesPressed: () async {
+                      //   Map res = await _auth.signOut();
 
-                  //   if (res['status']) {
-                  //     Fluttertoast.showToast(
-                  //         msg: 'You are logged out',
-                  //         toastLength: Toast.LENGTH_LONG,
-                  //         gravity: ToastGravity.BOTTOM,
-                  //         backgroundColor: Colors.black,
-                  //         textColor: Colors.white);
-                  //     setState(() {
-                  //       userIsNull = true;
-                  //     });
-                  //     Navigator.of(context).pop();
-                  //   } else {
-                  //     Fluttertoast.showToast(
-                  //         msg: res['message'].toString(),
-                  //         toastLength: Toast.LENGTH_LONG,
-                  //         gravity: ToastGravity.BOTTOM,
-                  //         backgroundColor: Colors.black,
-                  //         textColor: Colors.white);
-                  //     setState(() {
-                  //       userIsNull = false;
-                  //     });
-                  //     Navigator.of(context).pop();
-                  //   }
-                  // }
-                  );
+                      //   if (res['status']) {
+                      //     Fluttertoast.showToast(
+                      //         msg: 'You are logged out',
+                      //         toastLength: Toast.LENGTH_LONG,
+                      //         gravity: ToastGravity.BOTTOM,
+                      //         backgroundColor: Colors.black,
+                      //         textColor: Colors.white);
+                      //     setState(() {
+                      //       userIsNull = true;
+                      //     });
+                      //     Navigator.of(context).pop();
+                      //   } else {
+                      //     Fluttertoast.showToast(
+                      //         msg: res['message'].toString(),
+                      //         toastLength: Toast.LENGTH_LONG,
+                      //         gravity: ToastGravity.BOTTOM,
+                      //         backgroundColor: Colors.black,
+                      //         textColor: Colors.white);
+                      //     setState(() {
+                      //       userIsNull = false;
+                      //     });
+                      //     Navigator.of(context).pop();
+                      //   }
+                      // }
+                      );
                 },
                 child: Container(
-                  height: 85,
-                  child: Card(
-                    elevation: 0,
-                    // decoration: ,
+                   decoration: BoxDecoration(
+                  color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                height: 80,
                     margin: EdgeInsets.symmetric(horizontal: 15),
                     // height: 80,
-                    color: Colors.white,
+                    // color: Colors.white,
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -360,7 +364,7 @@ class _UsersSettingsScreenState extends State<UsersSettingsScreen> {
                   ),
                 ),
               ),
-            ),
+            // ),
           ],
         ),
       ),

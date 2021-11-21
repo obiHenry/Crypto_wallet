@@ -11,10 +11,12 @@ import 'package:Crypto_wallet/services/api_services.dart';
 import 'package:Crypto_wallet/shared/outLined_box.dart';
 import 'package:Crypto_wallet/shared/bills_check_out_screen.dart';
 import 'dart:convert';
-import 'package:Crypto_wallet/services/price_formatter.dart';
+import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
 import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/account_pin_code_setup/confirm_pin_code_screen.dart';
 
 import 'package:progress_dialog/progress_dialog.dart';
+
+import '../vtu_services_screen.dart';
 
 class Body extends StatefulWidget {
   final List walletList;
@@ -835,7 +837,6 @@ class _BodyState extends State<Body> {
                 }
               },
 
-             
               continuePressed: !enableButton
                   ? null
                   : () async {
@@ -844,8 +845,9 @@ class _BodyState extends State<Body> {
                       dynamic naira = double.parse(nairaAmount.text);
                       dynamic user = await AuthService().getUserDataById();
                       _showBottomSheet(BillsCheckOutScreen(
-                        text:isSpectranet? 'You are about to Subscribe your spectranet with $packageName package  for \₦${nairaAmount.text}':
-                            'You are about to Sub $phoneNumber with $packageName for \₦${nairaAmount.text}',
+                        text: isSpectranet
+                            ? 'You are about to Subscribe your spectranet with $packageName package  for \₦${nairaAmount.text}'
+                            : 'You are about to Sub $phoneNumber with $packageName for \₦${nairaAmount.text}',
                         text1: !isNairaWallet
                             ? 'Exchange rate \$1 \~ $nairaRate1'
                             : 'Exchange rate \$1 \~ $nairaRate',
@@ -927,16 +929,20 @@ class _BodyState extends State<Body> {
                                                               .toString(),
                                                           'naira');
                                               if (result1['status']) {
-                                                dynamic result2 = await AuthService()
-                                                    .updateTransactionList(
-                                                        "Smile data purchase",
-                                                        'Naira Wallet',
-                                                        'Smartno: $phoneNumber $packageName',
-                                                        currencyAmount.text,
-                                                        nairaAmount.text,
-                                                        'nairaWalletTransactionList',
-                                                        symbol,
-                                                        true);
+                                                dynamic result2 =
+                                                    await AuthService()
+                                                        .updateTransactionList(
+                                                  "Smile data purchase",
+                                                  'Naira Wallet',
+                                                  'Smartno: $phoneNumber $packageName',
+                                                  currencyAmount.text,
+                                                  nairaAmount.text,
+                                                  'nairaWalletTransactionList',
+                                                  symbol,
+                                                  true,
+                                                  tx_ref,
+                                                  'nairaWalletTransactionList',
+                                                );
                                                 if (result2['status']) {
                                                   _progressDialog.hide();
                                                   Navigator.pushAndRemoveUntil(
@@ -954,7 +960,7 @@ class _BodyState extends State<Body> {
                                                                 MaterialPageRoute(
                                                                     builder:
                                                                         (context) =>
-                                                                            TabScreen()),
+                                                                            VtuServicesScreen()),
                                                                 (route) =>
                                                                     false);
                                                           },
@@ -1059,6 +1065,7 @@ class _BodyState extends State<Body> {
 
                                             if (name['status'] == 'ok') {
                                               dynamic response = name['data'];
+                                              dynamic tx_ref = response['ref'];
                                               serialNumber =
                                                   response['reference_code'];
                                               pin = response['pin'];
@@ -1076,16 +1083,20 @@ class _BodyState extends State<Body> {
                                                               .toString(),
                                                           'naira');
                                               if (result1['status']) {
-                                                dynamic result2 = await AuthService()
-                                                    .updateTransactionList(
-                                                        "Spectranet data purchase",
-                                                        'Naira Wallet',
-                                                        '$biller package: $packageName pin: $pin',
-                                                        currencyAmount.text,
-                                                        nairaAmount.text,
-                                                        'nairaWalletTransactionList',
-                                                        symbol,
-                                                        true);
+                                                dynamic result2 =
+                                                    await AuthService()
+                                                        .updateTransactionList(
+                                                  "Spectranet data purchase",
+                                                  'Naira Wallet',
+                                                  '$biller package: $packageName pin: $pin',
+                                                  currencyAmount.text,
+                                                  nairaAmount.text,
+                                                  'nairaWalletTransactionList',
+                                                  symbol,
+                                                  true,
+                                                  tx_ref,
+                                                  'nairaWalletTransactionList',
+                                                );
                                                 if (result2['status']) {
                                                   _progressDialog.hide();
                                                   Navigator.pushAndRemoveUntil(
@@ -1105,7 +1116,7 @@ class _BodyState extends State<Body> {
                                                                 MaterialPageRoute(
                                                                     builder:
                                                                         (context) =>
-                                                                            TabScreen()),
+                                                                            VtuServicesScreen()),
                                                                 (route) =>
                                                                     false);
                                                           },
@@ -1218,16 +1229,20 @@ class _BodyState extends State<Body> {
                                                               .toString(),
                                                           'naira');
                                               if (result1['status']) {
-                                                dynamic result2 = await AuthService()
-                                                    .updateTransactionList(
-                                                        "Data purchase",
-                                                        'Naira Wallet',
-                                                        '$packageName mobile: $phoneNumber',
-                                                        currencyAmount.text,
-                                                        nairaAmount.text,
-                                                        'nairaWalletTransactionList',
-                                                        symbol,
-                                                        true);
+                                                dynamic result2 =
+                                                    await AuthService()
+                                                        .updateTransactionList(
+                                                  "Data purchase",
+                                                  'Naira Wallet',
+                                                  '$packageName mobile: $phoneNumber',
+                                                  currencyAmount.text,
+                                                  nairaAmount.text,
+                                                  'nairaWalletTransactionList',
+                                                  symbol,
+                                                  true,
+                                                  tx_ref,
+                                                  'nairaWalletTransactionList',
+                                                );
                                                 if (result2['status']) {
                                                   _progressDialog.hide();
                                                   Navigator.pushAndRemoveUntil(
@@ -1245,7 +1260,7 @@ class _BodyState extends State<Body> {
                                                                 MaterialPageRoute(
                                                                     builder:
                                                                         (context) =>
-                                                                            TabScreen()),
+                                                                            VtuServicesScreen()),
                                                                 (route) =>
                                                                     false);
                                                           },
@@ -1371,7 +1386,7 @@ class _BodyState extends State<Body> {
 
                                             if (name['status'] == 'ok') {
                                               dynamic response = name['data'];
-                                              dynamic tx_fee = response['ref'];
+                                              dynamic tx_ref = response['ref'];
 
                                               print(response);
 
@@ -1384,16 +1399,20 @@ class _BodyState extends State<Body> {
                                                               .toString(),
                                                           'naira');
                                               if (result1['status']) {
-                                                dynamic result2 = await AuthService()
-                                                    .updateTransactionList(
-                                                        "Smile data purchase",
-                                                        'Naira Wallet',
-                                                        '$packageName smartno: $phoneNumber',
-                                                        currencyAmount.text,
-                                                        nairaAmount.text,
-                                                        'nairaWalletTransactionList',
-                                                        symbol,
-                                                        true);
+                                                dynamic result2 =
+                                                    await AuthService()
+                                                        .updateTransactionList(
+                                                  "Smile data purchase",
+                                                  'Naira Wallet',
+                                                  '$packageName smartno: $phoneNumber',
+                                                  currencyAmount.text,
+                                                  nairaAmount.text,
+                                                  "${symbol1}WalletTransactionList",
+                                                  symbol1,
+                                                  true,
+                                                  tx_ref,
+                                                  "${symbol1}WalletTransactionList",
+                                                );
                                                 if (result2['status']) {
                                                   _progressDialog.hide();
                                                   Navigator.pushAndRemoveUntil(
@@ -1411,7 +1430,7 @@ class _BodyState extends State<Body> {
                                                                 MaterialPageRoute(
                                                                     builder:
                                                                         (context) =>
-                                                                            TabScreen()),
+                                                                            VtuServicesScreen()),
                                                                 (route) =>
                                                                     false);
                                                           },
@@ -1516,6 +1535,7 @@ class _BodyState extends State<Body> {
 
                                             if (name['status'] == 'ok') {
                                               dynamic response = name['data'];
+                                              dynamic tx_ref = name['ref'];
                                               serialNumber =
                                                   response['reference_code'];
                                               pin = response['pin'];
@@ -1533,16 +1553,20 @@ class _BodyState extends State<Body> {
                                                               .toString(),
                                                           'naira');
                                               if (result1['status']) {
-                                                dynamic result2 = await AuthService()
-                                                    .updateTransactionList(
-                                                        "Spectranet data purchase",
-                                                        'Naira Wallet',
-                                                        '$biller, package: $packageName pin: $pin',
-                                                        currencyAmount.text,
-                                                        nairaAmount.text,
-                                                        'nairaWalletTransactionList',
-                                                        symbol,
-                                                        true);
+                                                dynamic result2 =
+                                                    await AuthService()
+                                                        .updateTransactionList(
+                                                  "Spectranet data purchase",
+                                                  'Naira Wallet',
+                                                  '$biller, package: $packageName pin: $pin',
+                                                  currencyAmount.text,
+                                                  nairaAmount.text,
+                                                  "${symbol1}WalletTransactionList",
+                                                  symbol1,
+                                                  true,
+                                                  tx_ref,
+                                                  "${symbol1}WalletTransactionList",
+                                                );
                                                 if (result2['status']) {
                                                   _progressDialog.hide();
                                                   Navigator.pushAndRemoveUntil(
@@ -1562,7 +1586,7 @@ class _BodyState extends State<Body> {
                                                                 MaterialPageRoute(
                                                                     builder:
                                                                         (context) =>
-                                                                            TabScreen()),
+                                                                            VtuServicesScreen()),
                                                                 (route) =>
                                                                     false);
                                                           },
@@ -1690,18 +1714,20 @@ class _BodyState extends State<Body> {
                                                                     symbol1);
                                                         if (response[
                                                             'status']) {
-                                                          dynamic response1 = await AuthService()
-                                                              .updateTransactionList(
-                                                                  'Data purchase',
-                                                                  '$symbol1 Wallet',
-                                                                  '$packageName mobile: $phoneNumber',
-                                                                  currencyAmount
-                                                                      .text,
-                                                                  nairaAmount
-                                                                      .text,
-                                                                  "${symbol1}WalletTransactionList",
-                                                                  symbol1,
-                                                                  true);
+                                                          dynamic response1 =
+                                                              await AuthService()
+                                                                  .updateTransactionList(
+                                                            'Data purchase',
+                                                            '$symbol1 Wallet',
+                                                            '$packageName mobile: $phoneNumber',
+                                                            currencyAmount.text,
+                                                            nairaAmount.text,
+                                                            "${symbol1}WalletTransactionList",
+                                                            symbol1,
+                                                            true,
+                                                            tx_ref,
+                                                            "${symbol1}WalletTransactionList",
+                                                          );
                                                           if (response1[
                                                               'status']) {
                                                             _progressDialog
@@ -1721,7 +1747,7 @@ class _BodyState extends State<Body> {
                                                                             () {
                                                                           Navigator.pushAndRemoveUntil(
                                                                               context,
-                                                                              MaterialPageRoute(builder: (context) => TabScreen()),
+                                                                              MaterialPageRoute(builder: (context) => VtuServicesScreen()),
                                                                               (route) => false);
                                                                         },
                                                                       ),

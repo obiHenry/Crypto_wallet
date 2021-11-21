@@ -32,7 +32,7 @@ class ButtonText extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [yellowStart, yellowEnd],
+                colors: [blueMain, blueMain],
               ),
             ),
             child: Center(

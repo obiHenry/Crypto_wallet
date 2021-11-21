@@ -4,7 +4,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class AuthService with ChangeNotifier {
-
   String userId = FirebaseAuth.instance.currentUser != null
       ? FirebaseAuth.instance.currentUser.uid
       : '';
@@ -127,10 +126,12 @@ class AuthService with ChangeNotifier {
       bool status,
       String bankName,
       String accountName,
-      String accountNumber) async {
+      String accountNumber,
+      bool isBet) async {
     dynamic date = DateTime.now().millisecondsSinceEpoch;
     String oid = date.toString();
     userId = FirebaseAuth.instance.currentUser.uid;
+    // isBet = false;
     try {
       await _dbRef
           .child('order')
@@ -147,10 +148,12 @@ class AuthService with ChangeNotifier {
         'phoneNumber': phoneNumber,
         'completed': status,
         'uid': userId,
-        'bankName': bankName,
-        'accountName': accountName,
-        'accountNumber': accountNumber,
+        isBet ? 'betAccountType' :'bankName': bankName,
+        isBet ? 'betAccountUserName' : 'accountName': accountName,
+        isBet ? 'betAccountUserId' :'betAccountUserId': accountNumber,
+        'isBet': isBet,
         'createdAt': DateTime.now().toString(),
+        'orderType': orderType,
       });
 
       return {'status': true, 'message': 'order updated'};
@@ -245,15 +248,18 @@ class AuthService with ChangeNotifier {
     String walletTransactionList,
     String currency,
     bool status,
-    // String transactionId,
+    String transactionId,
+    String walletType,
   ) async {
     userId = FirebaseAuth.instance.currentUser.uid;
+    dynamic date = DateTime.now().millisecondsSinceEpoch;
+    String oid = date.toString();
     try {
       await _dbRef
           .child('TransactionList')
           .child(userId)
           .child('$walletTransactionList')
-          .child(DateTime.now().millisecondsSinceEpoch.toString())
+          .child('$transactionId')
           .update({
         'TransactionType': sentOrRecieved,
         'from': from,
@@ -264,7 +270,8 @@ class AuthService with ChangeNotifier {
         'createdAt': DateTime.now().toString(),
         'completed': status,
         'uid': userId,
-        // 'transId': transactionId,
+        'transId': transactionId,
+        'walletType': walletType,
       });
       return {'status': true, 'message': 'transaction updated'};
 
@@ -329,10 +336,10 @@ class AuthService with ChangeNotifier {
   Future getNairaRate() async {
     try {
       dynamic naira1 = await _dbRef
-          .child('naira_equivalence')
+          .child('nairaBuyAndSellRate')
           .once()
           .then((DataSnapshot snapshot) {
-           naira = snapshot.value;
+        naira = snapshot.value;
         print(naira['current-price']);
         return naira;
       });
@@ -351,7 +358,7 @@ class AuthService with ChangeNotifier {
       await _dbRef.child('Users').child(userId).update({
         'verifiedAt': time,
         'verified': true,
-        'updatedAT': time,
+        'updatedAt': time,
       });
       return {'status': true, 'message': 'user Verified'};
     } catch (e) {
@@ -366,11 +373,13 @@ class AuthService with ChangeNotifier {
     try {
       // await setUserData();
       await _dbRef.child('Users').child(userId).update({
-        
         'transactionPin': transactionPin,
-        'updatedAT': time,
+        'updatedAt': time,
       });
-      return {'status': true, 'message': 'user transaction pin stored successfully'};
+      return {
+        'status': true,
+        'message': 'user transaction pin stored successfully'
+      };
     } catch (e) {
       print(e.toString());
       return {'status': false, 'message': e.message.toString()};

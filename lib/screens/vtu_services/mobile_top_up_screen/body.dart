@@ -1,4 +1,4 @@
-import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
+
 import 'package:Crypto_wallet/services/dialog_service.dart';
 import 'package:Crypto_wallet/services/api_services.dart';
 import 'package:Crypto_wallet/services/validator.dart';
@@ -11,9 +11,11 @@ import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/shared/outLined_box.dart';
 import 'package:Crypto_wallet/shared/bills_check_out_screen.dart';
 import 'dart:convert';
-
+import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/account_pin_code_setup/confirm_pin_code_screen.dart';
+
+import '../vtu_services_screen.dart';
 
 class Body extends StatefulWidget {
   final List walletList;
@@ -667,7 +669,8 @@ class _BodyState extends State<Body> {
                                                     'nairaWalletTransactionList',
                                                     symbol,
                                                     true,
-                                                    // txRef
+                                                    txRef,
+                                                    'nairaWalletTransactionList',
                                                   );
                                                   if (result2['status']) {
                                                     _progressDialog.hide();
@@ -686,7 +689,7 @@ class _BodyState extends State<Body> {
                                                                       context,
                                                                       MaterialPageRoute(
                                                                           builder: (context) =>
-                                                                              TabScreen()),
+                                                                              VtuServicesScreen()),
                                                                       (route) =>
                                                                           false);
                                                                 },
@@ -820,7 +823,8 @@ class _BodyState extends State<Body> {
                                                     'nairaWalletTransactionList',
                                                     symbol,
                                                     true,
-                                                    // txRef
+                                                    txRef,
+                                                    'nairaWalletTransactionList',
                                                   );
                                                   if (result2['status']) {
                                                     _progressDialog.hide();
@@ -839,7 +843,7 @@ class _BodyState extends State<Body> {
                                                                       context,
                                                                       MaterialPageRoute(
                                                                           builder: (context) =>
-                                                                              TabScreen()),
+                                                                              VtuServicesScreen()),
                                                                       (route) =>
                                                                           false);
                                                                 },
@@ -1004,10 +1008,11 @@ class _BodyState extends State<Body> {
                                                     '$biller smartno: $phoneNumber',
                                                     currencyAmount.text,
                                                     nairaAmount.text,
-                                                    'nairaWalletTransactionList',
-                                                    symbol,
+                                                     "${symbol1}WalletTransactionList",
+                                                    symbol1,
                                                     true,
-                                                    // txRef
+                                                    txRef,
+                                                    'nairaWalletTransactionList',
                                                   );
                                                   if (result2['status']) {
                                                     _progressDialog.hide();
@@ -1026,7 +1031,7 @@ class _BodyState extends State<Body> {
                                                                       context,
                                                                       MaterialPageRoute(
                                                                           builder: (context) =>
-                                                                              TabScreen()),
+                                                                              VtuServicesScreen()),
                                                                       (route) =>
                                                                           false);
                                                                 },
@@ -1158,10 +1163,11 @@ class _BodyState extends State<Body> {
                                                     '$biller phone: $phoneNumber',
                                                     currencyAmount.text,
                                                     nairaAmount.text,
-                                                    'nairaWalletTransactionList',
-                                                    symbol,
+                                                     "${symbol1}WalletTransactionList",
+                                                    symbol1,
                                                     true,
-                                                    // txRef
+                                                    txRef,
+                                                    'nairaWalletTransactionList',
                                                   );
                                                   if (result2['status']) {
                                                     _progressDialog.hide();
@@ -1180,7 +1186,7 @@ class _BodyState extends State<Body> {
                                                                       context,
                                                                       MaterialPageRoute(
                                                                           builder: (context) =>
-                                                                              TabScreen()),
+                                                                              VtuServicesScreen()),
                                                                       (route) =>
                                                                           false);
                                                                 },

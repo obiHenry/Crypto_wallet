@@ -33,7 +33,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
         user = value;
         AuthService().getNairaRate().then((value) {
           naira1 = value;
-          nairaRate = (naira1['buy_rate'].toString());
+          nairaRate = (naira1['buyRate'].toString());
           if (user.containsKey('naira')) {
             if(mounted){
                naira = user['naira'];
@@ -78,7 +78,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
+        children: <Widget>[ 
           Container(
             decoration: BoxDecoration(
               color: yellowEndWallet,
@@ -226,7 +226,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 // yellowStartWallet, yellowEndWallet
                 colors: [
                   blueMain,
-                  blueMain
+                  blueMain,
                   // LightColor.navyBlue2,
                   // LightColor.navyBlue2,
                 ],
@@ -259,7 +259,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     gradient: LinearGradient(
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
-                      colors: [yellowStart, yellowEnd],
+                      colors: [blueMain, blueMain],
                     ),
                   ),
                   child: Padding(
@@ -297,7 +297,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                         fontWeight: FontWeight.w500),
                                   )
                                 : Text(
-                                    '₦0.00',
+                                    '₦0.00...',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 25,
@@ -336,7 +336,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                     ),
                                   )
                                 : Text(
-                                    '\$0.00',
+                                    '\$0.00...',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 20,
@@ -355,7 +355,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                 width: 50,
                                 height: 50,
                                 decoration: BoxDecoration(
-                                  color: walletAddButtomColor,
+                                  color: blueMain,
+                                  // walletAddButtomColor,
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(50),
                                   ),
@@ -421,6 +422,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
         ],
       ),
       // ),
+      
     );
   }
 }

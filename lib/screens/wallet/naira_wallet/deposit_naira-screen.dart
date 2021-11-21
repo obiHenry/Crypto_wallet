@@ -50,8 +50,8 @@ class _DepositMoneyState extends State<DepositMoney> {
                 gradient: LinearGradient(
                   // yellowStartWallet, yellowEndWallet
                   colors: [
-                    Colors.green,
-                    Colors.lightGreen,
+                    blueMain,
+                    blueMain
                   ],
                   begin: Alignment.bottomCenter,
                   end: Alignment(0.6, 0.3),
@@ -190,7 +190,8 @@ class _DepositMoneyState extends State<DepositMoney> {
                     leading: Image.asset(
                       'assets/images/icon.png',
                     ),
-                    title: Text('Deposit from other wallet'),
+                    title: Text('Deposit from other wallet',style: TextStyle(color: blueMain),),
+                  
                   ),
                 ),
               ),
@@ -215,7 +216,7 @@ class _DepositMoneyState extends State<DepositMoney> {
                     leading: Image.asset(
                       'assets/images/Wallet_Flat_Icon.svg.png',
                     ),
-                    title: Text('Deposit from bank Account'),
+                    title: Text('Deposit from bank Account',style: TextStyle(color: blueMain),),
                   ),
                 ),
               ),

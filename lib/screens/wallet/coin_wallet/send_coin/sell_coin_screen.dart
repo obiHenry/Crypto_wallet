@@ -1,4 +1,5 @@
-import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
+
+import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/shared/button.dart';
@@ -52,9 +53,12 @@ class _SellCoinScreenState extends State<SellCoinScreen> {
   bool isCurrency = false;
   ProgressDialog _progressDialog;
   dynamic transactionpin;
+  dynamic date = DateTime.now().millisecondsSinceEpoch;
 
   @override
   Widget build(BuildContext context) {
+    String oid = date.toString();
+
     _progressDialog = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
@@ -299,88 +303,72 @@ class _SellCoinScreenState extends State<SellCoinScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ConfirmPinCodeScreen(
-                                      initailCode: transactionpin.toString(),
-                                      fromTransaction: true,
-                                      title: 'verify Transaction pin',
-                                      subtitle: 'Enter your transaction pin ',
-                                      doSuccessMethod: () async {
-                                        _progressDialog.show();
-                                        dynamic remainedCoinBalance =
-                                            balance - totalInCoin;
-                                        dynamic result =
-                                            await AuthService().updateOrder(
-                                          '${widget.currency['currency']}',
-                                          coinAmount.toString(),
-                                          nairaMoney.toString(),
-                                          widget.user['userName'].toString(),
-                                          widget.user['email'].toString(),
-                                          'sellOrder',
-                                          widget.user['mobile'].toString(),
-                                          false,
-                                          widget.user['bankAccountName'],
-                                          widget.user['bankName'],
-                                          widget.user['bankAccountNumber']
-                                              .toString(),
-                                        );
-                                        if (result['status']) {
-                                          dynamic result1 = await AuthService()
-                                              .updateTransactionList(
-                                                  'Sold',
-                                                  '${widget.currency['currency']} Wallet',
-                                                  'Veloce',
-                                                  coinAmount.toString(),
-                                                  nairaMoney.toString(),
-                                                  '${widget.currency['currency']}WalletTransactionList',
-                                                  '${widget.currency['currency']}',
-                                                  false);
-                                          if (result1['status']) {
-                                            dynamic result2 =
-                                                await AuthService()
-                                                    .updateWallet(
-                                                        remainedCoinBalance
-                                                            .toString(),
-                                                        widget.currency[
-                                                            'currency']);
-                                            if (result2['status']) {
-                                              print('success');
-                                              _progressDialog.hide();
-                                              Navigator.pushAndRemoveUntil(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SuccessfulPage(
-                                                      text:
-                                                          'Coin is sent successfully, you will receive your money in the next 24 hours',
-                                                      text1:
-                                                          'You\'ve successfully sent ${currencyAmount.text} ${widget.currency['currency']} for  \₦${formatPrice(nairaMoney)}',
-                                                      press: () {
-                                                        Navigator.pushAndRemoveUntil(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        TabScreen()),
-                                                            (route) => false);
-                                                      },
-                                                    ),
+                                    initailCode: transactionpin.toString(),
+                                    fromTransaction: true,
+                                    title: 'verify Transaction pin',
+                                    subtitle: 'Enter your transaction pin ',
+                                    doSuccessMethod: () async {
+                                      _progressDialog.show();
+                                      dynamic remainedCoinBalance =
+                                          balance - totalInCoin;
+                                      dynamic result =
+                                          await AuthService().updateOrder(
+                                        '${widget.currency['currency']}',
+                                        coinAmount.toString(),
+                                        nairaMoney.toString(),
+                                        widget.user['userName'].toString(),
+                                        widget.user['email'].toString(),
+                                        'sellOrder',
+                                        widget.user['mobile'].toString(),
+                                        false,
+                                        widget.user['bankAccountName'],
+                                        widget.user['bankName'],
+                                        widget.user['bankAccountNumber']
+                                            .toString(),
+                                            false,
+                                      );
+                                      if (result['status']) {
+                                        dynamic result1 = await AuthService()
+                                            .updateTransactionList(
+                                                'Sold',
+                                                '${widget.currency['currency']} Wallet',
+                                                'Veloce',
+                                                coinAmount.toString(),
+                                                nairaMoney.toString(),
+                                                '${widget.currency['currency']}WalletTransactionList',
+                                                '${widget.currency['currency']}',
+                                                false,
+                                                oid,
+                                                '${widget.currency['currency']}WalletTransactionList',);
+                                        if (result1['status']) {
+                                          dynamic result2 = await AuthService()
+                                              .updateWallet(
+                                                  remainedCoinBalance
+                                                      .toString(),
+                                                  widget.currency['currency']);
+                                          if (result2['status']) {
+                                            print('success');
+                                            _progressDialog.hide();
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SuccessfulPage(
+                                                    text:
+                                                        'Coin is sent successfully, you will receive your money in the next 24 hours',
+                                                    text1:
+                                                        'You\'ve successfully sent ${currencyAmount.text} ${widget.currency['currency']} for  \₦${formatPrice(nairaMoney)}',
+                                                    press: () {
+                                                      Navigator.pushAndRemoveUntil(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  HomePageScreen()),
+                                                          (route) => false);
+                                                    },
                                                   ),
-                                                  (route) => false);
-                                            } else {
-                                              _progressDialog.hide();
-                                              String msg = (result['message'] !=
-                                                          null &&
-                                                      result['message']
-                                                          .isNotEmpty)
-                                                  ? result['message']
-                                                  : 'An unknown error occured; retry';
-                                              Fluttertoast.showToast(
-                                                  msg: msg,
-                                                  toastLength:
-                                                      Toast.LENGTH_SHORT,
-                                                  gravity: ToastGravity.BOTTOM,
-                                                  backgroundColor: Colors.black,
-                                                  textColor: Colors.white);
-                                            }
+                                                ),
+                                                (route) => false);
                                           } else {
                                             _progressDialog.hide();
                                             String msg = (result['message'] !=
@@ -410,7 +398,22 @@ class _SellCoinScreenState extends State<SellCoinScreen> {
                                               backgroundColor: Colors.black,
                                               textColor: Colors.white);
                                         }
-                                      },),
+                                      } else {
+                                        _progressDialog.hide();
+                                        String msg = (result['message'] !=
+                                                    null &&
+                                                result['message'].isNotEmpty)
+                                            ? result['message']
+                                            : 'An unknown error occured; retry';
+                                        Fluttertoast.showToast(
+                                            msg: msg,
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.BOTTOM,
+                                            backgroundColor: Colors.black,
+                                            textColor: Colors.white);
+                                      }
+                                    },
+                                  ),
                                 ),
                               );
                             } else {

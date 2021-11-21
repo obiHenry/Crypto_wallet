@@ -35,11 +35,6 @@ class BottomNavigation extends StatelessWidget {
       {int index,  icon, String tabName}) {
     return BottomNavigationBarItem(
       icon:ImageIcon(AssetImage('$icon'),color: _tabColor(index: index),),
-      
-      //  Icon(
-      //   icon,
-      //   color: _tabColor(index: index),
-      // ),
       title: Text(
         tabName,
         style: TextStyle(

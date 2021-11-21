@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:Crypto_wallet/shared/app_colors.dart';
 
 class NairaWalletCard extends StatefulWidget {
   final currency;
@@ -88,7 +89,7 @@ class _NairaWalletCardState extends State<NairaWalletCard> {
                               'Naira wallet',
                               style: TextStyle(
                                   fontSize: 15,
-                                  color: Colors.black54,
+                                  color: blueMain,
                                   fontWeight: FontWeight.w500),
                             ),
                           ),
@@ -106,7 +107,7 @@ class _NairaWalletCardState extends State<NairaWalletCard> {
                               // ' NGN 410',
                               style: TextStyle(
                                   fontSize: 22,
-                                  color: Colors.black54,
+                                  color: blueMain,
                                   fontWeight: FontWeight.w500),
                             )
                           : Text('Loading...'),

@@ -54,7 +54,7 @@ class _CurrencyItemCardState extends State<CurrencyItemCard> {
                             widget.currency['name'],
                             style: TextStyle(
                                 fontSize: 15,
-                                color: Colors.black54,
+                                color: blueMain,
                                 fontWeight: FontWeight.w500),
                           ),
                           Container(
@@ -89,7 +89,7 @@ class _CurrencyItemCardState extends State<CurrencyItemCard> {
                         '\$${formatPrice(convert)}',
                         style: TextStyle(
                             fontSize: 22,
-                            color: Colors.black54,
+                            color: blueMain,
                             fontWeight: FontWeight.w500),
                       ),
                       Text(

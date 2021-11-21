@@ -47,8 +47,8 @@ class _TransferNairaScreenState extends State<TransferNairaScreen> {
                 gradient: LinearGradient(
                   // yellowStartWallet, yellowEndWallet
                   colors: [
-                    Colors.green,
-                    Colors.lightGreen,
+                    blueMain,
+                    blueMain
                   ],
                   begin: Alignment.bottomCenter,
                   end: Alignment(0.6, 0.3),
@@ -187,7 +187,7 @@ class _TransferNairaScreenState extends State<TransferNairaScreen> {
                     leading: Image.asset(
                       'assets/images/icon.png',
                     ),
-                    title: Text('Transfer to other wallet'),
+                    title: Text('Transfer to other wallet',style: TextStyle(color: blueMain),),
                   ),
                 ),
               ),
@@ -209,7 +209,7 @@ class _TransferNairaScreenState extends State<TransferNairaScreen> {
                     leading: Image.asset(
                       'assets/images/Wallet_Flat_Icon.svg.png',
                     ),
-                    title: Text('Withdraw to bank Account'),
+                    title: Text('Withdraw to bank Account',style: TextStyle(color: blueMain),),
                   ),
                 ),
               ),

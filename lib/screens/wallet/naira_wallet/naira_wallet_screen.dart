@@ -128,8 +128,8 @@ class _NairaWalletScreenState extends State<NairaWalletScreen> {
                 gradient: LinearGradient(
                   // yellowStartWallet, yellowEndWallet
                   colors: [
-                    Colors.green,
-                    Colors.lightGreen,
+                    blueMain,
+                    blueMain
                   ],
                   begin: Alignment.bottomCenter,
                   end: Alignment(0.6, 0.3),

@@ -31,23 +31,23 @@ class OutlinedNumberInputField extends StatelessWidget {
           labelText: label,
           disabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.purple,
+              color: Colors.grey,
               width: 1.0,
             ),
           ), 
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.purple,
+              color: Colors.grey,
               width: 1.0,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.purple,
+              color: Colors.grey,
               width: 1.5,
             ),
           ),
-          focusColor: Colors.purple,
+          focusColor: Colors.grey
         ),
         keyboardType: isNumberType
             ? TextInputType.numberWithOptions(decimal: true)

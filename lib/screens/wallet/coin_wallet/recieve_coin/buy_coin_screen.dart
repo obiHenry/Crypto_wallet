@@ -1,4 +1,5 @@
-import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
+
+import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/flutterwave_payment.dart';
 import 'package:Crypto_wallet/services/price_formatter.dart';
@@ -50,9 +51,11 @@ class _BuyCoinScreenState extends State<BuyCoinScreen> {
   bool isNaira = false;
   bool isCurrency = false;
   ProgressDialog _progressDialog;
+  dynamic date = DateTime.now().millisecondsSinceEpoch;
 
   @override
   Widget build(BuildContext context) {
+    String oid = date.toString();
     _progressDialog = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
@@ -247,7 +250,6 @@ class _BuyCoinScreenState extends State<BuyCoinScreen> {
                   coinAmount = amount.toStringAsFixed(8);
                   nairaMoney = naira.toStringAsFixed(2);
                   if (_formKey.currentState.validate()) {
-                   
                     _showBottomSheet(
                       BuyCheckOutScreen(
                         address: 'Veloce',
@@ -261,13 +263,12 @@ class _BuyCoinScreenState extends State<BuyCoinScreen> {
                         text1:
                             'Exchange rate: 1 ${widget.currency['currency']} \=  \₦${formatPrice(nairaPrice.toString())} ',
                         press: () async {
-                         
                           Map response = await PaymentService()
                               .handlePaymentInitialization(
                                   context, nairaMoney.toString(), widget.user);
                           if (response['status']) {
-                             _progressDialog.show();
-                           dynamic calculatedCoin = balance + coinAmount;
+                            _progressDialog.show();
+                            dynamic calculatedCoin = balance + coinAmount;
                             dynamic result = await AuthService().updateWallet(
                                 calculatedCoin.toString(),
                                 widget.currency['currency']);
@@ -278,29 +279,33 @@ class _BuyCoinScreenState extends State<BuyCoinScreen> {
                                 coinAmount.toString(),
                                 nairaMoney.toString(),
                                 widget.user['userName'].toString(),
-                                 widget.user['email'].toString(),
+                                widget.user['email'].toString(),
                                 'buyOrder',
                                 widget.user['mobile'].toString(),
                                 true,
                                 '',
                                 '',
                                 '',
+                                false
                               );
 
                               if (result1['status']) {
-                                dynamic result2 = await AuthService()
-                                    .updateTransactionList(
-                                        'Bought',
-                                        'Veloce',
-                                        '${widget.currency['currency']} Wallet',
-                                        coinAmount.toString(),
-                                        nairaMoney.toString(),
-                                        '${widget.currency['currency']}WalletTransactionList',
-                                        '${widget.currency['currency']}',
-                                        true);
-                                        
-                                        if(result2['status']){
-                                           _progressDialog.hide();
+                                dynamic result2 =
+                                    await AuthService().updateTransactionList(
+                                  'Bought',
+                                  'Veloce',
+                                  '${widget.currency['currency']} Wallet',
+                                  coinAmount.toString(),
+                                  nairaMoney.toString(),
+                                  '${widget.currency['currency']}WalletTransactionList',
+                                  '${widget.currency['currency']}',
+                                  true,
+                                  oid,
+                                  '${widget.currency['currency']}WalletTransactionList',
+                                );
+
+                                if (result2['status']) {
+                                  _progressDialog.hide();
                                   Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
@@ -313,26 +318,25 @@ class _BuyCoinScreenState extends State<BuyCoinScreen> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        TabScreen()),
+                                                        HomePageScreen()),
                                                 (route) => false);
                                           },
                                         ),
                                       ),
                                       (route) => false);
-                                        }
+                                }
                               } else {
-
-                                 _progressDialog.hide();
-                              String msg = (result1['message'] != null &&
-                                      result['message'].isNotEmpty)
-                                  ? result['message']
-                                  : 'An unknown error occured; retry';
-                              Fluttertoast.showToast(
-                                  msg: msg,
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  backgroundColor: Colors.black,
-                                  textColor: Colors.white);
+                                _progressDialog.hide();
+                                String msg = (result1['message'] != null &&
+                                        result['message'].isNotEmpty)
+                                    ? result['message']
+                                    : 'An unknown error occured; retry';
+                                Fluttertoast.showToast(
+                                    msg: msg,
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor: Colors.black,
+                                    textColor: Colors.white);
                               }
                             } else {
                               _progressDialog.hide();
@@ -348,7 +352,7 @@ class _BuyCoinScreenState extends State<BuyCoinScreen> {
                                   textColor: Colors.white);
                             }
                           } else {
-                             _progressDialog.hide();
+                            _progressDialog.hide();
                             Fluttertoast.showToast(
                                 msg: response['message'],
                                 toastLength: Toast.LENGTH_SHORT,
@@ -356,8 +360,6 @@ class _BuyCoinScreenState extends State<BuyCoinScreen> {
                                 backgroundColor: Colors.black,
                                 textColor: Colors.white);
                           }
-
-                         
                         },
                       ),
                     );

@@ -33,7 +33,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
   dynamic ltcBalance1;
   dynamic trxBalance1;
   double nairaUsdEquivalance;
-  dynamic cbnNairaRate;
+  // dynamic cbnNairaRate;
   ApiServices getCurrencies;
   List currencies = [];
   List price = [];
@@ -214,7 +214,6 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                 });
                 dynamic user = await AuthService().getUserDataById();
 
-                if (user != null) {
                   if (user.containsKey('verified')) {
                     bool verified = user['verified'];
                     if (!verified) {
@@ -263,9 +262,10 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                       if (user.containsKey('userName')) {
                         // user = await AuthService().getUserDataById();
                         dynamic naira1 = await AuthService().getNairaRate();
-                        nairaRate = (naira1['buy_rate']).toStringAsFixed(1);
+                         dynamic buyRate = double.parse(naira1['buyRate']);
+                        nairaRate = (buyRate).toStringAsFixed(1);
 
-                        cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
+                        // cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
 
                         nairaBalance = user['naira'].toString();
                         btcBalance = user['BTC'].toString();
@@ -415,20 +415,13 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                       }
                     }
                   }
-                } else {
-                  Navigator.pushNamed(context, 'sign_up');
-                  setState(() {
-                    _loader = false;
-                  });
-
-                  print('anything');
-                }
+               
               },
 
               child: Card(
                 elevation: 0,
                 margin: EdgeInsets.symmetric(horizontal: 15),
-                color: lightgreen,
+                color: Colors.white,
                
                 child: Center(
                   child: Column(
@@ -446,8 +439,8 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             height: 30,
                             width: 30,
                           ),
-                          title: Text('Mobile Topup'),
-                          subtitle: Text('Top up your airtime'),
+                          title: Text('Mobile Topup',style: TextStyle(color: blueMain ),),
+                          subtitle: Text('Top up your airtime',style: TextStyle(color: blueMain ),),
                         ),
                       ),
                       SizedBox(
@@ -474,7 +467,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                   _loader1 = true;
                 });
                 dynamic user = await AuthService().getUserDataById();
-                if (user != null) {
+               
                   if (user.containsKey('verified')) {
                     bool verified = user['verified'];
                     if (!verified) {
@@ -529,9 +522,10 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                       if (user.containsKey('userName')) {
                         // user = await AuthService().getUserDataById();
                         dynamic naira1 = await AuthService().getNairaRate();
-                        nairaRate = (naira1['buy_rate']).toStringAsFixed(1);
+                         dynamic buyRate = double.parse(naira1['buyRate']);
+                        nairaRate = (buyRate).toStringAsFixed(1);
 
-                        cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
+                        // cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
 
                         nairaBalance = user['naira'].toString();
                         btcBalance = user['BTC'].toString();
@@ -681,20 +675,13 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                       }
                     }
                   }
-                } else {
-                  Navigator.pushNamed(context, 'sign_up');
-                  setState(() {
-                    _loader1 = false;
-                  });
-
-                  print('anything');
-                }
+              
               },
 
               child: Card(
                 elevation: 0,
                 margin: EdgeInsets.symmetric(horizontal: 15),
-                color: lightgreen,
+                color: Colors.white,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -712,8 +699,8 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             width: 30,
                             fit: BoxFit.cover,
                           ),
-                          title: Text('Internet Services'),
-                          subtitle: Text('Buy your data bundles '),
+                          title: Text('Internet Services',style: TextStyle(color: blueMain ),),
+                          subtitle: Text('Buy your data bundles ',style: TextStyle(color: blueMain ),),
                         ),
                       ),
                       SizedBox(
@@ -741,7 +728,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                 });
                 dynamic user = await AuthService().getUserDataById();
 
-                if (user != null) {
+               
                   if (user.containsKey('verified')) {
                     bool verified = user['verified'];
                     if (!verified) {
@@ -796,9 +783,10 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                       if (user.containsKey('userName')) {
                         user = await AuthService().getUserDataById();
                         dynamic naira1 = await AuthService().getNairaRate();
-                        nairaRate = (naira1['buy_rate']).toStringAsFixed(1);
+                        dynamic buyRate = double.parse(naira1['buyRate']);
+                        nairaRate = (buyRate).toStringAsFixed(1);
 
-                        cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
+                        // cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
 
                         nairaBalance = user['naira'].toString();
                         btcBalance = user['BTC'].toString();
@@ -948,20 +936,14 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                       }
                     }
                   }
-                } else {
-                  Navigator.pushNamed(context, 'sign_up');
-                  setState(() {
-                    _loader2 = false;
-                  });
-
-                  print('anything');
-                }
+               
               },
 
               child: Card(
                 elevation: 0,
                 margin: EdgeInsets.symmetric(horizontal: 15),
-                color: lightgreen,
+                
+                color: Colors.white,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -978,8 +960,8 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             height: 30,
                             width: 30,
                           ),
-                          title: Text('Cable Tv'),
-                          subtitle: Text('Subscribe your cable tv '),
+                          title: Text('Cable Tv',style: TextStyle(color: blueMain ),),
+                          subtitle: Text('Subscribe your cable tv ',style: TextStyle(color: blueMain ),),
                         ),
                       ),
                       SizedBox(
@@ -1008,7 +990,6 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                 });
                 dynamic user = await AuthService().getUserDataById();
 
-                if (user != null) {
                   if (user.containsKey('verified')) {
                     bool verified = user['verified'];
                     if (!verified) {
@@ -1063,9 +1044,10 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                       if (user.containsKey('userName')) {
                         user = await AuthService().getUserDataById();
                         dynamic naira1 = await AuthService().getNairaRate();
-                        nairaRate = (naira1['buy_rate']).toStringAsFixed(1);
+                         dynamic buyRate = double.parse(naira1['buyRate']);
+                        nairaRate = (buyRate).toStringAsFixed(1);
 
-                        cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
+                        // cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
 
                         nairaBalance = user['naira'].toString();
                         btcBalance = user['BTC'].toString();
@@ -1215,19 +1197,12 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                       }
                     }
                   }
-                } else {
-                  Navigator.pushNamed(context, 'sign_up');
-                  setState(() {
-                    _loader3 = false;
-                  });
-
-                  print('anything');
-                }
+               
               },
               child: Card(
                 elevation: 0,
                 margin: EdgeInsets.symmetric(horizontal: 15),
-                color: lightgreen,
+                color: Colors.white,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1244,8 +1219,8 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             height: 30,
                             width: 30,
                           ),
-                          title: Text('Utility Bill'),
-                          subtitle: Text('Pay for your electricity bills'),
+                          title: Text('Utility Bill',style: TextStyle(color: blueMain ),),
+                          subtitle: Text('Pay for your electricity bills',style: TextStyle(color: blueMain ),),
                         ),
                       ),
                       SizedBox(
@@ -1274,7 +1249,7 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                 });
                 dynamic user = await AuthService().getUserDataById();
 
-                if (user != null) {
+              
                   if (user.containsKey('verified')) {
                     bool verified = user['verified'];
                     if (!verified) {
@@ -1330,9 +1305,10 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                       if (user.containsKey('userName')) {
                         user = await AuthService().getUserDataById();
                         dynamic naira1 = await AuthService().getNairaRate();
-                        nairaRate = (naira1['buy_rate']).toStringAsFixed(1);
+                         dynamic buyRate = double.parse(naira1['buyRate']);
+                        nairaRate = (buyRate).toStringAsFixed(1);
 
-                        cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
+                        // cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
 
                         nairaBalance = user['naira'].toString();
                         btcBalance = user['BTC'].toString();
@@ -1482,19 +1458,12 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                       }
                     }
                   }
-                } else {
-                  Navigator.pushNamed(context, 'sign_up');
-                  setState(() {
-                    _loader4 = false;
-                  });
-
-                  print('anything');
-                }
+           
               },
               child: Card(
                 elevation: 0,
                 margin: EdgeInsets.symmetric(horizontal: 15),
-                color: lightgreen,
+                color: Colors.white,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1511,8 +1480,8 @@ class _VtuServicesScreenState extends State<VtuServicesScreen> {
                             height: 30,
                             width: 30,
                           ),
-                          title: Text('Bet subscription'),
-                          subtitle: Text('Fund Your bet account here'),
+                          title: Text('Bet subscription',style: TextStyle(color: blueMain ),),
+                          subtitle: Text('Fund Your bet account here',style: TextStyle(color: blueMain ),),
                         ),
                       ),
                       SizedBox(

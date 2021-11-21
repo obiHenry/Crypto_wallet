@@ -1,4 +1,4 @@
-import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
+
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/shared/app_colors.dart';
@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
 
 import 'naira_deposit_check_out.dart';
 
@@ -64,9 +65,11 @@ class _NairaTransferWalletState extends State<NairaTransferWallet> {
   }
 
   ProgressDialog _progressDialog;
+dynamic date = DateTime.now().millisecondsSinceEpoch;
 
   @override
   Widget build(BuildContext context) {
+    String oid = date.toString();
     _progressDialog = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
@@ -104,8 +107,8 @@ class _NairaTransferWalletState extends State<NairaTransferWallet> {
                 gradient: LinearGradient(
                   // yellowStartWallet, yellowEndWallet
                   colors: [
-                    Colors.green,
-                    Colors.lightGreen,
+                    blueMain,
+                    blueMain
                   ],
                   begin: Alignment.bottomCenter,
                   end: Alignment(0.6, 0.3),
@@ -499,7 +502,7 @@ class _NairaTransferWalletState extends State<NairaTransferWallet> {
                                       nairaBalanceInWallet -
                                           (sentNaira + chargeInNaira);
                                   String remainedNairaWalletBalance =
-                                      remainedNairaBalance.toStringAsFixed(2);
+                                      remainedNairaBalance.toStringAsFixed(3);
                                   print(remainedNairaWalletBalance);
 
                                   dynamic coinBalanceInWallet =
@@ -530,7 +533,9 @@ class _NairaTransferWalletState extends State<NairaTransferWallet> {
                                             sentNaira.toString(),
                                             'nairaWalletTransactionList',
                                             '${widget.currency['currency']}',
-                                            true);
+                                            true,
+                                            oid,
+                                            'nairaWalletTransactionList');
 
                                     if (result1['status']) {
                                       dynamic result2 = await AuthService()
@@ -542,7 +547,9 @@ class _NairaTransferWalletState extends State<NairaTransferWallet> {
                                               sentNaira.toString(),
                                               '${widget.currency['currency']}WalletTransactionList',
                                               '${widget.currency['currency']}',
-                                              true);
+                                              true,
+                                              oid,
+                                              '${widget.currency['currency']}WalletTransactionList');
                                       if (result2['status']) {
                                         _progressDialog.hide();
                                         Navigator.pushAndRemoveUntil(
@@ -559,7 +566,7 @@ class _NairaTransferWalletState extends State<NairaTransferWallet> {
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>
-                                                              TabScreen()),
+                                                              HomePageScreen()),
                                                       (route) => false);
                                                 },
                                               ),

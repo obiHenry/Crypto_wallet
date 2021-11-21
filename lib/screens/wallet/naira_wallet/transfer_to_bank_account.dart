@@ -1,4 +1,5 @@
-import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
+
+import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/price_formatter.dart';
 import 'package:Crypto_wallet/shared/button.dart';
@@ -53,8 +54,11 @@ class _TransferToBankAccountState extends State<TransferToBankAccount> {
   bool isCurrency = false;
   ProgressDialog _progressDialog;
   dynamic transactionpin;
+dynamic date = DateTime.now().millisecondsSinceEpoch;
+
   @override
   Widget build(BuildContext context) {
+    String oid = date.toString();
     _progressDialog = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
@@ -201,6 +205,7 @@ class _TransferToBankAccountState extends State<TransferToBankAccount> {
                                             widget.user['bankName'],
                                             widget.user['bankAccountNumber']
                                                 .toString(),
+                                                false,
                                           );
 
                                           if (result['status']) {
@@ -223,7 +228,9 @@ class _TransferToBankAccountState extends State<TransferToBankAccount> {
                                                       nairaMoney.toString(),
                                                       'nairaWalletTransactionList',
                                                       '',
-                                                      false);
+                                                      false,
+                                                      oid,
+                                                      'nairaWalletTransactionList');
 
                                               if (result2['status']) {
                                                 _progressDialog.hide();
@@ -242,7 +249,7 @@ class _TransferToBankAccountState extends State<TransferToBankAccount> {
                                                               MaterialPageRoute(
                                                                   builder:
                                                                       (context) =>
-                                                                          TabScreen()),
+                                                                          HomePageScreen()),
                                                               (route) => false);
                                                         },
                                                       ),

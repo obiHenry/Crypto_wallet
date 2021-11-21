@@ -1,4 +1,4 @@
-import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
+
 import 'package:Crypto_wallet/services/dialog_service.dart';
 import 'package:Crypto_wallet/services/validator.dart';
 import 'package:Crypto_wallet/shared/alert_sheet.dart';
@@ -9,8 +9,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/shared/outLined_box.dart';
 import 'package:Crypto_wallet/shared/bills_check_out_screen.dart';
+import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
 
 import 'package:progress_dialog/progress_dialog.dart';
+
+import '../vtu_services_screen.dart';
 
 class Body extends StatefulWidget {
   final List walletList;
@@ -42,6 +45,8 @@ class _BodyState extends State<Body> {
   dynamic symbol1;
   String userName, userId;
   bool accountSelected = false;
+  dynamic date = DateTime.now().millisecondsSinceEpoch;
+    
 
   // @override
   // void initState() {
@@ -151,6 +156,7 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
+    String oid = date.toString();
     //  isNairaWallet = true;
 
     final List billers = [
@@ -665,7 +671,8 @@ class _BodyState extends State<Body> {
                                   false,
                                   biller,
                                   userName,
-                                  userId);
+                                  userId,
+                                  true);
 
                               if (result['status'] = true) {
                                 dynamic nairaBalance =
@@ -683,7 +690,9 @@ class _BodyState extends State<Body> {
                                           nairaAmount.text,
                                           'nairaWalletTransactionList',
                                           symbol,
-                                          false);
+                                          false,
+                                          oid,
+                                          'nairaWalletTransactionList',);
                                   if (result2['status']) {
                                     _progressDialog.hide();
                                     Navigator.pushAndRemoveUntil(
@@ -700,7 +709,7 @@ class _BodyState extends State<Body> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          TabScreen()),
+                                                          VtuServicesScreen()),
                                                   (route) => false);
                                             },
                                           ),
@@ -776,7 +785,8 @@ class _BodyState extends State<Body> {
                                   false,
                                  biller,
                                   userName,
-                                  userId);
+                                  userId,
+                                  true);
 
                               if (result['status'] = true) {
                                 
@@ -795,7 +805,9 @@ class _BodyState extends State<Body> {
                                             nairaAmount.text,
                                             "${symbol1}WalletTransactionList",
                                             symbol1,
-                                            true);
+                                            false,
+                                            oid,
+                                            "${symbol1}WalletTransactionList",);
                                     if (response1['status']) {
                                       _progressDialog.hide();
                                       Navigator.pushAndRemoveUntil(
@@ -812,7 +824,7 @@ class _BodyState extends State<Body> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            TabScreen()),
+                                                            VtuServicesScreen()),
                                                     (route) => false);
                                               },
                                             ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:Crypto_wallet/screens/wrapper_screen.dart';
 
 class LogoutAlertDialog extends StatefulWidget {
   final Function yesPressed;
@@ -57,6 +58,7 @@ class _LogoutAlertDialogState extends State<LogoutAlertDialog> {
                   userIsNull = true;
                 });
                 Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => WrapperScreen(),));
               } else {
                 Fluttertoast.showToast(
                     msg: res['message'].toString(),

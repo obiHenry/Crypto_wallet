@@ -41,14 +41,14 @@ class SendtextField extends StatelessWidget {
           labelText: label,
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.purple,
+              color: Colors.grey,
               width: 1.0,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             
             borderSide: BorderSide(
-              color: Colors.purple,
+              color: Colors.grey,
               width: 1.5,
             ),
           ),

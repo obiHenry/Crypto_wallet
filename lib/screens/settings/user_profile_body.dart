@@ -1,3 +1,7 @@
+import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
+import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/account_pin_code_setup/account_pin_code_setup_screen.dart';
+import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/verify_email/verify_email_screen.dart';
+import 'package:Crypto_wallet/screens/settings/users_settings_screen.dart';
 import 'package:Crypto_wallet/services/auth.dart';
 import 'package:Crypto_wallet/services/dialog_service.dart';
 import 'package:Crypto_wallet/services/internet_connection.dart';
@@ -10,6 +14,7 @@ import 'package:Crypto_wallet/shared/rounded_password_field.dart';
 import 'package:Crypto_wallet/shared/constants.dart';
 import 'package:Crypto_wallet/services/aaccount_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 import 'dart:convert';
@@ -117,11 +122,10 @@ class _UserProfileBodyState extends State<UserProfileBody> {
       } else {
         if (mounted) {
           setState(() {
-            user =    _auth.userData;
+            user = _auth.userData;
             _loading = false;
-             accountName.text = user['bankAccountName'] != null
-                      ? user['bankAccountName']
-                      : '';
+            accountName.text =
+                user['bankAccountName'] != null ? user['bankAccountName'] : '';
           });
           enableSubmitButton();
         }
@@ -369,81 +373,6 @@ class _UserProfileBodyState extends State<UserProfileBody> {
             }
           },
         ),
-        // RoundedSelectField(
-        //   hintText: user['gender'] != null ? user['gender'] : 'Gender',
-        //   options: genders,
-        //   disabledHint: user['gender'] != null ? user['gender'] : 'disabled',
-        //   onChanged: user.containsKey('shoulder')
-        //       ? null
-        //       : (value) {
-        //           user['gender'] = value.toLowerCase();
-        //           String isValid = Validators.alnum(value, 'Gender');
-        //           setState(() {
-        //             enableButton = false;
-        //           });
-        //           if (isValid == null) {
-        //             enableSubmitButton();
-        //           }
-        //         },
-        // ),
-        // SizedBox(height: 20),
-        // Text(
-        //   'Billing Address',
-        //   textAlign: TextAlign.left,
-        // ),
-        // // RoundedInputField(
-        // //   validator: ,
-        // //   hintText: "Street Address",
-        // //   initialValue: user['street'] != null ? user['street'] : '',
-        // //   icon: Icons.gps_fixed,
-        // //   onChanged: (value) {
-        // //     user['street'] = value;
-        // //     String isValid = Validators.alnum(value, 'Street address');
-        // //     setState(() {
-        // //       enableButton = false;
-        // //     });
-        // //     if (isValid == null) {
-        // //       enableSubmitButton();
-        // //     } else {
-        // //       dialog.getSnackBar(context, isValid, Colors.red);
-        // //     }
-        // //   },
-        // // ),
-        // // RoundedInputField(
-        // //   hintText: "City",
-        // //   initialValue: user['city'] != null ? user['city'] : '',
-        // //   icon: Icons.gps_fixed,
-        // //   onChanged: (value) {
-        // //     user['city'] = value;
-        // //     String isValid = Validators.alnum(value, 'City');
-        // //     setState(() {
-        // //       enableButton = false;
-        // //     });
-        // //     if (isValid == null) {
-        // //       enableSubmitButton();
-        // //     } else {
-        // //       dialog.getSnackBar(context, isValid, Colors.red);
-        // //     }
-        // //   },
-        // // ),
-        // // RoundedSelectField(
-        // //   hintText: "State",
-        // //   valueText: user['state'] != null ? user['state'] : null,
-        // //   options: states,
-        // //   icon: Icons.gps_fixed,
-        // //   onChanged: (value) {
-        // //     user['state'] = value.toLowerCase();
-        // //     String isValid = Validators.alnum(value, 'State');
-        // //     setState(() {
-        // //       enableButton = false;
-        // //     });
-        // //     if (isValid == null) {
-        // //       enableSubmitButton();
-        // //     } else {
-        // //       dialog.getSnackBar(context, isValid, Colors.red);
-        // //     }
-        // //   },
-        // // ),
         !_loader
             ? RoundedButton(
                 text: "UPDATE",
@@ -588,49 +517,70 @@ class _UserProfileBodyState extends State<UserProfileBody> {
                               if (result2['status'] == '1') {
                                 print(
                                     'this is the email result ${result1['message'].toString()}');
+                                Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (conatext) {
+                                  return VerifyEmailAddress({
+                                    'email': user['email'],
+                                    'token': token.toString(),
+                                    'fromExternal': true,
+                                    'mailContent':
+                                        'You requested to change  your transaction pin ,    Use the code below to to change a new transaction pin .  ',
+                                    'mailSubject': 'Transaction pin Reset',
+                                    'onVerifySuccess': () async {
+                                      print('success');
 
-                                Navigator.of(context).pushNamed(
-                                    'verification_screen',
-                                    arguments: {
-                                      'email': user['email'],
-                                      'token': token.toString(),
-                                      'fromExternal': true,
-                                      'mailContent':
-                                          'You requested to change  your transaction pin ,    Use the code below to to change a new transaction pin .  ',
-                                      'mailSubject': 'Transaction pin Reset',
-                                      'onVerifySuccess': () async {
-                                        print('success');
+                                      dynamic result3 = await AuthService()
+                                          .setTransactionPin(newPin);
+                                      if (result3['status']) {
+                                        Navigator.of(context)
+                                            .pushAndRemoveUntil(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        UsersSettingsScreen()),
+                                                (route) => false);
+                                        Fluttertoast.showToast(
+                                            msg: result3['message'],
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.BOTTOM,
+                                            backgroundColor: Colors.black,
+                                            textColor: Colors.white);
+                                      } else {
+                                        Fluttertoast.showToast(
+                                            msg: result3['message'],
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.BOTTOM,
+                                            backgroundColor: Colors.black,
+                                            textColor: Colors.white);
+                                      }
+                                    },
+                                  });
+                                }));
 
-                                        dynamic result3 = await AuthService()
-                                            .setTransactionPin(newPin);
-                                        if (result3['status']) {
-                                          Navigator.of(context)
-                                              .pushNamedAndRemoveUntil(
-                                                  'tab_screen',
-                                                  (route) => false);
-                                          dialog.getSnackBar(context,
-                                              result3['message'], Colors.green);
-                                        } else {
-                                          dialog.getSnackBar(context,
-                                              result3['message'], Colors.red);
-                                        }
-                                      },
-                                    });
                                 setState(() {
                                   _pinLoader = false;
                                 });
                               } else {
                                 print(result2['response'].toString());
-                                dialog.getSnackBar(context,
-                                    result2['response'].toString(), Colors.red);
+                                Fluttertoast.showToast(
+                                    msg: result2['response'].toString(),
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor: Colors.black,
+                                    textColor: Colors.white);
+
                                 setState(() {
                                   _pinLoader = false;
                                 });
                               }
                             } else {
                               print(result1['message'].toString());
-                              dialog.getSnackBar(
-                                  context, result1['message'], Colors.red);
+                              Fluttertoast.showToast(
+                                  msg: result1['message'],
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Colors.black,
+                                  textColor: Colors.white);
+
                               setState(() {
                                 _pinLoader = false;
                               });
@@ -651,22 +601,6 @@ class _UserProfileBodyState extends State<UserProfileBody> {
                             _pinLoader = false;
                           });
                         }
-
-                        // dynamic result = await _auth.changePassword(
-                        //     user['email'],
-                        //     currentPassword,
-                        //     newPassword,
-                        //     confirmPassword);
-                        // setState(() {
-                        //   _pinLoader = false;
-                        // });
-                        // if (result['status']) {
-                        //   dialog.getSnackBar(
-                        //       context, result['message'], Colors.green);
-                        // } else {
-                        //   dialog.getSnackBar(
-                        //       context, result['message'], Colors.red);
-                        // }
                       },
               )
             : Center(
@@ -840,35 +774,48 @@ class _UserProfileBodyState extends State<UserProfileBody> {
                           if (result2['status'] == '1') {
                             print(
                                 'this is the email result ${result1['message'].toString()}');
-
                             Navigator.of(context)
-                                .pushNamed('verification_screen', arguments: {
-                              'email': user['email'],
-                              'token': token.toString(),
-                              'fromExternal': true,
-                              'mailContent':
-                                  'You requested to change  your bank account details ,    Use the code below to to change your baank account details .    ',
-                              'mailSubject': 'Bank account detials Reset',
-                              'onVerifySuccess': () async {
-                                print('success');
+                                .push(MaterialPageRoute(builder: (context) {
+                              return VerifyEmailAddress({
+                                'email': user['email'],
+                                'token': token.toString(),
+                                'fromExternal': true,
+                                'mailContent':
+                                    'You requested to change  your bank account details ,    Use the code below to to change your baank account details .    ',
+                                'mailSubject': 'Bank account detials Reset',
+                                'onVerifySuccess': () async {
+                                  print('success');
 
-                                dynamic result = await _auth.saveDetails(user);
-                                setState(() {
-                                  _loader = false;
-                                });
-                                if (result['status']) {
-                                  Navigator.of(context).pushNamedAndRemoveUntil(
-                                      'tab_screen', (route) => false);
-                                  dialog.getSnackBar(
-                                      context, result['message'], Colors.green);
-                                  dialog.getSnackBar(context,
-                                      'User data updated', Colors.green);
-                                } else {
-                                  dialog.getSnackBar(
-                                      context, result['message'], Colors.red);
+                                  dynamic result =
+                                      await _auth.saveDetails(user);
+                                  setState(() {
+                                    _loader = false;
+                                  });
+                                  if (result['status']) {
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(builder: (conntext) {
+                                      return UsersSettingsScreen();
+                                    }), (route) => false);
+                                    Fluttertoast.showToast(
+                                        msg: result['message'].toString(),
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                        backgroundColor: Colors.black,
+                                        textColor: Colors.white);
+
+                                    Fluttertoast.showToast(
+                                        msg: 'User data updated',
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                        backgroundColor: Colors.black,
+                                        textColor: Colors.white);
+                                  } else {
+                                    dialog.getSnackBar(
+                                        context, result['message'], Colors.red);
+                                  }
                                 }
-                              }
-                            });
+                              });
+                            }));
                           } else {
                             print(result2['response'].toString());
                             dialog.getSnackBar(context,
@@ -1010,13 +957,14 @@ class _UserProfileBodyState extends State<UserProfileBody> {
 
   Widget createNewTransactionPin() {
     return Column(
-
       children: [
-         Text(
+        Text(
           "Create New Transaction Pin",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 10,),
+        SizedBox(
+          height: 10,
+        ),
         !_newPinLoader
             ? RoundedButton(
                 text: "CREATE NEW PIN",
@@ -1037,7 +985,7 @@ class _UserProfileBodyState extends State<UserProfileBody> {
                   print(userName.toString());
                   dynamic result1 = await ApiServices().sendEmailVerificationToken(
                       userEmail: user['email'],
-                      subject: 'Transaction pin Reset ',
+                      subject: 'Create new transaction pin ',
                       content:
                           'You requested to create  new transaction pin ,    Use the code below  to create a new transaction pin .   $token ',
                       userName: userName);
@@ -1051,33 +999,54 @@ class _UserProfileBodyState extends State<UserProfileBody> {
                         _newPinLoader = false;
                       });
                       Navigator.of(context)
-                          .pushNamed('verification_screen', arguments: {
-                        'email': user['email'],
-                        'token': token.toString(),
-                        'fromExternal': true,
-                        'mailContent':
-                            'You requested to create  new transaction pin ,    Use the code below to create a new transaction pin . ',
-                        'mailSubject': 'Transaction pin Reset',
-                        'onVerifySuccess': () async {
-                          setState(() {
-                            _newPinLoader = false;
-                          });
-                          print('success');
+                          .push(MaterialPageRoute(builder: (context) {
+                        return VerifyEmailAddress({
+                          'email': user['email'],
+                          'token': token.toString(),
+                          'fromExternal': true,
+                          'mailContent':
+                              'You requested to create  new transaction pin ,    Use the code below to create a new transaction pin . ',
+                          'mailSubject': 'Create new transaction pin',
+                          'onVerifySuccess': () async {
+                            setState(() {
+                              _newPinLoader = false;
+                            });
+                            print('success');
 
-                          Navigator.pushNamed(context, 'pin_code_screen');
-                        }
-                      });
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return AccountPinCodeSetup();
+                            }));
+                          }
+                        });
+                      }));
+                      // Navigator.of(context)
+                      //     .pushNamed('verification_screen', arguments: {
+
+                      // });
                     } else {
                       print(result2['response'].toString());
-                      dialog.getSnackBar(
-                          context, result2['response'].toString(), Colors.red);
+                      Fluttertoast.showToast(
+                          msg: result2['response'].toString(),
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.black,
+                          textColor: Colors.white);
+
                       setState(() {
                         _newPinLoader = false;
                       });
                     }
                   } else {
                     print(result1['message'].toString());
-                    dialog.getSnackBar(context, result1['message'], Colors.red);
+
+                    Fluttertoast.showToast(
+                        msg: result1['message'],
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Colors.black,
+                        textColor: Colors.white);
+
                     setState(() {
                       _newPinLoader = false;
                     });

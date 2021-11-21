@@ -57,7 +57,6 @@ class _BillsPaymentFormState extends State<BillsPaymentForm> {
   dynamic bchBalance;
   dynamic ltcBalance;
   dynamic trxBalance;
-  double nairaUsdEquivalance;
   dynamic cbnNairaRate;
   ApiServices getCurrencies;
   List currencies = [];
@@ -73,9 +72,10 @@ class _BillsPaymentFormState extends State<BillsPaymentForm> {
   void didChangeDependencies() async {
     dynamic users = await AuthService().getUserDataById();
     dynamic naira1 = await AuthService().getNairaRate();
-    nairaRate = naira1['buy_rate'];
+    nairaRate = double.parse(naira1['buyRate']);
+    
 
-    cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
+    // cbnNairaRate = (naira1['cbn_rate']).toStringAsFixed(1);
 
     nairaBalance = users['naira'].toString();
     btcBalance = users['BTC'].toString();
@@ -101,8 +101,7 @@ class _BillsPaymentFormState extends State<BillsPaymentForm> {
       bchUsdPrice = price[4];
       trxUsdPrice = price[5];
 
-      nairaUsdEquivalance =
-          double.parse(nairaBalance) / double.parse(cbnNairaRate);
+     
 
       btcNairaPrice = (double.parse(btcBalance) * btcUsdPrice) * nairaRate;
 
@@ -113,7 +112,6 @@ class _BillsPaymentFormState extends State<BillsPaymentForm> {
       trxNairaPrice = (double.parse(trxBalance) * trxUsdPrice) * nairaRate;
 
       print('mine$btcNairaPrice');
-      print(nairaUsdEquivalance);
     });
 
     super.didChangeDependencies();

@@ -12,7 +12,7 @@ import 'package:Crypto_wallet/shared/alert_sheet.dart';
 
 import 'package:Crypto_wallet/shared/succesful_page.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
+import 'package:Crypto_wallet/screens/homepage/home_page_screen.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 
 class SendCoinScreen extends StatefulWidget {
@@ -332,7 +332,7 @@ class _SendCoinScreenState extends State<SendCoinScreen> {
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>
-                                                              TabScreen()),
+                                                              HomePageScreen()),
                                                       (route) => false);
                                                 },
                                               ),

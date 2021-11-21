@@ -33,8 +33,9 @@ class _SuccessfulPageState extends State<SuccessfulPage> {
                 gradient: LinearGradient(
                   // yellowStartWallet, yellowEndWallet
                   colors: [
-                    Colors.green,
-                    Colors.lightGreen,
+                    blueMain,
+                      blueMain,
+                    // Colors.lightGreen,
                   ],
                   begin: Alignment.bottomCenter,
                   end: Alignment(0.6, 0.3),

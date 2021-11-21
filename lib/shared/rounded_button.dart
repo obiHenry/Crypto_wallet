@@ -38,7 +38,7 @@ class RoundedButton extends StatelessWidget {
         child: RaisedButton(
           // disabledColor: Colors.grey,
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-          color: navyBlue2,
+          color:  blueMain,
           onPressed: press,
           child: Text(
             text,

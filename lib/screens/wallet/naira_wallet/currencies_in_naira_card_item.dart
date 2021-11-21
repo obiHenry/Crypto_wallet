@@ -60,7 +60,7 @@ class _CurrencyInNaraCardState extends State<CurrencyInNaraCard> {
                           widget.currency['name'],
                           style: TextStyle(
                               fontSize: 15,
-                              color: Colors.black54,
+                              color: blueMain,
                               fontWeight: FontWeight.w500),
                         ),
                         Container(
@@ -91,7 +91,7 @@ class _CurrencyInNaraCardState extends State<CurrencyInNaraCard> {
                       '\₦${formatPrice(convert)}',
                       style: TextStyle(
                           fontSize: 22,
-                          color: Colors.black54,
+                          color: blueMain,
                           fontWeight: FontWeight.w500),
                     ),
                     Text(
