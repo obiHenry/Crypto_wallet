@@ -1,19 +1,19 @@
-import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/account_pin_code_setup/account_pin_code_setup_screen.dart';
-import 'package:Crypto_wallet/screens/logins_and_signUp/set_up/set_up_screen.dart';
-import 'package:Crypto_wallet/screens/logins_and_signUp/sign_in/login.dart';
-import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/account_sign_up/sign_up_screen.dart';
-import 'package:Crypto_wallet/screens/logins_and_signUp/account_registration/verify_email/verify_email_screen.dart';
-import 'package:Crypto_wallet/screens/tab_Screen/tab_screen.dart';
-import 'package:Crypto_wallet/screens/vtu_services/mobile_top_up_screen/mobile_top_up_screen.dart';
-import 'package:Crypto_wallet/screens/wallet/coin_wallet/recieve_coin/buy_coin_screen.dart';
-import 'package:Crypto_wallet/screens/wallet/coin_wallet/wallet_screen.dart';
-import 'package:Crypto_wallet/screens/wallet/naira_wallet/deposit_naira-screen.dart';
-import 'package:Crypto_wallet/screens/wallet/naira_wallet/transfer_naira_screen.dart';
+import 'package:Crypto_wallet/screens/airtime_sub_screen.dart';
+import 'package:Crypto_wallet/screens/account_pin_code_setup_screen.dart';
+import 'package:Crypto_wallet/screens/account_set_up_screen.dart';
+import 'package:Crypto_wallet/screens/pass_reset_screen.dart';
+import 'package:Crypto_wallet/screens/sign_up_screen.dart';
+import 'package:Crypto_wallet/screens/signin_screen.dart';
+import 'package:Crypto_wallet/screens/verify_email_screen.dart';
+import 'package:Crypto_wallet/screens/profile_screen.dart';
+import 'package:Crypto_wallet/screens/tab_screen.dart';
+import 'package:Crypto_wallet/screens/buy_crypto_screen.dart';
+import 'package:Crypto_wallet/screens/crypto_wallet_screen.dart';
+import 'package:Crypto_wallet/screens/deposit_naira-screen.dart';
+import 'package:Crypto_wallet/screens/transfer_naira_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:Crypto_wallet/Screens/logins_and_signUp/password_reset/pass_reset_screen.dart';
 import 'package:Crypto_wallet/screens/wrapper_screen.dart';
-import 'package:Crypto_wallet/screens/settings/user_profile_screen.dart';
 
 
 class MyRouter {
@@ -24,11 +24,11 @@ class MyRouter {
        case 'wrapper_screen':
         return MaterialPageRoute(builder: (_) => WrapperScreen());
       case 'login':
-        return MaterialPageRoute(builder: (_) => Login());
+        return MaterialPageRoute(builder: (_) => SiginScreen());
       case 'tab_screen':
         return MaterialPageRoute(builder: (_) => TabScreen());
       case 'wallet':
-        return MaterialPageRoute(builder: (_) => Wallet());
+        return MaterialPageRoute(builder: (_) => CryptoWalletScreen());
       case 'sign_up':
         return MaterialPageRoute(builder: (_) => SignUpScreen());
       case 'set_up':
@@ -36,7 +36,7 @@ class MyRouter {
         case 'buy_coin':
         return MaterialPageRoute(builder: (_) => BuyCoinScreen());
         case 'mobile_top_up':
-        return MaterialPageRoute(builder: (_) => MobileTopUpScreen());
+        return MaterialPageRoute(builder: (_) => AirtimeSubScreen());
          case 'naira_deposit':
         return MaterialPageRoute(builder: (_) => DepositMoney());
          case 'naira_transfer':
